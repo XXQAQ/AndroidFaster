@@ -29,12 +29,7 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
         {
             getRefreshLoadBuilder().refreshView.setRefreshLoadListener(new RefreshLoadCustomView.OnRefreshLoadListener() {
                 @Override
-                public void startRefresh(RefreshLoadCustomView view) {
-
-                }
-
-                @Override
-                public void finishRefresh(RefreshLoadCustomView view) {
+                public void onFinishRefresh(RefreshLoadCustomView view) {
 
                 }
 
@@ -44,18 +39,23 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
                 }
 
                 @Override
-                public void startLoadmore(RefreshLoadCustomView view) {
-
+                public void onCancleRefresh(RefreshLoadCustomView view) {
+                    getPresenter().cancleRefresh();
                 }
 
                 @Override
-                public void finishLoadmore(RefreshLoadCustomView view) {
+                public void onFinishLoadmore(RefreshLoadCustomView view) {
 
                 }
 
                 @Override
                 public void onLoadmore(RefreshLoadCustomView view) {
                     loadMorePresenter();
+                }
+
+                @Override
+                public void onCancleLoadmore(RefreshLoadCustomView view) {
+                    getPresenter().cancleLoadmore();
                 }
             });
             getRefreshLoadBuilder().refreshView.setHeaderView(getHeadView());

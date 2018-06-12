@@ -21,6 +21,10 @@ public interface IFasterBaseRefreshLoadPresenter<T extends IFasterBaseRefreshLoa
         refreshLoad(false, getRefreshLoadBuilder().page+1,objects);
     }
 
+    public void cancleRefresh();
+
+    public void cancleLoadmore();
+
     default void initAdapter(){
         getBindView().initAdapter(getRefreshLoadBuilder().list_data);
     }

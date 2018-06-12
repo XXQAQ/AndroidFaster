@@ -22,17 +22,18 @@ public interface RefreshLoadCustomView {
 
     public static interface OnRefreshLoadListener {
 
-        public void startRefresh(RefreshLoadCustomView view);
-
-        public void finishRefresh(RefreshLoadCustomView view);
+        public void onFinishRefresh(RefreshLoadCustomView view);
 
         public void onRefresh(RefreshLoadCustomView view);
 
-        public void startLoadmore(RefreshLoadCustomView view);
+        public void onCancleRefresh(RefreshLoadCustomView view);
 
-        public void finishLoadmore(RefreshLoadCustomView view);
+        public void onFinishLoadmore(RefreshLoadCustomView view);
 
         public void onLoadmore(RefreshLoadCustomView view);
+
+        public void onCancleLoadmore(RefreshLoadCustomView view);
+
     }
 
 }
