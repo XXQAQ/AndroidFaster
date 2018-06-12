@@ -12,19 +12,27 @@ public interface RefreshLoadCustomView {
 
     public void finishRefreshing();
 
-    public void setEmptyView(View view);
+    public void setEmptyView(Object object);
 
-    public void setHeaderView(View view);
+    public void setHeaderView(Object object);
 
-    public void setFootView(View view);
+    public void setFootView(Object object);
 
     public void setRefreshLoadListener(OnRefreshLoadListener listeneri);
 
     public static interface OnRefreshLoadListener {
 
-        public void afterRefresh(RefreshLoadCustomView view);
+        public void startRefresh(RefreshLoadCustomView view);
 
-        public void afterLoadmore(RefreshLoadCustomView view);
+        public void finishRefresh(RefreshLoadCustomView view);
+
+        public void onRefresh(RefreshLoadCustomView view);
+
+        public void startLoadmore(RefreshLoadCustomView view);
+
+        public void finishLoadmore(RefreshLoadCustomView view);
+
+        public void onLoadmore(RefreshLoadCustomView view);
     }
 
 }

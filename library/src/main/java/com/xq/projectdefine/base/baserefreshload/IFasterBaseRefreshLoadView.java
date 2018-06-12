@@ -29,12 +29,32 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
         {
             getRefreshLoadBuilder().refreshView.setRefreshLoadListener(new RefreshLoadCustomView.OnRefreshLoadListener() {
                 @Override
-                public void afterRefresh(RefreshLoadCustomView view) {
+                public void startRefresh(RefreshLoadCustomView view) {
+
+                }
+
+                @Override
+                public void finishRefresh(RefreshLoadCustomView view) {
+
+                }
+
+                @Override
+                public void onRefresh(RefreshLoadCustomView view) {
                     refreshPresenter();
                 }
 
                 @Override
-                public void afterLoadmore(RefreshLoadCustomView view) {
+                public void startLoadmore(RefreshLoadCustomView view) {
+
+                }
+
+                @Override
+                public void finishLoadmore(RefreshLoadCustomView view) {
+
+                }
+
+                @Override
+                public void onLoadmore(RefreshLoadCustomView view) {
                     loadMorePresenter();
                 }
             });
@@ -92,11 +112,11 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
     public RecyclerView.LayoutManager getLayoutManager();
 
     //根据您的需要重写该方法
-    public View getEmptyView();
+    public Object getEmptyView();
 
-    public View getHeadView();
+    public Object getHeadView();
 
-    public View getFootView();
+    public Object getFootView();
 
     public void afterEmpty();
 
