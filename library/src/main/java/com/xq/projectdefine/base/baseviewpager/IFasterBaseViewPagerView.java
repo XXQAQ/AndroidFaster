@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.xq.projectdefine.base.abs.AbsView;
-import com.xq.projectdefine.behavior.TitleBehavior;
+import com.xq.projectdefine.bean.behavior.TitleBehavior;
 
 import java.util.LinkedList;
 import java.util.List;

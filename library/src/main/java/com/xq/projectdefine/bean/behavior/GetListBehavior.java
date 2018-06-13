@@ -1,4 +1,4 @@
-package com.xq.projectdefine.behavior;
+package com.xq.projectdefine.bean.behavior;
 
 import java.util.List;
 

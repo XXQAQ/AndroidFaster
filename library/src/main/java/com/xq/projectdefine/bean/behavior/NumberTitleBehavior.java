@@ -1,4 +1,4 @@
-package com.xq.projectdefine.behavior;
+package com.xq.projectdefine.bean.behavior;
 
 /**
  * Created by Administrator on 2017/10/20.

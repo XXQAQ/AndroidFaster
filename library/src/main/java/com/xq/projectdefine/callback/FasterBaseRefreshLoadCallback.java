@@ -2,7 +2,7 @@ package com.xq.projectdefine.callback;
 
 
 import com.xq.projectdefine.base.baserefreshload.IFasterBaseRefreshLoadView;
-import com.xq.projectdefine.behavior.GetListBehavior;
+import com.xq.projectdefine.bean.behavior.GetListBehavior;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -2,7 +2,7 @@ package com.xq.projectdefine.base.baseviewpager;
 
 
 import com.xq.projectdefine.base.abs.AbsPresenter;
-import com.xq.projectdefine.behavior.TitleBehavior;
+import com.xq.projectdefine.bean.behavior.TitleBehavior;
 
 import java.util.List;
 
