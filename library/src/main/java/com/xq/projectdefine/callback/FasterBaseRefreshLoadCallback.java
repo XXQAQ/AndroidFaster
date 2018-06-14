@@ -79,8 +79,8 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
         }
     }
 
-    public RefreshData getRefreshLoadData();
-    public static class RefreshData {
+    public RefreshLoadData getRefreshLoadData();
+    public static class RefreshLoadData {
         public IFasterBaseRefreshLoadView baseRefreshLoadview;
         public List list_data;
         public Integer page;
