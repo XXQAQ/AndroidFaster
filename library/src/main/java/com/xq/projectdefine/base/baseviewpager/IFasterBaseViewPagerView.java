@@ -30,8 +30,10 @@ public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresente
 
         if (getViewPagerBuilder().tl != null)
         {
-            getViewPagerBuilder().tl.setTabTextColors(getTabTextNormalColor(),getTabTextSelectColor());
-            getViewPagerBuilder().tl.setBackgroundColor(getTabBackgroundColor());
+            if (getTabTextNormalColor() >= 0 || getTabTextSelectColor()>= 0)
+                getViewPagerBuilder().tl.setTabTextColors(getTabTextNormalColor(),getTabTextSelectColor());
+            if (getTabBackgroundColor() >= 0)
+                getViewPagerBuilder().tl.setBackgroundColor(getTabBackgroundColor());
         }
 
         initFragmentsAndTitles(getPresenter().getFragmentsAndTitles());
@@ -83,11 +85,17 @@ public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresente
         getViewPagerBuilder().vp.getAdapter().notifyDataSetChanged();
     }
 
-    public int getTabTextNormalColor();
+    default int getTabTextNormalColor() {
+        return -1;
+    }
 
-    public int getTabTextSelectColor();
+    default int getTabTextSelectColor() {
+        return -1;
+    }
 
-    public int getTabBackgroundColor();
+    default int getTabBackgroundColor() {
+        return -1;
+    }
 
     public ViewPagerBuilder getViewPagerBuilder();
 
