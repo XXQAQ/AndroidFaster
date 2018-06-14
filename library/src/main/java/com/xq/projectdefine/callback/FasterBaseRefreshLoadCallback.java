@@ -27,7 +27,7 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
         else
             return;
 
-        if (getDataBean().baseRefreshLoadview != null)
+        if (getRefreshLoadData().baseRefreshLoadview != null)
         {
             if (list == null)
             {
@@ -36,51 +36,51 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
 
             if (list.size() <1)
             {
-                getDataBean().baseRefreshLoadview.showRefreshLoadEnd();
+                getRefreshLoadData().baseRefreshLoadview.showRefreshLoadEnd();
             }
 
-            if (getDataBean().isRefresh)
+            if (getRefreshLoadData().isRefresh)
             {
-                getDataBean().list_data.clear();
-                getDataBean().list_data.addAll(list);
+                getRefreshLoadData().list_data.clear();
+                getRefreshLoadData().list_data.addAll(list);
             }
             else
             {
-                getDataBean().list_data.addAll(list);
+                getRefreshLoadData().list_data.addAll(list);
                 if (list.size() > 0)
                 {
-                    getDataBean().page++;
+                    getRefreshLoadData().page++;
                 }
             }
         }
     }
 
     default void requestError(Object... objects) {
-        if (getDataBean().baseRefreshLoadview != null)
+        if (getRefreshLoadData().baseRefreshLoadview != null)
         {
-            getDataBean().baseRefreshLoadview.showRefreshLoadErro();
+            getRefreshLoadData().baseRefreshLoadview.showRefreshLoadErro();
         }
     }
 
     @Override
     default void requestFinish(Object... objects) {
-        if (getDataBean().baseRefreshLoadview != null)
+        if (getRefreshLoadData().baseRefreshLoadview != null)
         {
-            if (getDataBean().isRefresh)
+            if (getRefreshLoadData().isRefresh)
             {
-                getDataBean().baseRefreshLoadview.afterRefresh();
+                getRefreshLoadData().baseRefreshLoadview.afterRefresh();
             }
             else
             {
-                getDataBean().baseRefreshLoadview.afterLoad(getDataBean().list_data.size());
+                getRefreshLoadData().baseRefreshLoadview.afterLoad(getRefreshLoadData().list_data.size());
             }
-            if (getDataBean().list_data == null || getDataBean().list_data.size()<=0)
-                getDataBean().baseRefreshLoadview.afterEmpty();
+            if (getRefreshLoadData().list_data == null || getRefreshLoadData().list_data.size()<=0)
+                getRefreshLoadData().baseRefreshLoadview.afterEmpty();
         }
     }
 
-    public DataBean getDataBean();
-    public static class DataBean{
+    public RefreshData getRefreshLoadData();
+    public static class RefreshData {
         public IFasterBaseRefreshLoadView baseRefreshLoadview;
         public List list_data;
         public Integer page;
