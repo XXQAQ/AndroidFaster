@@ -23,13 +23,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
 
-        if (getPresenter().getCPActivity() != null)
+        if (getPresenter().getAreActivity() != null)
         {
-            rootView = getPresenter().getCPActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            rootView = getPresenter().getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
         }
-        else    if (getPresenter().getCPFragment() != null)
+        else    if (getPresenter().getAreFragment() != null)
         {
-            rootView = getPresenter().getCPFragment().getView();
+            rootView = getPresenter().getAreFragment().getView();
         }
 
         toolbar = (Toolbar) rootView.findViewById(getContext().getResources().getIdentifier("toolbar", "id", getContext().getPackageName()));

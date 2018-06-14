@@ -25,6 +25,18 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         initData();
     }
 
+    protected abstract T createBindView();
+
+    //该方法用于解析从其他页面传来的数据,注意如果传递数据不存在则不会执行该方法
+    protected void resolveBundle(Bundle bundle) {
+
+    }
+
+    //初始化数据
+    protected void initData(){
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,17 +69,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         super.onCreate(savedInstanceState);
     }
 
-    protected abstract T createBindView();
-
-    //该方法用于解析从其他页面传来的数据,注意如果传递数据不存在则不会执行该方法
-    protected void resolveBundle(Bundle bundle) {
-
-    }
-
-    //初始化数据
-    protected void initData(){
-
-    }
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
@@ -119,12 +120,12 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
-    public Activity getCPActivity() {
+    public Activity getAreActivity() {
         return null;
     }
 
     @Override
-    public Fragment getCPFragment() {
+    public Fragment getAreFragment() {
         return this;
     }
 

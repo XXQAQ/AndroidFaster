@@ -7,5 +7,4 @@ public interface IFasterBasePresenter<T extends IFasterBaseView> extends AbsPres
 
 
 
-
 }

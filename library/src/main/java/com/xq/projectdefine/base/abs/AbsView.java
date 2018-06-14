@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.xq.projectdefine.base.life.BaseLife;
+import com.xq.projectdefine.base.life.ViewLife;
 
 /**
  * Created by xq on 2017/4/11 0011.
  */
 
-public interface AbsView<T extends AbsPresenter> extends BaseLife {
+public interface AbsView<T extends AbsPresenter> extends ViewLife {
 
     public T getPresenter();
 
@@ -22,10 +22,10 @@ public interface AbsView<T extends AbsPresenter> extends BaseLife {
     public View getRootView();
 
     default FragmentManager getCPFragmentManager() {
-        if (getPresenter().getCPActivity() != null)
-            return ((FragmentActivity)getPresenter().getCPActivity()).getSupportFragmentManager();
-        else     if (getPresenter().getCPFragment() != null)
-            return (getPresenter().getCPFragment()).getChildFragmentManager();
+        if (getPresenter().getAreActivity() != null)
+            return ((FragmentActivity)getPresenter().getAreActivity()).getSupportFragmentManager();
+        else     if (getPresenter().getAreFragment() != null)
+            return (getPresenter().getAreFragment()).getChildFragmentManager();
         return null;
     }
 

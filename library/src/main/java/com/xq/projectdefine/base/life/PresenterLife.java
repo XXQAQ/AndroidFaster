@@ -4,7 +4,5 @@ import android.content.Intent;
 
 public interface PresenterLife extends BaseLife {
 
-    default void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data);
 }

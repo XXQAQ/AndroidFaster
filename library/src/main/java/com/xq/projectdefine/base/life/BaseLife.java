@@ -4,24 +4,12 @@ import android.os.Bundle;
 
 public interface BaseLife {
 
-    default void afterOnCreate(Bundle savedInstanceState) {
+    public void afterOnCreate(Bundle savedInstanceState);
 
-    }
+    public void onResume();
 
-    default void onResume() {
+    public void onPause();
 
-    }
-
-    default void onPause() {
-
-    }
-
-    default void onDestroy() {
-
-    }
-
-    default void onSaveInstanceState(Bundle outState) {
-
-    }
+    public void onDestroy();
 
 }

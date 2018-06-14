@@ -1,6 +1,7 @@
 package com.xq.projectdefine.base.baseviewpager;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,45 @@ import java.util.List;
  */
 
 public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresenter> extends AbsView<T> {
+
+    @Override
+    default void afterOnCreate(Bundle savedInstanceState) {
+
+        if (getRootView() instanceof ViewPager)   //如果根布局是ViewPager，则直接将根布局转化为vp
+            getViewPagerBuilder().vp = (ViewPager) getRootView();
+        else
+            getViewPagerBuilder().vp = (ViewPager) getRootView().findViewById(getContext().getResources().getIdentifier("vp", "id", getContext().getPackageName()));
+        getViewPagerBuilder().tl = (TabLayout) getRootView().findViewById(getContext().getResources().getIdentifier("tl", "id", getContext().getPackageName()));
+
+        if (getViewPagerBuilder().tl != null)
+        {
+            getViewPagerBuilder().tl.setTabTextColors(getTabTextNormalColor(),getTabTextSelectColor());
+            getViewPagerBuilder().tl.setBackgroundColor(getTabBackgroundColor());
+        }
+
+        initFragmentsAndTitles(getPresenter().getFragmentsAndTitles());
+
+    }
+
+    @Override
+    default void onResume() {
+
+    }
+
+    @Override
+    default void onPause() {
+
+    }
+
+    @Override
+    default void onDestroy() {
+
+    }
+
+    @Override
+    default void onSaveInstanceState(Bundle outState) {
+
+    }
 
     //初始化Viewpager、TabLayout等
     default void initFragmentsAndTitles(List<TitleBehavior> list) {
@@ -36,25 +76,6 @@ public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresente
         }
 
         getViewPagerBuilder().vp.setAdapter(new FragmentPagerAdapter(getCPFragmentManager(),list_fragment,list_title));
-
-    }
-
-    @Override
-    default void afterOnCreate(Bundle savedInstanceState) {
-
-        if (getRootView() instanceof ViewPager)   //如果根布局是ViewPager，则直接将根布局转化为vp
-            getViewPagerBuilder().vp = (ViewPager) getRootView();
-        else
-            getViewPagerBuilder().vp = (ViewPager) getRootView().findViewById(getContext().getResources().getIdentifier("vp", "id", getContext().getPackageName()));
-        getViewPagerBuilder().tl = (TabLayout) getRootView().findViewById(getContext().getResources().getIdentifier("tl", "id", getContext().getPackageName()));
-
-        if (getViewPagerBuilder().tl != null)
-        {
-            getViewPagerBuilder().tl.setTabTextColors(getTabTextNormalColor(),getTabTextSelectColor());
-            getViewPagerBuilder().tl.setBackgroundColor(getTabBackgroundColor());
-        }
-
-        initFragmentsAndTitles(getPresenter().getFragmentsAndTitles());
 
     }
 

@@ -21,6 +21,18 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         initData();
     }
 
+    protected abstract T createBindView();
+
+    //该方法用于解析从其他页面传来的数据,注意如果传递数据不存在则不会执行该方法
+    protected void resolveBundle(Bundle bundle) {
+
+    }
+
+    //初始化数据
+    protected void initData(){
+
+    }
+
     @Deprecated
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,18 +53,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
             getBindView().afterOnCreate(savedInstanceState);
 
         afterOnCreate(savedInstanceState);
-    }
-
-    protected abstract T createBindView();
-
-    //该方法用于解析从其他页面传来的数据,注意如果传递数据不存在则不会执行该方法
-    protected void resolveBundle(Bundle bundle) {
-
-    }
-
-    //初始化数据
-    protected void initData(){
-
     }
 
     @Override
@@ -94,22 +94,17 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
-
-    @Override
     public void finishSelf() {
         finish();
     }
 
     @Override
-    public Activity getCPActivity() {
+    public Activity getAreActivity() {
         return this;
     }
 
     @Override
-    public Fragment getCPFragment() {
+    public Fragment getAreFragment() {
         return null;
     }
 

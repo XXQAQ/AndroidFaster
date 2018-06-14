@@ -2,6 +2,7 @@ package com.xq.projectdefine.base.basemedia;
 
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.xq.projectdefine.base.abs.AbsPresenter;
 import com.xq.projectdefine.base.abs.AbsView;
@@ -20,6 +21,31 @@ public interface IFasterBaseMediaPresenter<T extends AbsView> extends AbsPresent
     public static final int REQUEST_CODE_CAMERA= 3;
     public static final int REQUEST_CODE_FILE= 4;
 
+    @Override
+    default void afterOnCreate(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    default void onResume() {
+
+    }
+
+    @Override
+    default void onPause() {
+
+    }
+
+    @Override
+    default void onDestroy() {
+
+    }
+
+    @Override
+    default void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
+
     default void getPhotos(int what, int number) {
         getPhotos(what,number,0,0);
     }
@@ -34,10 +60,10 @@ public interface IFasterBaseMediaPresenter<T extends AbsView> extends AbsPresent
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        if (getCPActivity() != null)
-            getCPActivity().startActivityForResult(intent, REQUEST_CODE_FILE);
-        else    if (getCPFragment() != null)
-            getCPFragment().startActivityForResult(intent,REQUEST_CODE_FILE);
+        if (getAreActivity() != null)
+            getAreActivity().startActivityForResult(intent, REQUEST_CODE_FILE);
+        else    if (getAreFragment() != null)
+            getAreFragment().startActivityForResult(intent,REQUEST_CODE_FILE);
     }
 
     //以下所有what均为标记

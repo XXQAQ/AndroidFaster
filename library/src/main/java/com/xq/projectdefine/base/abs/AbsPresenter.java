@@ -17,9 +17,9 @@ public interface AbsPresenter<T extends AbsView> extends PresenterLife {
 
     public Context getContext();
 
-    public Fragment getCPFragment();
+    public Fragment getAreFragment();
 
-    public Activity getCPActivity();
+    public Activity getAreActivity();
 
     public void finishSelf();
 

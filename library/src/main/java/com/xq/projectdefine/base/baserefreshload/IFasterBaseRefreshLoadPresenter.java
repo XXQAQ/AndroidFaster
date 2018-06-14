@@ -1,6 +1,9 @@
 package com.xq.projectdefine.base.baserefreshload;
 
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.xq.projectdefine.base.abs.AbsPresenter;
 
 import java.util.LinkedList;
@@ -11,6 +14,31 @@ import java.util.List;
  */
 
 public interface IFasterBaseRefreshLoadPresenter<T extends IFasterBaseRefreshLoadView> extends AbsPresenter<T> {
+
+    @Override
+    default void afterOnCreate(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    default void onResume() {
+
+    }
+
+    @Override
+    default void onPause() {
+
+    }
+
+    @Override
+    default void onDestroy() {
+
+    }
+
+    @Override
+    default void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
 
     default void refresh(Object... objects) {
         getRefreshLoadBuilder().page = 1;

@@ -68,6 +68,27 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
         getPresenter().initAdapter();
     }
 
+
+    @Override
+    default void onResume() {
+
+    }
+
+    @Override
+    default void onPause() {
+
+    }
+
+    @Override
+    default void onDestroy() {
+
+    }
+
+    @Override
+    default void onSaveInstanceState(Bundle outState) {
+
+    }
+
     default void refreshPresenter() {
         getPresenter().refresh();
     }
