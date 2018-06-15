@@ -2,7 +2,9 @@ package com.xq.projectdefine.bean.entity;
 
 
 import android.os.Parcel;
+
 import com.xq.projectdefine.bean.behavior.NumberContenTitleBehavior;
+
 import java.io.Serializable;
 
 /**
@@ -46,6 +48,7 @@ public class NumberContentTitleBean extends TitleBean implements Serializable,Nu
     public void setNumber(Number number) {
         this.number = number;
     }
+
 
     @Override
     public int describeContents() {
