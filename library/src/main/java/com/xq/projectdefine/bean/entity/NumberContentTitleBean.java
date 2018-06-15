@@ -2,17 +2,14 @@ package com.xq.projectdefine.bean.entity;
 
 
 import android.os.Parcel;
-
-import com.xq.projectdefine.bean.behavior.ContentTitleBehavior;
-import com.xq.projectdefine.bean.behavior.NumberTitleBehavior;
-
+import com.xq.projectdefine.bean.behavior.NumberContenTitleBehavior;
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2017/9/20.
  */
 
-public class NumberContentTitleBean extends TitleBean implements Serializable, NumberTitleBehavior, ContentTitleBehavior {
+public class NumberContentTitleBean extends TitleBean implements Serializable,NumberContenTitleBehavior {
 
     protected String content;
     protected Number number;
