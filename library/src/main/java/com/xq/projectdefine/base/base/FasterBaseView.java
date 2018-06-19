@@ -64,7 +64,8 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
         if (isback)
         {
-            toolbar.setNavigationIcon(getNavIcon());
+            if (getNavIcon() >0 )
+                toolbar.setNavigationIcon(getNavIcon());
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
