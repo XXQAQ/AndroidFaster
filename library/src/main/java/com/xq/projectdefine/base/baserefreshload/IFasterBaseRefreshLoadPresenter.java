@@ -42,10 +42,12 @@ public interface IFasterBaseRefreshLoadPresenter<T extends IFasterBaseRefreshLoa
 
     default void refresh(Object... objects) {
         getRefreshLoadBuilder().page = 1;
+        getRefreshLoadBuilder().isRefresh = true;
         refreshLoad(true, getRefreshLoadBuilder().page,objects);
     }
 
     default void loadMore(Object... objects) {
+        getRefreshLoadBuilder().isRefresh = false;
         refreshLoad(false, getRefreshLoadBuilder().page+1,objects);
     }
 
@@ -64,6 +66,7 @@ public interface IFasterBaseRefreshLoadPresenter<T extends IFasterBaseRefreshLoa
 
     public static class RefreshLoadBuilder{
         public List list_data = new LinkedList<>();
-        public Integer page = 1;
+        public int page = 1;
+        public boolean isRefresh;
     }
 }

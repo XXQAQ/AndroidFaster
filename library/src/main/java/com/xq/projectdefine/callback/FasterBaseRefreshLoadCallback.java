@@ -1,6 +1,7 @@
 package com.xq.projectdefine.callback;
 
 
+import com.xq.projectdefine.base.baserefreshload.IFasterBaseRefreshLoadPresenter;
 import com.xq.projectdefine.base.baserefreshload.IFasterBaseRefreshLoadView;
 import com.xq.projectdefine.bean.behavior.GetListBehavior;
 
@@ -39,17 +40,17 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
                 getRefreshLoadData().baseRefreshLoadview.showRefreshLoadEnd();
             }
 
-            if (getRefreshLoadData().isRefresh)
+            if (getRefreshLoadData().refreshLoadBuilder.isRefresh)
             {
-                getRefreshLoadData().list_data.clear();
-                getRefreshLoadData().list_data.addAll(list);
+                getRefreshLoadData().refreshLoadBuilder.list_data.clear();
+                getRefreshLoadData().refreshLoadBuilder.list_data.addAll(list);
             }
             else
             {
-                getRefreshLoadData().list_data.addAll(list);
+                getRefreshLoadData().refreshLoadBuilder.list_data.addAll(list);
                 if (list.size() > 0)
                 {
-                    getRefreshLoadData().page++;
+                    getRefreshLoadData().refreshLoadBuilder.page++;
                 }
             }
         }
@@ -66,25 +67,24 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
     default void requestFinish(Object... objects) {
         if (getRefreshLoadData().baseRefreshLoadview != null)
         {
-            if (getRefreshLoadData().isRefresh)
+            if (getRefreshLoadData().refreshLoadBuilder.isRefresh)
             {
                 getRefreshLoadData().baseRefreshLoadview.afterRefresh();
             }
             else
             {
-                getRefreshLoadData().baseRefreshLoadview.afterLoad(getRefreshLoadData().list_data.size());
+                getRefreshLoadData().baseRefreshLoadview.afterLoad(getRefreshLoadData().refreshLoadBuilder.list_data.size());
             }
-            if (getRefreshLoadData().list_data == null || getRefreshLoadData().list_data.size()<=0)
+            if (getRefreshLoadData().refreshLoadBuilder.list_data == null || getRefreshLoadData().refreshLoadBuilder.list_data.size()<=0)
                 getRefreshLoadData().baseRefreshLoadview.afterEmpty();
         }
     }
 
     public RefreshLoadData getRefreshLoadData();
+
     public static class RefreshLoadData {
         public IFasterBaseRefreshLoadView baseRefreshLoadview;
-        public List list_data;
-        public Integer page;
-        public boolean isRefresh;
+        public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder refreshLoadBuilder;
     }
 
 }
