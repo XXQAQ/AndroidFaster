@@ -151,19 +151,10 @@ public final class ImageUtils {
      * @return bitmap
      */
     public static Bitmap view2Bitmap(final View view) {
-        if (view == null) return null;
-        Bitmap ret = Bitmap.createBitmap(view.getWidth(),
-                view.getHeight(),
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(ret);
-        Drawable bgDrawable = view.getBackground();
-        if (bgDrawable != null) {
-            bgDrawable.draw(canvas);
-        } else {
-            canvas.drawColor(Color.WHITE);
-        }
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
-        return ret;
+        return bitmap;
     }
 
     /**
