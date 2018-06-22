@@ -2,9 +2,6 @@ package com.xq.projectdefine.util.tools;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by xq on 2017/5/2.
- */
 public class IDUtils {
 
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);

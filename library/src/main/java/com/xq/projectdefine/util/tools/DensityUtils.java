@@ -17,20 +17,25 @@
 package com.xq.projectdefine.util.tools;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.Surface;
 import android.view.WindowManager;
+
+import com.xq.projectdefine.FasterInterface;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/**
- * Create by h4de5ing 2016/5/7 007
- */
 public class DensityUtils {
 
     public static int dip2px(Context c, float dpValue) {
@@ -93,29 +98,6 @@ public class DensityUtils {
         return h;
     }
 
-    public static int getStatusBarH(Context context) {
-        Class<?> c;
-        Object obj;
-        Field field;
-        int statusBarHeight = 0;
-        try {
-            c = Class.forName("com.android.internal.R$dimen");
-            obj = c.newInstance();
-            field = c.getField("status_bar_height");
-            int x = Integer.parseInt(field.get(obj).toString());
-            statusBarHeight = context.getResources().getDimensionPixelSize(x);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-        return statusBarHeight;
-    }
-
-    public static int getNavigationBarrH(Context c) {
-        Resources resources = c.getResources();
-        int identifier = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-        return resources.getDimensionPixelOffset(identifier);
-    }
-
     public static String getDensity(Context ctx) {
         String densityStr = null;
         final int density = ctx.getResources().getDisplayMetrics().densityDpi;
@@ -146,5 +128,47 @@ public class DensityUtils {
                 break;
         }
         return densityStr;
+    }
+
+    public static void setFullScreen(@NonNull final Activity activity) {
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+    }
+
+    public static void setLandscape(@NonNull final Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    public static void setPortrait(@NonNull final Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    public static boolean isLandscape() {
+        return getApp().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    public static boolean isPortrait() {
+        return getApp().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT;
+    }
+
+    public static int getScreenRotation(@NonNull final Activity activity) {
+        switch (activity.getWindowManager().getDefaultDisplay().getRotation()) {
+            case Surface.ROTATION_0:
+                return 0;
+            case Surface.ROTATION_90:
+                return 90;
+            case Surface.ROTATION_180:
+                return 180;
+            case Surface.ROTATION_270:
+                return 270;
+            default:
+                return 0;
+        }
+    }
+
+    private static Application getApp(){
+        return FasterInterface.getApp();
     }
 }

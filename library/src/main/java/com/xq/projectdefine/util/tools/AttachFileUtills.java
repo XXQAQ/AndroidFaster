@@ -7,12 +7,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
-
 import com.xq.projectdefine.FasterInterface;
 import com.xq.projectdefine.R;
 
 import java.io.File;
-
 
 //指明文件路径可一键调起相应应用
 public class AttachFileUtills {
@@ -31,7 +29,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -51,7 +49,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -70,7 +68,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -89,7 +87,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -109,7 +107,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -129,7 +127,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -149,7 +147,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -168,7 +166,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -187,7 +185,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -206,7 +204,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -225,7 +223,7 @@ public class AttachFileUtills {
         Uri uri  = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
         {
-            uri = FileProvider.getUriForFile(context, FasterInterface.getFILEPROVIDER(), file);
+            uri = FileProvider.getUriForFile(context, getFileProvider(), file);
         }
         else
         {
@@ -301,5 +299,9 @@ public class AttachFileUtills {
                 return true;
         }
         return false;
+    }
+
+    private String getFileProvider(){
+        return FasterInterface.getFileProvider();
     }
 }

@@ -3,13 +3,7 @@ package com.xq.projectdefine.util.tools;
 import android.content.Context;
 import android.os.Vibrator;
 
-/**
- * <p>All methods requires the caller to hold the permission
- * {@link android.Manifest.permission#VIBRATE}.
- *
- * @author MaTianyu
- * @date 2014-11-21
- */
+
 public class VibrateUtils {
 
     /**

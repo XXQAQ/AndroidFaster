@@ -1,17 +1,32 @@
 package com.xq.projectdefine.util.tools;
 
+import android.app.Application;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 
-/**
- * Created by xq on 2017/4/11.
- */
-public class UriToPathUtils {
+import com.xq.projectdefine.FasterInterface;
+
+import java.io.File;
+
+
+public class UriUtils {
+
+    public static Uri getUriForFile(final File file) {
+        if (file == null) return null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            String authority = getFileProvider();
+            return FileProvider.getUriForFile(getApp(), authority, file);
+        } else {
+            return Uri.fromFile(file);
+        }
+    }
 
     public static String getFileAbsolutePath(Context context, Uri imageUri) {
         if (context == null || imageUri == null)
@@ -105,5 +120,13 @@ public class UriToPathUtils {
      */
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    private static String getFileProvider() {
+        return FasterInterface.getFileProvider();
+    }
+
+    private static Application getApp(){
+        return FasterInterface.getApp();
     }
 }

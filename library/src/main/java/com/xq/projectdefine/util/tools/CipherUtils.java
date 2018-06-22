@@ -17,19 +17,14 @@
 package com.xq.projectdefine.util.tools;
 
 import android.util.Base64;
-
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Create by h4de5ing 2016/5/7 007
- */
 public class CipherUtils {
 
 

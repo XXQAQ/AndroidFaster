@@ -10,9 +10,6 @@ import android.view.WindowManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/**
- * Created by xq on 2017/8/29.
- */
 
 public class SystemBarFontColorUtils {
 

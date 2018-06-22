@@ -19,7 +19,7 @@ public class FasterInterface {
         return app;
     }
 
-    public static String getFILEPROVIDER() {
+    public static String getFileProvider() {
         return FILEPROVIDER;
     }
 

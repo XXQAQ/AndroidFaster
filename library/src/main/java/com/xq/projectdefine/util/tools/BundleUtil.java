@@ -11,10 +11,6 @@ import android.util.SparseArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-/**
- * Created by xq on 2017/6/28.
- */
-
 public class BundleUtil {
 
     public static final String KEY_DATA = "data";
