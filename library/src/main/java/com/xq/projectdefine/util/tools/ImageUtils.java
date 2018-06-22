@@ -1,5 +1,6 @@
 package com.xq.projectdefine.util.tools;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -151,10 +152,10 @@ public final class ImageUtils {
      * @return bitmap
      */
     public static Bitmap view2Bitmap(final View view) {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
+        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        view.setDrawingCacheEnabled(true);
+        return view.getDrawingCache();
     }
 
     /**
