@@ -11,7 +11,7 @@ import android.util.SparseArray;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class BundleUtil {
+public final class BundleUtil {
 
     public static final String KEY_DATA = "data";
     public static final String KEY_TYPE = "type";

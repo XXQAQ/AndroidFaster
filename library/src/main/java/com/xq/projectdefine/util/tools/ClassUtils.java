@@ -9,13 +9,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 
-/**
- * 类工具
- *
- * @author mty
- * @date 2013-6-10下午8:00:46
- */
-public class ClassUtils {
+public final class ClassUtils {
 
     public static <T> T newInstance(Class<T> claxx) throws Exception {
         Constructor<?>[] cons = claxx.getDeclaredConstructors();

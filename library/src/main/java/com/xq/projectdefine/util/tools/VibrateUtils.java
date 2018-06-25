@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Vibrator;
 
 
-public class VibrateUtils {
+public final class VibrateUtils {
 
     /**
      * Vibrate constantly for the specified period of time.

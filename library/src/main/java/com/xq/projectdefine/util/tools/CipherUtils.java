@@ -25,7 +25,7 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-public class CipherUtils {
+public final class CipherUtils {
 
 
     private CipherUtils() {

@@ -36,7 +36,7 @@ import com.xq.projectdefine.FasterInterface;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class DensityUtils {
+public final class DensityUtils {
 
     public static int dip2px(Context c, float dpValue) {
         final float scale = c.getResources().getDisplayMetrics().density;

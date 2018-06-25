@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class PropertyUtils {
+public final class PropertyUtils {
 
     /**
      * 利用反射实现对象之间属性复制

@@ -15,7 +15,7 @@ import android.support.annotation.RequiresApi;
 import com.xq.projectdefine.FasterInterface;
 
 
-public class PathUtils {
+public final class PathUtils {
 
     private PathUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");

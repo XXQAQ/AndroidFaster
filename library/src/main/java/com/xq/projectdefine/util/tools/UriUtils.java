@@ -16,7 +16,7 @@ import com.xq.projectdefine.FasterInterface;
 import java.io.File;
 
 
-public class UriUtils {
+public final class UriUtils {
 
     public static Uri getUriForFile(final File file) {
         if (file == null) return null;

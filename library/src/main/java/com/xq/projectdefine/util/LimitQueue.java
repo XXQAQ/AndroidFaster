@@ -2,9 +2,6 @@ package com.xq.projectdefine.util;
 
 import java.util.LinkedList;
 
-/**
- * Created by xq on 2017/8/14.
- */
 
 public class LimitQueue<E> extends LinkedList<E> {
 

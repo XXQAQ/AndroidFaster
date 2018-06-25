@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/9/19.
- */
 
-public class ListUtils {
+public final class ListUtils {
 
     public static boolean isEmpty(Collection collection){
         return collection == null || collection.size()< 1;

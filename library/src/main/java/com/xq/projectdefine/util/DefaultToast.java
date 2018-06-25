@@ -3,9 +3,6 @@ package com.xq.projectdefine.util;
 import android.content.Context;
 import android.widget.Toast;
 
-/**
- * Created by xq on 2017/2/15.
- */
 
 //Toast显示工具
 public class DefaultToast {

@@ -13,7 +13,7 @@ import com.xq.projectdefine.R;
 import java.io.File;
 
 //指明文件路径可一键调起相应应用
-public class AttachFileUtills {
+public final class AttachFileUtills {
 
     private Context context;
     private String path ;
