@@ -32,7 +32,6 @@ public final class DeviceUtils {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
-
     public static String getPsuedoUniqueID() {
         String devIDShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -52,6 +51,21 @@ public final class DeviceUtils {
     }
 
     /**
+     * Return the serial of device.
+     *
+     * @return the serial of device
+     */
+    @SuppressLint("HardwareIds")
+    @RequiresPermission(READ_PHONE_STATE)
+    public static String getSerial() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return Build.getSerial();
+        } else {
+            return Build.SERIAL;
+        }
+    }
+
+    /**
      * Return the unique device id.
      * <p>Must hold
      * {@code <uses-permission android:name="android.permission.READ_PHONE_STATE" />}</p>
@@ -63,6 +77,14 @@ public final class DeviceUtils {
     public static String getDeviceId() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (tm == null) return "";
+            String imei = tm.getImei();
+            if (!TextUtils.isEmpty(imei)) return imei;
+            String meid = tm.getMeid();
+            return TextUtils.isEmpty(meid) ? "" : meid;
+
+        }
         return tm != null ? tm.getDeviceId() : "";
     }
 
