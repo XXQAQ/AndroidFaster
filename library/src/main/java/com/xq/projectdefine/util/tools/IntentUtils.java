@@ -1,7 +1,9 @@
 package com.xq.projectdefine.util.tools;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -524,6 +526,30 @@ public final class IntentUtils {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, outUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         return getIntent(intent, isNewTask);
+    }
+
+    public static Intent getMailIntent(String mailID) {
+        Uri uri = Uri.parse("mailto:" + mailID);
+        return getIntent(new Intent(Intent.ACTION_SENDTO, uri),false);
+    }
+
+    public static Intent getWebIntent(String url) {
+        Uri uri = Uri.parse(url);
+        return getIntent(new Intent(Intent.ACTION_VIEW, uri),false);
+
+    }
+
+    public static Intent getContactsIntent() {
+        Uri uri = Uri.parse("content://contacts/people");
+        return getIntent(new Intent(Intent.ACTION_PICK, uri),false);
+    }
+
+    public static Intent getSettingsIntent(String action) {
+        Intent intent = new Intent();
+        ComponentName comp = new ComponentName("com.android.settings", action);
+        intent.setComponent(comp);
+        intent.setAction("android.intent.action.VIEW");
+        return getIntent(intent,false);
     }
 
     private static Intent getIntent(final Intent intent, final boolean isNewTask) {
