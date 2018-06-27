@@ -118,10 +118,10 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
     public void afterEmpty();
 
     //刷新完成后处理
-    public void showRefreshLoadEnd();
+    public void afterRefreshLoadEnd();
 
     //加载完成后处理
-    public void showRefreshLoadErro();
+    public void afterRefreshLoadErro();
 
     //在您的View定义SimpleRefreshLoadBuilder成员变量，并重写本方法返回该变量
     public SimpleRefreshLoadBuilder getSimpleRefreshLoadBuilder();

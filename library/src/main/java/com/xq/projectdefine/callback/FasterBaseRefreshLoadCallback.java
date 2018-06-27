@@ -37,7 +37,7 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
 
             if (list.size() <1)
             {
-                getRefreshLoadData().baseRefreshLoadview.showRefreshLoadEnd();
+                getRefreshLoadData().baseRefreshLoadview.afterRefreshLoadEnd();
             }
 
             if (getRefreshLoadData().refreshLoadBuilder.isRefresh)
@@ -59,7 +59,7 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
     default void requestError(Object... objects) {
         if (getRefreshLoadData().baseRefreshLoadview != null)
         {
-            getRefreshLoadData().baseRefreshLoadview.showRefreshLoadErro();
+            getRefreshLoadData().baseRefreshLoadview.afterRefreshLoadErro();
         }
     }
 
