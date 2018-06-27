@@ -7,9 +7,6 @@ import com.xq.projectdefine.bean.behavior.NumberContenTitleBehavior;
 
 import java.io.Serializable;
 
-/**
- * Created by Administrator on 2017/9/20.
- */
 
 public class NumberContentTitleBean extends TitleBean implements Serializable,NumberContenTitleBehavior {
 

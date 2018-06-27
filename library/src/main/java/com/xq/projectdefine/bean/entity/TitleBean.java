@@ -8,9 +8,6 @@ import com.xq.projectdefine.bean.behavior.TitleBehavior;
 
 import java.io.Serializable;
 
-/**
- * Created by xq on 2017/7/10.
- */
 
 //TitleBehavior的最简单实现类
 public class TitleBean implements TitleBehavior,Serializable,Parcelable {

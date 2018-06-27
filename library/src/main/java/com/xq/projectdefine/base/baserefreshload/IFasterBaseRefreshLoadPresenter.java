@@ -5,68 +5,55 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.xq.projectdefine.base.abs.AbsPresenter;
+import com.xq.projectdefine.base.basesimplerefreshload.IFasterSimpleBaseRefreshLoadPresenter;
+import com.xq.projectdefine.base.basesimplerefreshload.IFasterSimpleBaseRefreshLoadView;
 
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by xq on 2017/4/11 0011.
- */
 
-public interface IFasterBaseRefreshLoadPresenter<T extends IFasterBaseRefreshLoadView> extends AbsPresenter<T> {
+public interface IFasterBaseRefreshLoadPresenter<T extends IFasterBaseRefreshLoadView> extends IFasterSimpleBaseRefreshLoadPresenter<T> {
 
     @Override
     default void afterOnCreate(Bundle savedInstanceState) {
-
+        IFasterSimpleBaseRefreshLoadPresenter.super.afterOnCreate(savedInstanceState);
     }
 
     @Override
     default void onResume() {
-
+        IFasterSimpleBaseRefreshLoadPresenter.super.onResume();
     }
 
     @Override
     default void onPause() {
-
+        IFasterSimpleBaseRefreshLoadPresenter.super.onPause();
     }
 
     @Override
     default void onDestroy() {
-
+        IFasterSimpleBaseRefreshLoadPresenter.super.onDestroy();
     }
 
     @Override
     default void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        IFasterSimpleBaseRefreshLoadPresenter.super.onActivityResult(requestCode,resultCode,data);
     }
 
-    default void refresh(Object... objects) {
-        getRefreshLoadBuilder().page = 1;
-        getRefreshLoadBuilder().isRefresh = true;
-        refreshLoad(true, getRefreshLoadBuilder().page,objects);
-    }
-
-    default void loadMore(Object... objects) {
-        getRefreshLoadBuilder().isRefresh = false;
-        refreshLoad(false, getRefreshLoadBuilder().page+1,objects);
-    }
-
-    public void cancleRefresh();
-
-    public void cancleLoadmore();
-
+    //初始化适配器，可以选择重写该方法，在初始化adapter时传入更多参数
     default void initAdapter(){
         getBindView().initAdapter(getRefreshLoadBuilder().list_data);
     }
 
-    //屏蔽了刷新和加载的差异，提供给程序员以实现刷新或加载功能的方法
-    public abstract void refreshLoad(boolean isRefresh, int page, Object... objects);
-
+    //在您的P层定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
     public RefreshLoadBuilder getRefreshLoadBuilder();
 
-    public static class RefreshLoadBuilder{
-        public List list_data = new LinkedList<>();
-        public int page = 1;
-        public boolean isRefresh;
+    @Override
+    default SimpleRefreshLoadBuilder getSimpleRefreshLoadBuilder() {
+        return getRefreshLoadBuilder();
     }
+
+    public static class RefreshLoadBuilder extends SimpleRefreshLoadBuilder{
+        public List list_data = new LinkedList<>();
+    }
+
 }

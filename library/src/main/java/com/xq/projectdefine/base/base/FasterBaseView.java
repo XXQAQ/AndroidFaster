@@ -33,6 +33,25 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         }
 
         toolbar = (Toolbar) rootView.findViewById(getContext().getResources().getIdentifier("toolbar", "id", getContext().getPackageName()));
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
 
     }
 
@@ -75,32 +94,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         }
     }
 
-    @Override
-    public void onResume() {
-
-    }
-
-    @Override
-    public void onPause() {
-
-    }
-
-    @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-
-    }
-
     //重写该方法以自定义Toolbar背景颜色
     public abstract int getToolbarBackgroundColor();
 
     //重写该方法以自定义Toolbar上的控件颜色
     public abstract int getToolbarWidgetColor();
 
+    //重写该方法返回导航Icon
     public abstract int getNavIcon();
 
     @Override

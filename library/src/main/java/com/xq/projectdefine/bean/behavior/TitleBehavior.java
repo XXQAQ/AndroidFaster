@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by xq on 2017/7/5.
  */
 
-//该接口专用于列表选择，实现该接口可以使您的对象直接显示在列表中
+//该接口专注于标题显示，实现该接口可以让你的对象以一个标题的形式呈现
 public interface TitleBehavior extends Serializable,Parcelable {
 
     //返回标题

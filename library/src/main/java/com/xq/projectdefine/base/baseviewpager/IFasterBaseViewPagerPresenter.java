@@ -9,9 +9,6 @@ import com.xq.projectdefine.bean.behavior.TitleBehavior;
 
 import java.util.List;
 
-/**
- * Created by xq on 2017/4/11 0011.
- */
 
 public interface IFasterBaseViewPagerPresenter<T extends IFasterBaseViewPagerView> extends AbsPresenter<T> {
 
@@ -40,6 +37,7 @@ public interface IFasterBaseViewPagerPresenter<T extends IFasterBaseViewPagerVie
 
     }
 
-    //设置title与fragment集合
+    //设置title与fragment集合（需要注意：Fragment附带在TitleBehavior的Tag中）
     public abstract List<TitleBehavior> getFragmentsAndTitles();
+
 }

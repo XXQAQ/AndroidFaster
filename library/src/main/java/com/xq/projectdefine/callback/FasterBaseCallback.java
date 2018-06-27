@@ -1,8 +1,5 @@
 package com.xq.projectdefine.callback;
 
-/**
- * Created by xq on 2017/4/7 0007.
- */
 
 public interface FasterBaseCallback<T> {
 

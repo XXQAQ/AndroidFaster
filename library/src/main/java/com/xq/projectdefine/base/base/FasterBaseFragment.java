@@ -25,9 +25,10 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         initData();
     }
 
+    //重写该方法，返回对应View层
     protected abstract T createBindView();
 
-    //该方法用于解析从其他页面传来的数据,注意如果传递数据不存在则不会执行该方法
+    //该方法用于解析从其他页面传来的数据，注意如果传递数据不存在则不会执行该方法
     protected void resolveBundle(Bundle bundle) {
 
     }
@@ -37,6 +38,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     }
 
+    @Deprecated
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         return rootView;
     }
 
+    @Deprecated
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -68,7 +71,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
@@ -117,6 +119,11 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     @Override
     public void finishSelf() {
         getFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    @Override
+    public void finish() {
+        ((Activity)getContext()).finish();
     }
 
     @Override

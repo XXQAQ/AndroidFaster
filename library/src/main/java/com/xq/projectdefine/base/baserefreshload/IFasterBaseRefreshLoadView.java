@@ -3,160 +3,94 @@ package com.xq.projectdefine.base.baserefreshload;
 
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.xq.projectdefine.base.abs.AbsView;
+import com.xq.projectdefine.base.basesimplerefreshload.IFasterSimpleBaseRefreshLoadView;
 
 import java.util.List;
 
-public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPresenter> extends AbsView<T> {
+public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPresenter> extends IFasterSimpleBaseRefreshLoadView<T> {
 
-
+    @Override
     default void afterOnCreate(Bundle savedInstanceState) {
-
-        if (getRootView() instanceof RefreshLoadCustomView)
-            getRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) getRootView();
-        else
-            getRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) findViewById(getContext().getResources().getIdentifier("refreshView", "id", getContext().getPackageName()));
+        IFasterSimpleBaseRefreshLoadView.super.afterOnCreate(savedInstanceState);
 
         if (getRootView() instanceof RecyclerView)   //如果根布局是RecyclerView，则直接将根布局转化为rv
             getRefreshLoadBuilder().rv = (RecyclerView) getRootView();
         else
             getRefreshLoadBuilder().rv = (RecyclerView) getRootView().findViewById(getContext().getResources().getIdentifier("rv", "id", getContext().getPackageName()));
 
-        //以下初始化twi
-        if (getRefreshLoadBuilder().refreshView != null)
-        {
-            getRefreshLoadBuilder().refreshView.setRefreshLoadListener(new RefreshLoadCustomView.OnRefreshLoadListener() {
-                @Override
-                public void onFinishRefresh(RefreshLoadCustomView view) {
-
-                }
-
-                @Override
-                public void onRefresh(RefreshLoadCustomView view) {
-                    refreshPresenter();
-                }
-
-                @Override
-                public void onCancleRefresh(RefreshLoadCustomView view) {
-                    getPresenter().cancleRefresh();
-                }
-
-                @Override
-                public void onFinishLoadmore(RefreshLoadCustomView view) {
-
-                }
-
-                @Override
-                public void onLoadmore(RefreshLoadCustomView view) {
-                    loadMorePresenter();
-                }
-
-                @Override
-                public void onCancleLoadmore(RefreshLoadCustomView view) {
-                    getPresenter().cancleLoadmore();
-                }
-            });
-            getRefreshLoadBuilder().refreshView.setHeaderView(getHeadView());
-            getRefreshLoadBuilder().refreshView.setFootView(getFootView());
-        }
-
-        //以下初始化RecyclerView
+        //初始化RecyclerView
         getRefreshLoadBuilder().rv.setLayoutManager(getLayoutManager());
 
+        //通知P层初始化Adapter
         getPresenter().initAdapter();
     }
 
-
     @Override
     default void onResume() {
-
+        IFasterSimpleBaseRefreshLoadView.super.onResume();
     }
 
     @Override
     default void onPause() {
-
+        IFasterSimpleBaseRefreshLoadView.super.onPause();
     }
 
     @Override
     default void onDestroy() {
-
+        IFasterSimpleBaseRefreshLoadView.super.onDestroy();
     }
 
     @Override
     default void onSaveInstanceState(Bundle outState) {
-
+        IFasterSimpleBaseRefreshLoadView.super.onSaveInstanceState(outState);
     }
 
-    default void refreshPresenter() {
-        getPresenter().refresh();
+    //刷新完成后调用
+    default void afterRefresh() {
+        IFasterSimpleBaseRefreshLoadView.super.afterRefresh();
+        getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
     }
 
-    default void loadMorePresenter() {
-        getPresenter().loadMore();
+    //加载完成后调用
+    default void afterLoad() {
+        IFasterSimpleBaseRefreshLoadView.super.afterLoad();
+        getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
     }
 
-    default void startRefresh(){
-        getRefreshLoadBuilder().refreshView.startRefresh();
+    //集合类型数据加载完成后调用
+    default void afterLoad(int position) {
+        IFasterSimpleBaseRefreshLoadView.super.afterLoad();
+        getRefreshLoadBuilder().rv.getAdapter().notifyItemRangeChanged(0,position);
     }
 
-    default void startLoadmore(){
-        getRefreshLoadBuilder().refreshView.startLoadmore();
-    }
-
+    //初始化适配器，主要写给P层调用
     default void initAdapter(List list, Object... objects) {
         getRefreshLoadBuilder().rv.setAdapter(getAdapter(list,objects));
     }
 
-    default void afterRefresh() {
-        if (getRefreshLoadBuilder().refreshView != null)
-            getRefreshLoadBuilder().refreshView.finishRefreshing();
-        getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
-    }
-
-    default void afterLoad() {
-        if (getRefreshLoadBuilder().refreshView != null)
-            getRefreshLoadBuilder().refreshView.finishLoadmore();
-        getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
-    }
-
-    default void afterLoad(int position) {
-        if (getRefreshLoadBuilder().refreshView != null)
-            getRefreshLoadBuilder().refreshView.finishLoadmore();
-        getRefreshLoadBuilder().rv.getAdapter().notifyItemRangeChanged(0,position);
-    }
-
+    //返回适配器，可以选择重写该方法，为Adater设置更多参数
     public RecyclerView.Adapter getAdapter(List list, Object... objects);
 
-    //重写该方法以指定RecyclerView的布局方案
+    //返回布局管理器，可以选择重写该方法以指定RecyclerView的布局方案
     public RecyclerView.LayoutManager getLayoutManager();
 
-    //根据您的需要重写该方法
-    public Object getEmptyView();
-
-    public Object getHeadView();
-
-    public Object getFootView();
-
-    public void afterEmpty();
-
-    public void showRefreshLoadEnd();
-
-    public void showRefreshLoadErro();
-
+    //返回头布局数量，防止adapter item总数异常
     public int getHeadViewCount();
 
+    //返回尾布局数量，防止adapter item总数异常
     public int getFoodViewCount();
 
+    //在您的View定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
     public RefreshLoadBuilder getRefreshLoadBuilder();
 
-    public static class RefreshLoadBuilder{
-        //刷新控件，在布局文件中对应的id为twi（可不需要）
-        public RefreshLoadCustomView refreshView;
-        //在布局文件中对应的id为rv，你可使用任意RecycleView或其子类，本项目中推荐使用FamiliarRecyclerView，对其有额外加成。
-        //有一点需要注意：rv允许在Fragment中作为根布局使用，但不允许在Activity中作为根布局
+    @Override
+    default SimpleRefreshLoadBuilder getSimpleRefreshLoadBuilder() {
+        return getRefreshLoadBuilder();
+    }
+
+    public static class RefreshLoadBuilder extends SimpleRefreshLoadBuilder{
         public RecyclerView rv;
-}
+    }
 
 }

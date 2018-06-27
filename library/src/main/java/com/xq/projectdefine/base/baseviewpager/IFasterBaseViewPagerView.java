@@ -13,9 +13,6 @@ import com.xq.projectdefine.bean.behavior.TitleBehavior;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by xq on 2017/4/11 0011.
- */
 
 public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresenter> extends AbsView<T> {
 
@@ -26,6 +23,7 @@ public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresente
             getViewPagerBuilder().vp = (ViewPager) getRootView();
         else
             getViewPagerBuilder().vp = (ViewPager) getRootView().findViewById(getContext().getResources().getIdentifier("vp", "id", getContext().getPackageName()));
+
         getViewPagerBuilder().tl = (TabLayout) getRootView().findViewById(getContext().getResources().getIdentifier("tl", "id", getContext().getPackageName()));
 
         if (getViewPagerBuilder().tl != null)
@@ -60,7 +58,7 @@ public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresente
 
     }
 
-    //初始化Viewpager、TabLayout等
+    //初始化Viewpager与TabLayout等
     default void initFragmentsAndTitles(List<TitleBehavior> list) {
 
         List<String> list_title = new LinkedList<>();
@@ -81,22 +79,21 @@ public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresente
 
     }
 
+    //刷新ViewPage
     default void refreshViewPager(){
         getViewPagerBuilder().vp.getAdapter().notifyDataSetChanged();
     }
 
-    default int getTabTextNormalColor() {
-        return -1;
-    }
+    //返回Tab文字正常时颜色
+    public int getTabTextNormalColor();
 
-    default int getTabTextSelectColor() {
-        return -1;
-    }
+    //返回Tab文字选择时颜色
+    public int getTabTextSelectColor();
 
-    default int getTabBackgroundColor() {
-        return -1;
-    }
+    //返回Tab文字背景色
+    public int getTabBackgroundColor();
 
+    //在您的View定义ViewPagerBuilder成员变量，并重写本方法返回该变量
     public ViewPagerBuilder getViewPagerBuilder();
 
     public static class ViewPagerBuilder{
