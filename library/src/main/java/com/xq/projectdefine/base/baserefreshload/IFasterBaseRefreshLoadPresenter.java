@@ -47,12 +47,7 @@ public interface IFasterBaseRefreshLoadPresenter<T extends IFasterBaseRefreshLoa
     //在您的P层定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
     public RefreshLoadBuilder getRefreshLoadBuilder();
 
-    @Override
-    default SimpleRefreshLoadBuilder getSimpleRefreshLoadBuilder() {
-        return getRefreshLoadBuilder();
-    }
-
-    public static class RefreshLoadBuilder extends SimpleRefreshLoadBuilder{
+    public static class RefreshLoadBuilder extends IFasterSimpleBaseRefreshLoadPresenter.RefreshLoadBuilder{
         public List list_data = new LinkedList<>();
     }
 

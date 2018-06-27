@@ -10,14 +10,14 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
     default void afterOnCreate(Bundle savedInstanceState) {
 
         if (getRootView() instanceof RefreshLoadCustomView)
-            getSimpleRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) getRootView();
+            getRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) getRootView();
         else
-            getSimpleRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) findViewById(getContext().getResources().getIdentifier("refreshView", "id", getContext().getPackageName()));
+            getRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) findViewById(getContext().getResources().getIdentifier("refreshView", "id", getContext().getPackageName()));
 
         //以下初始化刷新控件
-        if (getSimpleRefreshLoadBuilder().refreshView != null)
+        if (getRefreshLoadBuilder().refreshView != null)
         {
-            getSimpleRefreshLoadBuilder().refreshView.setRefreshLoadListener(new RefreshLoadCustomView.OnRefreshLoadListener() {
+            getRefreshLoadBuilder().refreshView.setRefreshLoadListener(new RefreshLoadCustomView.OnRefreshLoadListener() {
                 @Override
                 public void onFinishRefresh(RefreshLoadCustomView view) {
 
@@ -48,8 +48,8 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
                     getPresenter().cancleLoadmore();
                 }
             });
-            getSimpleRefreshLoadBuilder().refreshView.setHeaderView(getHeadView());
-            getSimpleRefreshLoadBuilder().refreshView.setFootView(getFootView());
+            getRefreshLoadBuilder().refreshView.setHeaderView(getHeadView());
+            getRefreshLoadBuilder().refreshView.setFootView(getFootView());
         }
     }
 
@@ -75,12 +75,12 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
 
     //开始刷新，主要写给P层调用
     default void startRefresh(){
-        getSimpleRefreshLoadBuilder().refreshView.startRefresh();
+        getRefreshLoadBuilder().refreshView.startRefresh();
     }
 
     //开始加载，主要写给P层调用
     default void startLoadmore(){
-        getSimpleRefreshLoadBuilder().refreshView.startLoadmore();
+        getRefreshLoadBuilder().refreshView.startLoadmore();
     }
 
     //通知P层刷新，可以选择重写该方法，在刷新时传入更多参数
@@ -95,14 +95,14 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
 
     //刷新完成后调用
     default void afterRefresh() {
-        if (getSimpleRefreshLoadBuilder().refreshView != null)
-            getSimpleRefreshLoadBuilder().refreshView.finishRefreshing();
+        if (getRefreshLoadBuilder().refreshView != null)
+            getRefreshLoadBuilder().refreshView.finishRefreshing();
     }
 
     //加载完成后调用
     default void afterLoad() {
-        if (getSimpleRefreshLoadBuilder().refreshView != null)
-            getSimpleRefreshLoadBuilder().refreshView.finishLoadmore();
+        if (getRefreshLoadBuilder().refreshView != null)
+            getRefreshLoadBuilder().refreshView.finishLoadmore();
     }
 
     //返回刷新加载的空布局方案
@@ -123,10 +123,10 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
     //加载完成后处理
     public void afterRefreshLoadErro();
 
-    //在您的View定义SimpleRefreshLoadBuilder成员变量，并重写本方法返回该变量
-    public SimpleRefreshLoadBuilder getSimpleRefreshLoadBuilder();
+    //在您的View定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
+    public RefreshLoadBuilder getRefreshLoadBuilder();
 
-    public static class SimpleRefreshLoadBuilder {
+    public static class RefreshLoadBuilder {
         public RefreshLoadCustomView refreshView;
     }
 

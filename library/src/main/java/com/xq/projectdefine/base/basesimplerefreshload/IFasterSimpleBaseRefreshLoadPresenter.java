@@ -35,15 +35,15 @@ public interface IFasterSimpleBaseRefreshLoadPresenter<T extends IFasterSimpleBa
 
     //开始刷新
     default void refresh(Object... objects) {
-        getSimpleRefreshLoadBuilder().page = 1;
-        getSimpleRefreshLoadBuilder().isRefresh = true;
-        refreshLoad(true, getSimpleRefreshLoadBuilder().page,objects);
+        getRefreshLoadBuilder().page = 1;
+        getRefreshLoadBuilder().isRefresh = true;
+        refreshLoad(true, getRefreshLoadBuilder().page,objects);
     }
 
     //开始加载
     default void loadMore(Object... objects) {
-        getSimpleRefreshLoadBuilder().isRefresh = false;
-        refreshLoad(false, getSimpleRefreshLoadBuilder().page+1,objects);
+        getRefreshLoadBuilder().isRefresh = false;
+        refreshLoad(false, getRefreshLoadBuilder().page+1,objects);
     }
 
     //屏蔽了刷新和加载的差异，提供给程序员以实现刷新或加载的方法
@@ -56,9 +56,9 @@ public interface IFasterSimpleBaseRefreshLoadPresenter<T extends IFasterSimpleBa
     public void cancleLoadmore();
 
     //在您的P层定义SimpleRefreshLoadBuilder成员变量，并重写本方法返回该变量
-    public SimpleRefreshLoadBuilder getSimpleRefreshLoadBuilder();
+    public RefreshLoadBuilder getRefreshLoadBuilder();
 
-    public static class SimpleRefreshLoadBuilder {
+    public static class RefreshLoadBuilder {
         public int page = 1;
         public boolean isRefresh;
     }

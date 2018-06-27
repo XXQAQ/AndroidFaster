@@ -84,12 +84,7 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
     //在您的View定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
     public RefreshLoadBuilder getRefreshLoadBuilder();
 
-    @Override
-    default SimpleRefreshLoadBuilder getSimpleRefreshLoadBuilder() {
-        return getRefreshLoadBuilder();
-    }
-
-    public static class RefreshLoadBuilder extends SimpleRefreshLoadBuilder{
+    public static class RefreshLoadBuilder extends IFasterSimpleBaseRefreshLoadView.RefreshLoadBuilder{
         public RecyclerView rv;
     }
 
