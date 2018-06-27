@@ -55,7 +55,7 @@ public interface IFasterSimpleBaseRefreshLoadPresenter<T extends IFasterSimpleBa
     //取消加载
     public void cancleLoadmore();
 
-    //在您的P层定义SimpleRefreshLoadBuilder成员变量，并重写本方法返回该变量
+    //在您的P层定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
     public RefreshLoadBuilder getRefreshLoadBuilder();
 
     public static class RefreshLoadBuilder {
