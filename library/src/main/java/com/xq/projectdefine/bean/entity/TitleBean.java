@@ -48,6 +48,9 @@ public class TitleBean implements TitleBehavior,Serializable,Parcelable {
         this.title = title;
     }
 
+    public void setTag(Object tag) {
+        this.tag = tag;
+    }
 
     @Override
     public int describeContents() {
