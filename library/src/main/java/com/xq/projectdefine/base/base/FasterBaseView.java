@@ -14,8 +14,6 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
     protected View rootView;
 
-    protected Toolbar toolbar;
-
     public FasterBaseView(T presenter) {
         this.presenter = presenter;
     }
@@ -31,8 +29,6 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         {
             rootView = getPresenter().getAreFragment().getView();
         }
-
-        toolbar = (Toolbar) rootView.findViewById(getContext().getResources().getIdentifier("toolbar", "id", getContext().getPackageName()));
     }
 
     @Override
@@ -54,54 +50,6 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     public void onSaveInstanceState(Bundle outState) {
 
     }
-
-    @Override
-    public void initToolbar(String title) {
-
-        initToolbar(title,true);
-    }
-
-    @Override
-    public void initToolbar(String title, boolean isback) {
-
-        if (toolbar == null)
-            return;
-
-        toolbar.setBackgroundColor(getToolbarBackgroundColor());
-
-        TextView tv_toolTitle = (TextView) toolbar.findViewById(getContext().getResources().getIdentifier("tv_toolTitle", "id", getContext().getPackageName()));
-        if (tv_toolTitle == null)
-        {
-            toolbar.setTitle(title);
-            toolbar.setTitleTextColor(getToolbarWidgetColor());
-        }
-        else
-        {
-            tv_toolTitle.setText(title);
-            tv_toolTitle.setTextColor(getToolbarWidgetColor());
-        }
-
-        if (isback)
-        {
-            if (getNavIcon() >0 )
-                toolbar.setNavigationIcon(getNavIcon());
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ((AppCompatActivity)getContext()).finish();
-                }
-            });
-        }
-    }
-
-    //重写该方法以自定义Toolbar背景颜色
-    public abstract int getToolbarBackgroundColor();
-
-    //重写该方法以自定义Toolbar上的控件颜色
-    public abstract int getToolbarWidgetColor();
-
-    //重写该方法返回导航Icon
-    public abstract int getNavIcon();
 
     @Override
     public T getPresenter() {

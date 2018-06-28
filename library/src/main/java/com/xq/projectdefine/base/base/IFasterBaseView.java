@@ -7,10 +7,4 @@ public interface IFasterBaseView<T extends IFasterBasePresenter> extends AbsView
 
     public int getLayoutId();
 
-    public void initToolbar(String title);
-
-    public void initToolbar(String title, boolean isback);
-
-    public String getBehaviorDescription();
-
 }
