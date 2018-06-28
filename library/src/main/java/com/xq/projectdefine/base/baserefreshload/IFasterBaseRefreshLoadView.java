@@ -76,10 +76,10 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
     public RecyclerView.LayoutManager getLayoutManager();
 
     //返回头布局数量，防止adapter item总数异常
-    public int getHeadViewCount();
+    public int getAdapterHeadCount();
 
     //返回尾布局数量，防止adapter item总数异常
-    public int getFoodViewCount();
+    public int getAdapterFootCount();
 
     //在您的View定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
     public RefreshLoadBuilder getRefreshLoadBuilder();
