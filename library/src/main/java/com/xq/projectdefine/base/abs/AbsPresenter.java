@@ -36,6 +36,6 @@ public interface AbsPresenter<T extends AbsView> extends PresenterLife {
     //打开一堆Activity
     public void startActivities(Intent[] intents);
 
-    //打开代返回值的Activity
+    //打开带返回值的Activity
     public void startActivityForResult(Intent intent, int requestCode);
 }
