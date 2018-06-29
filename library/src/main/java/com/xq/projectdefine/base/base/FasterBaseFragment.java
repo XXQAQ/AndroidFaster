@@ -117,6 +117,11 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
+    public void startActivities(Intent[] intents) {
+        getContext().startActivities(intents);
+    }
+
+    @Override
     public void finishSelf() {
         getFragmentManager().beginTransaction().remove(this).commit();
     }

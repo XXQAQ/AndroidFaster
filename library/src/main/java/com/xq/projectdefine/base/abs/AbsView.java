@@ -37,14 +37,14 @@ public interface AbsView<T extends AbsPresenter> extends ViewLife {
         return (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    //findViewById
-    default View findViewById(int id){
-        return getRootView().findViewById(id);
-    }
-
     //根布局截图
     default Bitmap getRootViewBitmap(){
         return ImageUtils.view2Bitmap(getRootView());
+    }
+
+    //findViewById
+    default View findViewById(int id){
+        return getRootView().findViewById(id);
     }
 
 }
