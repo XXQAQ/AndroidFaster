@@ -1,12 +1,15 @@
 package com.xq.projectdefine.base.abs;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.xq.projectdefine.base.life.ViewLife;
 import com.xq.projectdefine.util.tools.ImageUtils;
@@ -22,6 +25,16 @@ public interface AbsView<T extends AbsPresenter> extends ViewLife {
 
     //获取根布局View
     public View getRootView();
+
+    //获取Window
+    default Window getWindow() {
+        return ((Activity)getContext()).getWindow();
+    }
+
+    //获取WindowManager
+    default WindowManager getWindowManager(){
+        return getWindow().getWindowManager();
+    }
 
     //获取对应FragmentManager，无需判断Activity或者Fragment下的不同使用情景
     default FragmentManager getCPFragmentManager() {
