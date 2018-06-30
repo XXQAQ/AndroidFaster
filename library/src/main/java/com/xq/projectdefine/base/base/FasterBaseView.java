@@ -1,8 +1,10 @@
 package com.xq.projectdefine.base.base;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -21,13 +23,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
 
-        if (getPresenter().getAreActivity() != null)
+        if (getAreActivity() != null)
         {
-            rootView = getPresenter().getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            rootView = getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
         }
-        else    if (getPresenter().getAreFragment() != null)
+        else    if (getAreFragment() != null)
         {
-            rootView = getPresenter().getAreFragment().getView();
+            rootView = getAreFragment().getView();
         }
     }
 
@@ -64,5 +66,15 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public View getRootView() {
         return rootView;
+    }
+
+    @Override
+    public Activity getAreActivity() {
+        return getPresenter() instanceof Activity?(Activity)getPresenter():null;
+    }
+
+    @Override
+    public Fragment getAreFragment() {
+        return getPresenter() instanceof Activity?(Fragment) getPresenter():null;
     }
 }

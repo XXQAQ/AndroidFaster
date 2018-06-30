@@ -132,16 +132,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
-    public Activity getAreActivity() {
-        return null;
-    }
-
-    @Override
-    public Fragment getAreFragment() {
-        return this;
-    }
-
-    @Override
     public T getBindView() {
         return view;
     }

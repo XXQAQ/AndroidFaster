@@ -4,6 +4,7 @@ package com.xq.projectdefine.base.abs;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -26,6 +27,12 @@ public interface AbsView<T extends AbsPresenter> extends ViewLife {
     //获取根布局View
     public View getRootView();
 
+    //如果当前View层服务于Fragment，则返回对应Fragment，否则返回null
+    public Fragment getAreFragment();
+
+    //如果当前View层服务于Activity，则返回对应Activity，否则返回null
+    public Activity getAreActivity();
+
     //获取Window
     default Window getWindow() {
         return ((Activity)getContext()).getWindow();
@@ -38,10 +45,10 @@ public interface AbsView<T extends AbsPresenter> extends ViewLife {
 
     //获取对应FragmentManager，无需判断Activity或者Fragment下的不同使用情景
     default FragmentManager getCPFragmentManager() {
-        if (getPresenter().getAreActivity() != null)
-            return ((FragmentActivity)getPresenter().getAreActivity()).getSupportFragmentManager();
-        else     if (getPresenter().getAreFragment() != null)
-            return (getPresenter().getAreFragment()).getChildFragmentManager();
+        if (getAreActivity() != null)
+            return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
+        else     if (getAreFragment() != null)
+            return (getAreFragment()).getChildFragmentManager();
         return null;
     }
 
