@@ -8,9 +8,7 @@ import com.xq.projectdefine.bean.behavior.GetListBehavior;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by xq on 2017/4/12.
- */
+
 public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> {
 
     default void requestSuccess(T t, Object... objects) {
