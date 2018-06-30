@@ -2,6 +2,7 @@ package com.xq.projectdefine.util.tools;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Deprecated
 public final class IDUtils {
 
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);

@@ -16,8 +16,6 @@ public final class BundleUtil {
     public static final String KEY_DATA = "data";
     public static final String KEY_TYPE = "type";
     public static final String KEY_RESULT = "result";
-    public static final String KEY_REFRESH = "refresh";
-    public static final String KEY_LOADMORE = "loadmore";
 
     public static class Builder {
 

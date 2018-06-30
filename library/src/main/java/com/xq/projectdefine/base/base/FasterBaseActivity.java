@@ -95,6 +95,16 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
+    public Fragment getAreFragment() {
+        return null;
+    }
+
+    @Override
+    public Activity getAreActivity() {
+        return this;
+    }
+
+    @Override
     public void finishSelf() {
         finish();
     }

@@ -17,10 +17,12 @@
 package com.xq.projectdefine.util.tools;
 
 import android.util.Base64;
+
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -35,7 +37,6 @@ public final class CipherUtils {
     }
 
 
-
     ///////////////////////////////////////////////////////////////////////////
 
     // 哈希加密相关
@@ -43,17 +44,11 @@ public final class CipherUtils {
     ///////////////////////////////////////////////////////////////////////////
 
 
-
     /**
-
      * MD2加密
-
      *
-
      * @param data 明文字符串
-
      * @return 16进制密文
-
      */
 
     public static String encryptMD2ToString(final String data) {
@@ -63,17 +58,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * MD2加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 16进制密文
-
      */
 
     public static String encryptMD2ToString(final byte[] data) {
@@ -83,17 +72,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * MD2加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptMD2(final byte[] data) {
@@ -103,17 +86,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * MD5加密
-
      *
-
      * @param data 明文字符串
-
      * @return 16进制密文
-
      */
 
     public static String encryptMD5ToString(final String data) {
@@ -123,19 +100,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * MD5加密
-
      *
-
      * @param data 明文字符串
-
      * @param salt 盐
-
      * @return 16进制加盐密文
-
      */
 
     public static String encryptMD5ToString(final String data, final String salt) {
@@ -145,17 +115,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * MD5加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 16进制密文
-
      */
 
     public static String encryptMD5ToString(final byte[] data) {
@@ -165,19 +129,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * MD5加密
-
      *
-
      * @param data 明文字节数组
-
      * @param salt 盐字节数组
-
      * @return 16进制加盐密文
-
      */
 
     public static String encryptMD5ToString(final byte[] data, final byte[] salt) {
@@ -195,17 +152,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * MD5加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptMD5(final byte[] data) {
@@ -215,17 +166,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA1加密
-
      *
-
      * @param data 明文字符串
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA1ToString(final String data) {
@@ -235,17 +180,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA1加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA1ToString(final byte[] data) {
@@ -255,17 +194,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA1加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptSHA1(final byte[] data) {
@@ -275,17 +208,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA224加密
-
      *
-
      * @param data 明文字符串
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA224ToString(final String data) {
@@ -295,17 +222,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA224加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA224ToString(final byte[] data) {
@@ -315,17 +236,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA224加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptSHA224(final byte[] data) {
@@ -335,17 +250,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA256加密
-
      *
-
      * @param data 明文字符串
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA256ToString(final String data) {
@@ -355,17 +264,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA256加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA256ToString(final byte[] data) {
@@ -375,17 +278,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA256加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptSHA256(final byte[] data) {
@@ -395,17 +292,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA384加密
-
      *
-
      * @param data 明文字符串
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA384ToString(final String data) {
@@ -415,17 +306,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA384加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA384ToString(final byte[] data) {
@@ -435,17 +320,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA384加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptSHA384(final byte[] data) {
@@ -455,17 +334,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA512加密
-
      *
-
      * @param data 明文字符串
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA512ToString(final String data) {
@@ -475,17 +348,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA512加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 16进制密文
-
      */
 
     public static String encryptSHA512ToString(final byte[] data) {
@@ -495,17 +362,11 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * SHA512加密
-
      *
-
      * @param data 明文字节数组
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptSHA512(final byte[] data) {
@@ -515,19 +376,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * hash加密模板
-
      *
-
      * @param data      数据
-
      * @param algorithm 加密算法
-
      * @return 密文字节数组
-
      */
 
     private static byte[] hashTemplate(final byte[] data, final String algorithm) {
@@ -553,19 +407,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacMD5加密
-
      *
-
      * @param data 明文字符串
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacMD5ToString(final String data, final String key) {
@@ -575,19 +422,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacMD5加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacMD5ToString(final byte[] data, final byte[] key) {
@@ -597,19 +437,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacMD5加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptHmacMD5(final byte[] data, final byte[] key) {
@@ -619,19 +452,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA1加密
-
      *
-
      * @param data 明文字符串
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA1ToString(final String data, final String key) {
@@ -641,19 +467,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA1加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA1ToString(final byte[] data, final byte[] key) {
@@ -663,19 +482,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA1加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptHmacSHA1(final byte[] data, final byte[] key) {
@@ -685,19 +497,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA224加密
-
      *
-
      * @param data 明文字符串
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA224ToString(final String data, final String key) {
@@ -707,19 +512,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA224加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA224ToString(final byte[] data, final byte[] key) {
@@ -729,19 +527,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA224加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptHmacSHA224(final byte[] data, final byte[] key) {
@@ -751,19 +542,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA256加密
-
      *
-
      * @param data 明文字符串
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA256ToString(final String data, final String key) {
@@ -773,19 +557,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA256加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA256ToString(final byte[] data, final byte[] key) {
@@ -795,19 +572,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA256加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptHmacSHA256(final byte[] data, final byte[] key) {
@@ -817,19 +587,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA384加密
-
      *
-
      * @param data 明文字符串
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA384ToString(final String data, final String key) {
@@ -839,19 +602,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA384加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA384ToString(final byte[] data, final byte[] key) {
@@ -861,19 +617,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA384加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptHmacSHA384(final byte[] data, final byte[] key) {
@@ -883,19 +632,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA512加密
-
      *
-
      * @param data 明文字符串
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA512ToString(final String data, final String key) {
@@ -905,19 +647,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA512加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptHmacSHA512ToString(final byte[] data, final byte[] key) {
@@ -927,19 +662,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * HmacSHA512加密
-
      *
-
      * @param data 明文字节数组
-
      * @param key  秘钥
-
      * @return 密文字节数组
-
      */
 
     public static byte[] encryptHmacSHA512(final byte[] data, final byte[] key) {
@@ -949,21 +677,13 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * Hmac加密模板
-
      *
-
      * @param data      数据
-
      * @param key       秘钥
-
      * @param algorithm 加密算法
-
      * @return 密文字节数组
-
      */
 
     private static byte[] hmacTemplate(final byte[] data, final byte[] key, final String algorithm) {
@@ -991,7 +711,6 @@ public final class CipherUtils {
     }
 
 
-
     ///////////////////////////////////////////////////////////////////////////
 
     // DES加密相关
@@ -999,37 +718,27 @@ public final class CipherUtils {
     ///////////////////////////////////////////////////////////////////////////
 
 
-
     /**
-
      * DES转变
-
+     * <p>
      * <p>法算法名称/加密模式/填充方式</p>
-
+     * <p>
      * <p>加密模式有：电子密码本模式ECB、加密块链模式CBC、加密反馈模式CFB、输出反馈模式OFB</p>
-
+     * <p>
      * <p>填充方式有：NoPadding、ZerosPadding、PKCS5Padding</p>
-
      */
 
-    public static        String DES_Transformation = "DES/ECB/NoPadding";
+    public static String DES_Transformation = "DES/ECB/NoPadding";
 
-    private static final String DES_Algorithm      = "DES";
-
+    private static final String DES_Algorithm = "DES";
 
 
     /**
-
      * DES加密后转为Base64编码
-
      *
-
      * @param data 明文
-
      * @param key  8字节秘钥
-
      * @return Base64密文
-
      */
 
     public static byte[] encryptDES2Base64(final byte[] data, final byte[] key) {
@@ -1039,19 +748,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * DES加密后转为16进制
-
      *
-
      * @param data 明文
-
      * @param key  8字节秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptDES2HexString(final byte[] data, final byte[] key) {
@@ -1061,19 +763,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * DES加密
-
      *
-
      * @param data 明文
-
      * @param key  8字节秘钥
-
      * @return 密文
-
      */
 
     public static byte[] encryptDES(final byte[] data, final byte[] key) {
@@ -1083,19 +778,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * DES解密Base64编码密文
-
      *
-
      * @param data Base64编码密文
-
      * @param key  8字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptBase64DES(final byte[] data, final byte[] key) {
@@ -1105,19 +793,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * DES解密16进制密文
-
      *
-
      * @param data 16进制密文
-
      * @param key  8字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptHexStringDES(final String data, final byte[] key) {
@@ -1127,19 +808,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * DES解密
-
      *
-
      * @param data 密文
-
      * @param key  8字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptDES(final byte[] data, final byte[] key) {
@@ -1149,7 +823,6 @@ public final class CipherUtils {
     }
 
 
-
     ///////////////////////////////////////////////////////////////////////////
 
     // 3DES加密相关
@@ -1157,39 +830,27 @@ public final class CipherUtils {
     ///////////////////////////////////////////////////////////////////////////
 
 
-
     /**
-
      * 3DES转变
-
+     * <p>
      * <p>法算法名称/加密模式/填充方式</p>
-
+     * <p>
      * <p>加密模式有：电子密码本模式ECB、加密块链模式CBC、加密反馈模式CFB、输出反馈模式OFB</p>
-
+     * <p>
      * <p>填充方式有：NoPadding、ZerosPadding、PKCS5Padding</p>
-
      */
 
-    public static        String TripleDES_Transformation = "DESede/ECB/NoPadding";
+    public static String TripleDES_Transformation = "DESede/ECB/NoPadding";
 
-    private static final String TripleDES_Algorithm      = "DESede";
-
-
-
+    private static final String TripleDES_Algorithm = "DESede";
 
 
     /**
-
      * 3DES加密后转为Base64编码
-
      *
-
      * @param data 明文
-
      * @param key  24字节秘钥
-
      * @return Base64密文
-
      */
 
     public static byte[] encrypt3DES2Base64(final byte[] data, final byte[] key) {
@@ -1199,19 +860,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * 3DES加密后转为16进制
-
      *
-
      * @param data 明文
-
      * @param key  24字节秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encrypt3DES2HexString(final byte[] data, final byte[] key) {
@@ -1221,19 +875,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * 3DES加密
-
      *
-
      * @param data 明文
-
      * @param key  24字节密钥
-
      * @return 密文
-
      */
 
     public static byte[] encrypt3DES(final byte[] data, final byte[] key) {
@@ -1243,19 +890,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * 3DES解密Base64编码密文
-
      *
-
      * @param data Base64编码密文
-
      * @param key  24字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptBase64_3DES(final byte[] data, final byte[] key) {
@@ -1265,19 +905,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * 3DES解密16进制密文
-
      *
-
      * @param data 16进制密文
-
      * @param key  24字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptHexString3DES(final String data, final byte[] key) {
@@ -1287,19 +920,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * 3DES解密
-
      *
-
      * @param data 密文
-
      * @param key  24字节密钥
-
      * @return 明文
-
      */
 
     public static byte[] decrypt3DES(final byte[] data, final byte[] key) {
@@ -1309,7 +935,6 @@ public final class CipherUtils {
     }
 
 
-
     ///////////////////////////////////////////////////////////////////////////
 
     // AES加密相关
@@ -1317,39 +942,27 @@ public final class CipherUtils {
     ///////////////////////////////////////////////////////////////////////////
 
 
-
     /**
-
      * AES转变
-
+     * <p>
      * <p>法算法名称/加密模式/填充方式</p>
-
+     * <p>
      * <p>加密模式有：电子密码本模式ECB、加密块链模式CBC、加密反馈模式CFB、输出反馈模式OFB</p>
-
+     * <p>
      * <p>填充方式有：NoPadding、ZerosPadding、PKCS5Padding</p>
-
      */
 
-    public static        String AES_Transformation = "AES/ECB/NoPadding";
+    public static String AES_Transformation = "AES/ECB/NoPadding";
 
-    private static final String AES_Algorithm      = "AES";
-
-
-
+    private static final String AES_Algorithm = "AES";
 
 
     /**
-
      * AES加密后转为Base64编码
-
      *
-
      * @param data 明文
-
      * @param key  16、24、32字节秘钥
-
      * @return Base64密文
-
      */
 
     public static byte[] encryptAES2Base64(final byte[] data, final byte[] key) {
@@ -1359,19 +972,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * AES加密后转为16进制
-
      *
-
      * @param data 明文
-
      * @param key  16、24、32字节秘钥
-
      * @return 16进制密文
-
      */
 
     public static String encryptAES2HexString(final byte[] data, final byte[] key) {
@@ -1381,19 +987,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * AES加密
-
      *
-
      * @param data 明文
-
      * @param key  16、24、32字节秘钥
-
      * @return 密文
-
      */
 
     public static byte[] encryptAES(final byte[] data, final byte[] key) {
@@ -1403,19 +1002,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * AES解密Base64编码密文
-
      *
-
      * @param data Base64编码密文
-
      * @param key  16、24、32字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptBase64AES(final byte[] data, final byte[] key) {
@@ -1425,19 +1017,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * AES解密16进制密文
-
      *
-
      * @param data 16进制密文
-
      * @param key  16、24、32字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptHexStringAES(final String data, final byte[] key) {
@@ -1447,19 +1032,12 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * AES解密
-
      *
-
      * @param data 密文
-
      * @param key  16、24、32字节秘钥
-
      * @return 明文
-
      */
 
     public static byte[] decryptAES(final byte[] data, final byte[] key) {
@@ -1469,25 +1047,15 @@ public final class CipherUtils {
     }
 
 
-
     /**
-
      * DES加密模板
-
      *
-
      * @param data           数据
-
      * @param key            秘钥
-
      * @param algorithm      加密算法
-
      * @param transformation 转变
-
      * @param isEncrypt      {@code true}: 加密 {@code false}: 解密
-
      * @return 密文或者明文，适用于DES，3DES，AES
-
      */
 
     public static byte[] desTemplate(final byte[] data, final byte[] key, final String algorithm, final String transformation, final boolean isEncrypt) {
@@ -1517,9 +1085,7 @@ public final class CipherUtils {
     }
 
 
-
     private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
 
 
     public static String bytes2HexString(final byte[] bytes) {
@@ -1543,7 +1109,6 @@ public final class CipherUtils {
         return new String(ret);
 
     }
-
 
 
     public static byte[] hexString2Bytes(String hexString) {
@@ -1575,7 +1140,6 @@ public final class CipherUtils {
     }
 
 
-
     private static int hex2Dec(final char hexChar) {
 
         if (hexChar >= '0' && hexChar <= '9') {
@@ -1595,7 +1159,6 @@ public final class CipherUtils {
     }
 
 
-
     public static byte[] base64Encode(final byte[] input) {
 
         return Base64.encode(input, Base64.NO_WRAP);
@@ -1603,13 +1166,11 @@ public final class CipherUtils {
     }
 
 
-
     public static byte[] base64Decode(final byte[] input) {
 
         return Base64.decode(input, Base64.NO_WRAP);
 
     }
-
 
 
     private static boolean isSpace(final String s) {

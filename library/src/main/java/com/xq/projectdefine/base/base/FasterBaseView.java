@@ -23,13 +23,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
 
-        if (getAreActivity() != null)
+        if (getPresenter().getAreActivity() != null)
         {
-            rootView = getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            rootView = getPresenter().getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
         }
-        else    if (getAreFragment() != null)
+        else    if (getPresenter().getAreFragment() != null)
         {
-            rootView = getAreFragment().getView();
+            rootView = getPresenter().getAreFragment().getView();
         }
     }
 
@@ -68,13 +68,4 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return rootView;
     }
 
-    @Override
-    public Activity getAreActivity() {
-        return getPresenter() instanceof Activity?(Activity)getPresenter():null;
-    }
-
-    @Override
-    public Fragment getAreFragment() {
-        return getPresenter() instanceof Activity?(Fragment) getPresenter():null;
-    }
 }
