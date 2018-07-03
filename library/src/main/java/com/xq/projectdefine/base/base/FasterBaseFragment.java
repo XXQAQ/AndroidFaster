@@ -60,9 +60,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         if (bundle != null)
             resolveBundle(bundle);
 
-        if (getBindView() != null)
-            getBindView().afterOnCreate(savedInstanceState);
-
         afterOnCreate(savedInstanceState);
     }
 
@@ -73,42 +70,38 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
-    public void afterOnCreate(Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
     }
 
     @Override
+    public void afterOnCreate(Bundle savedInstanceState) {
+        if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        if (getBindView() != null)
-            getBindView().onResume();
+        if (getBindView() != null) getBindView().onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (getBindView() != null)
-            getBindView().onPause();
+        if (getBindView() != null) getBindView().onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (getBindView() != null)
-            getBindView().onDestroy();
+        if (getBindView() != null) getBindView().onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (getBindView() != null)
-            getBindView().onSaveInstanceState(outState);
+        if (getBindView() != null) getBindView().onSaveInstanceState(outState);
     }
 
     @Override

@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import java.lang.annotation.Annotation;
 
-
-
 public abstract class FasterBaseView<T extends IFasterBasePresenter> implements IFasterBaseView<T> {
 
     protected T presenter;
@@ -70,7 +68,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         Annotation[] annotations = getClass().getAnnotations();
         for (Annotation annotation : annotations)
         {
-            if (annotation instanceof topcontainer)
+            if (annotation instanceof TopContainer)
                 return true;
         }
         return false;
