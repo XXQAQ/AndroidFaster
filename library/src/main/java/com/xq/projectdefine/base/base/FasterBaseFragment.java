@@ -60,6 +60,8 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         if (bundle != null)
             resolveBundle(bundle);
 
+        if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
+
         afterOnCreate(savedInstanceState);
     }
 
@@ -77,7 +79,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
-        if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
+
     }
 
     @Override
