@@ -1,15 +1,16 @@
 package com.xq.projectdefine.base.base;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-
-import com.xq.projectdefine.base.abs.AbsView;
+import android.widget.TextView;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-
 
 public abstract class FasterBaseView<T extends IFasterBasePresenter> implements IFasterBaseView<T> {
 
@@ -32,28 +33,26 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         {
             rootView = getPresenter().getAreFragment().getView();
         }
-
-        getImplementsView().afterOnCreate(savedInstanceState);
     }
 
     @Override
     public void onResume() {
-        getImplementsView().onResume();
+
     }
 
     @Override
     public void onPause() {
-        getImplementsView().onPause();
+
     }
 
     @Override
     public void onDestroy() {
-        getImplementsView().onDestroy();
+
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        getImplementsView().onSaveInstanceState(outState);
+
     }
 
     @Override
@@ -75,22 +74,10 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         Annotation[] annotations = getClass().getAnnotations();
         for (Annotation annotation : annotations)
         {
-            if (annotation instanceof topcontainer)
+            if (annotation instanceof TopContainer)
                 return true;
         }
         return false;
-    }
-
-    private AbsView getImplementsView(){
-        Type[] types = getClass().getGenericInterfaces();
-        for (Type type : types)
-        {
-            if (type instanceof AbsView)
-            {
-                return (AbsView) type;
-            }
-        }
-        return null;
     }
 
 }
