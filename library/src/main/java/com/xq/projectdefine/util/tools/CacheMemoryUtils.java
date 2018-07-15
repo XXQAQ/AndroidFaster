@@ -70,7 +70,6 @@ public final class CacheMemoryUtils implements CacheConstants {
      */
     public void put(@NonNull final String key, final Object value, int saveTime) {
         if (value == null) return;
-        if (value.getClass().isArray() && Array.getLength(value) <= 0) return;
         long dueTime = saveTime < 0 ? -1 : System.currentTimeMillis() + saveTime * 1000;
         mMemoryCache.put(key, new CacheValue(dueTime, value));
     }
