@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.xq.projectdefine.base.abs.AbsPresenter;
 
 
-public interface IFasterSimpleBaseRefreshLoadPresenter<T extends IFasterSimpleBaseRefreshLoadView> extends AbsPresenter<T> {
+public interface IFasterBaseSimpleRefreshLoadPresenter<T extends IFasterBaseSimpleRefreshLoadView> extends AbsPresenter<T> {
 
     @Override
     default void afterOnCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public interface IFasterSimpleBaseRefreshLoadPresenter<T extends IFasterSimpleBa
     }
 
     //开始加载
-    default void loadMore(Object... objects) {
+    default void loadmore(Object... objects) {
         getRefreshLoadBuilder().isRefresh = false;
         refreshLoad(false, getRefreshLoadBuilder().page+1,objects);
     }

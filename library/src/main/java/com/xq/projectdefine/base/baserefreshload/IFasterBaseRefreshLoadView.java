@@ -4,15 +4,16 @@ package com.xq.projectdefine.base.baserefreshload;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
-import com.xq.projectdefine.base.basesimplerefreshload.IFasterSimpleBaseRefreshLoadView;
+import com.xq.projectdefine.base.basesimplerefreshload.IFasterBaseSimpleRefreshLoadView;
 
 import java.util.List;
 
-public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPresenter> extends IFasterSimpleBaseRefreshLoadView<T> {
+
+public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPresenter> extends IFasterBaseSimpleRefreshLoadView<T> {
 
     @Override
     default void afterOnCreate(Bundle savedInstanceState) {
-        IFasterSimpleBaseRefreshLoadView.super.afterOnCreate(savedInstanceState);
+        IFasterBaseSimpleRefreshLoadView.super.afterOnCreate(savedInstanceState);
 
         if (getRootView() instanceof RecyclerView)   //如果根布局是RecyclerView，则直接将根布局转化为rv
             getRefreshLoadBuilder().rv = (RecyclerView) getRootView();
@@ -28,39 +29,39 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
 
     @Override
     default void onResume() {
-        IFasterSimpleBaseRefreshLoadView.super.onResume();
+        IFasterBaseSimpleRefreshLoadView.super.onResume();
     }
 
     @Override
     default void onPause() {
-        IFasterSimpleBaseRefreshLoadView.super.onPause();
+        IFasterBaseSimpleRefreshLoadView.super.onPause();
     }
 
     @Override
     default void onDestroy() {
-        IFasterSimpleBaseRefreshLoadView.super.onDestroy();
+        IFasterBaseSimpleRefreshLoadView.super.onDestroy();
     }
 
     @Override
     default void onSaveInstanceState(Bundle outState) {
-        IFasterSimpleBaseRefreshLoadView.super.onSaveInstanceState(outState);
+        IFasterBaseSimpleRefreshLoadView.super.onSaveInstanceState(outState);
     }
 
     //刷新完成后调用
     default void afterRefresh() {
-        IFasterSimpleBaseRefreshLoadView.super.afterRefresh();
+        IFasterBaseSimpleRefreshLoadView.super.afterRefresh();
         getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
     }
 
     //加载完成后调用
-    default void afterLoad() {
-        IFasterSimpleBaseRefreshLoadView.super.afterLoad();
+    default void afterLoadmore() {
+        IFasterBaseSimpleRefreshLoadView.super.afterLoadmore();
         getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
     }
 
     //集合类型数据加载完成后调用
-    default void afterLoad(int position) {
-        IFasterSimpleBaseRefreshLoadView.super.afterLoad();
+    default void afterLoadmore(int position) {
+        IFasterBaseSimpleRefreshLoadView.super.afterLoadmore();
         getRefreshLoadBuilder().rv.getAdapter().notifyItemRangeChanged(0,position);
     }
 
@@ -84,7 +85,7 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
     //在您的View定义RefreshLoadBuilder成员变量，并重写本方法返回该变量
     public RefreshLoadBuilder getRefreshLoadBuilder();
 
-    public static class RefreshLoadBuilder extends IFasterSimpleBaseRefreshLoadView.RefreshLoadBuilder{
+    public static class RefreshLoadBuilder extends IFasterBaseSimpleRefreshLoadView.RefreshLoadBuilder{
         public RecyclerView rv;
     }
 

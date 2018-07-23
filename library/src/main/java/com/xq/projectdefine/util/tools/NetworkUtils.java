@@ -197,16 +197,8 @@ public final class NetworkUtils {
     public static void setWifiEnabled(final boolean enabled) {
         @SuppressLint("WifiManagerLeak")
         WifiManager manager = (WifiManager) getApp().getSystemService(Context.WIFI_SERVICE);
-        if (manager == null) return;
-        if (enabled) {
-            if (!manager.isWifiEnabled()) {
-                manager.setWifiEnabled(true);
-            }
-        } else {
-            if (manager.isWifiEnabled()) {
-                manager.setWifiEnabled(false);
-            }
-        }
+        if (manager == null || enabled == manager.isWifiEnabled()) return;
+        manager.setWifiEnabled(enabled);
     }
 
     /**

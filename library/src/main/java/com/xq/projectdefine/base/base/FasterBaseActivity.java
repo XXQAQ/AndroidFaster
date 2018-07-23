@@ -17,20 +17,18 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     //构造方案
     {
         view = createBindView();
-
-        initData();
     }
 
     //重写该方法，返回对应View层
     protected abstract T createBindView();
 
-    //该方法用于解析从其他页面传来的数据，注意如果传递数据不存在则不会执行该方法
-    protected void resolveBundle(Bundle bundle) {
+    //初始化数据
+    protected void initData(){
 
     }
 
-    //初始化数据
-    protected void initData(){
+    //该方法用于解析从其他页面传来的数据，注意如果传递数据不存在则不会执行该方法
+    protected void resolveBundle(Bundle bundle) {
 
     }
 
@@ -41,6 +39,8 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         if (getBindView() != null)
             setContentView(getBindView().getLayoutId());
+
+        initData();
 
         Intent intent = getIntent();
         if (intent != null)

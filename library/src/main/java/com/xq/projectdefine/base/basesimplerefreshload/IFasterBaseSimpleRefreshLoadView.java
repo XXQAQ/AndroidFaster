@@ -4,47 +4,47 @@ package com.xq.projectdefine.base.basesimplerefreshload;
 import android.os.Bundle;
 import com.xq.projectdefine.base.abs.AbsView;
 
-public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRefreshLoadPresenter> extends AbsView<T> {
+public interface IFasterBaseSimpleRefreshLoadView<T extends IFasterBaseSimpleRefreshLoadPresenter> extends AbsView<T> {
 
 
     default void afterOnCreate(Bundle savedInstanceState) {
 
-        if (getRootView() instanceof RefreshLoadCustomView)
-            getRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) getRootView();
+        if (getRootView() instanceof RefreshLoadView)
+            getRefreshLoadBuilder().refreshView = (RefreshLoadView) getRootView();
         else
-            getRefreshLoadBuilder().refreshView = (RefreshLoadCustomView) findViewById(getContext().getResources().getIdentifier("refreshView", "id", getContext().getPackageName()));
+            getRefreshLoadBuilder().refreshView = (RefreshLoadView) findViewById(getContext().getResources().getIdentifier("refreshView", "id", getContext().getPackageName()));
 
         //以下初始化刷新控件
         if (getRefreshLoadBuilder().refreshView != null)
         {
-            getRefreshLoadBuilder().refreshView.setRefreshLoadListener(new RefreshLoadCustomView.OnRefreshLoadListener() {
+            getRefreshLoadBuilder().refreshView.setRefreshLoadListener(new RefreshLoadView.OnRefreshLoadListener() {
                 @Override
-                public void onFinishRefresh(RefreshLoadCustomView view) {
+                public void onFinishRefresh(RefreshLoadView view) {
 
                 }
 
                 @Override
-                public void onRefresh(RefreshLoadCustomView view) {
+                public void onRefresh(RefreshLoadView view) {
                     refreshPresenter();
                 }
 
                 @Override
-                public void onCancleRefresh(RefreshLoadCustomView view) {
+                public void onCancleRefresh(RefreshLoadView view) {
                     getPresenter().cancleRefresh();
                 }
 
                 @Override
-                public void onFinishLoadmore(RefreshLoadCustomView view) {
+                public void onFinishLoadmore(RefreshLoadView view) {
 
                 }
 
                 @Override
-                public void onLoadmore(RefreshLoadCustomView view) {
-                    loadMorePresenter();
+                public void onLoadmore(RefreshLoadView view) {
+                    loadmorePresenter();
                 }
 
                 @Override
-                public void onCancleLoadmore(RefreshLoadCustomView view) {
+                public void onCancleLoadmore(RefreshLoadView view) {
                     getPresenter().cancleLoadmore();
                 }
             });
@@ -89,8 +89,8 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
     }
 
     //通知P层加载，可以选择重写该方法，在加载时传入更多参数
-    default void loadMorePresenter() {
-        getPresenter().loadMore();
+    default void loadmorePresenter() {
+        getPresenter().loadmore();
     }
 
     //刷新完成后调用
@@ -100,7 +100,7 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
     }
 
     //加载完成后调用
-    default void afterLoad() {
+    default void afterLoadmore() {
         if (getRefreshLoadBuilder().refreshView != null)
             getRefreshLoadBuilder().refreshView.finishLoadmore();
     }
@@ -127,7 +127,7 @@ public interface IFasterSimpleBaseRefreshLoadView<T extends IFasterSimpleBaseRef
     public RefreshLoadBuilder getRefreshLoadBuilder();
 
     public static class RefreshLoadBuilder {
-        public RefreshLoadCustomView refreshView;
+        public RefreshLoadView refreshView;
     }
 
 }

@@ -4,22 +4,21 @@ package com.xq.projectdefine.base.baseviewpager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-
 import java.util.List;
 
 //万能fragmentPagerAdapter
-public class FragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class UniverseFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     private List<Fragment> list_fragment;
     private List<String> list_title;
 
-    public FragmentPagerAdapter(FragmentManager fm, List<Fragment> list_fragment, List<String> list_title) {
+    public UniverseFragmentPagerAdapter(FragmentManager fm, List<Fragment> list_fragment, List<String> list_title) {
         super(fm);
         this.list_fragment = list_fragment;
         this.list_title = list_title;
     }
 
-    public FragmentPagerAdapter(FragmentManager fm, List<Fragment> list_fragment) {
+    public UniverseFragmentPagerAdapter(FragmentManager fm, List<Fragment> list_fragment) {
         super(fm);
         this.list_fragment = list_fragment;
     }

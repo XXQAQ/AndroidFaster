@@ -6,32 +6,28 @@ public class FasterInterface {
 
     private static Application app;
 
-    private static String FILEPROVIDER;
+    private static String fileProvider;
 
     private static boolean isAutoPermission;
 
-
-
-    public static void init(Application app,String FILEPROVIDER){
-        init(app,FILEPROVIDER,true);
+    public static void init(Application app,String fileProvider){
+        init(app,fileProvider,true);
     }
 
-    public static void init(Application app,String FILEPROVIDER,boolean isAutoPermission){
+    public static void init(Application app,String fileProvider,boolean isAutoPermission){
 
         FasterInterface.app = app;
-        FasterInterface.FILEPROVIDER = FILEPROVIDER;
+        FasterInterface.fileProvider = fileProvider;
         FasterInterface.isAutoPermission = isAutoPermission;
 
     }
-
-
 
     public static Application getApp() {
         return app;
     }
 
     public static String getFileProvider() {
-        return FILEPROVIDER;
+        return fileProvider;
     }
 
     public static boolean isIsAutoPermission() {

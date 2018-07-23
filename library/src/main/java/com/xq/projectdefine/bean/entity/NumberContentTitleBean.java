@@ -1,14 +1,11 @@
 package com.xq.projectdefine.bean.entity;
 
 
-import android.os.Parcel;
 
-import com.xq.projectdefine.bean.behavior.NumberContenTitleBehavior;
-
-import java.io.Serializable;
+import com.xq.projectdefine.bean.behavior.NumberContentTitleBehavior;
 
 
-public class NumberContentTitleBean extends TitleBean implements Serializable,NumberContenTitleBehavior {
+public class NumberContentTitleBean extends TitleBean implements NumberContentTitleBehavior {
 
     protected String content;
     protected Number number;
@@ -46,34 +43,4 @@ public class NumberContentTitleBean extends TitleBean implements Serializable,Nu
         this.number = number;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(this.content);
-        dest.writeSerializable(this.number);
-    }
-
-    protected NumberContentTitleBean(Parcel in) {
-        super(in);
-        this.content = in.readString();
-        this.number = (Number) in.readSerializable();
-    }
-
-    public static final Creator<NumberContentTitleBean> CREATOR = new Creator<NumberContentTitleBean>() {
-        @Override
-        public NumberContentTitleBean createFromParcel(Parcel source) {
-            return new NumberContentTitleBean(source);
-        }
-
-        @Override
-        public NumberContentTitleBean[] newArray(int size) {
-            return new NumberContentTitleBean[size];
-        }
-    };
 }

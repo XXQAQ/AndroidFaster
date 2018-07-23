@@ -10,7 +10,7 @@ import java.io.IOException;
 //	new MVP(name).create();
 public class MVPCreator {
 	
-	public static final String BASE ="MyBase";
+	public static final String BASE ="CustomBase";
 	
 	private String parents;
 	private String name;

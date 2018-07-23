@@ -1,6 +1,5 @@
 package com.xq.projectdefine.util.tools;
 
-import android.annotation.SuppressLint;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -1168,7 +1167,6 @@ public final class FileUtils {
         return new String(ret);
     }
 
-    @SuppressLint("DefaultLocale")
     private static String byte2FitMemorySize(final long byteNum) {
         if (byteNum < 0) {
             return "shouldn't be less than zero!";

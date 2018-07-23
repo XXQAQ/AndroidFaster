@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 public abstract class FasterBaseView<T extends IFasterBasePresenter> implements IFasterBaseView<T> {
 
@@ -27,6 +28,8 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         {
             rootView = getPresenter().getAreFragment().getView();
         }
+
+        autoFindView();
     }
 
     @Override
@@ -64,6 +67,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return rootView;
     }
 
+    //判断是否顶部容器
     protected boolean isTopContainer(){
         Annotation[] annotations = getClass().getAnnotations();
         for (Annotation annotation : annotations)
@@ -72,6 +76,35 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
                 return true;
         }
         return false;
+    }
+
+    //自动findViewById(必须保证布局文件中的id与变量名一致)
+    private void autoFindView() {
+        Class mClass = this.getClass();
+        while (true)
+        {
+            Field[] fields = mClass.getDeclaredFields();
+            for (Field field : fields)
+            {
+                if (View.class.isAssignableFrom(field.getType()))
+                {
+                    String fileName = field.getName();
+                    View view = findViewById(getContext().getResources().getIdentifier(fileName, "id", getContext().getPackageName()));
+                    if (view != null)
+                    {
+                        field.setAccessible(true);
+                        try {
+                            field.set(this,view);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            mClass = mClass.getSuperclass();
+            if (mClass.getName().equals(Object.class.getName()))
+                break;
+        }
     }
 
 }

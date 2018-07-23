@@ -1,6 +1,6 @@
 package com.xq.projectdefine.base.basesimplerefreshload;
 
-public interface RefreshLoadCustomView {
+public interface RefreshLoadView {
 
     //开始加载
     public void startLoadmore();
@@ -28,17 +28,17 @@ public interface RefreshLoadCustomView {
 
     public static interface OnRefreshLoadListener {
 
-        public void onFinishRefresh(RefreshLoadCustomView view);
+        public void onFinishRefresh(RefreshLoadView view);
 
-        public void onRefresh(RefreshLoadCustomView view);
+        public void onRefresh(RefreshLoadView view);
 
-        public void onCancleRefresh(RefreshLoadCustomView view);
+        public void onCancleRefresh(RefreshLoadView view);
 
-        public void onFinishLoadmore(RefreshLoadCustomView view);
+        public void onFinishLoadmore(RefreshLoadView view);
 
-        public void onLoadmore(RefreshLoadCustomView view);
+        public void onLoadmore(RefreshLoadView view);
 
-        public void onCancleLoadmore(RefreshLoadCustomView view);
+        public void onCancleLoadmore(RefreshLoadView view);
 
     }
 

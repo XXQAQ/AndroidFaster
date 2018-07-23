@@ -8,15 +8,6 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-
-/**
- * <pre>
- *     author: Blankj
- *     blog  : http://blankj.com
- *     time  : 2017/12/29
- *     desc  : constants of permission
- * </pre>
- */
 @SuppressLint("InlinedApi")
 public final class PermissionConstants {
 

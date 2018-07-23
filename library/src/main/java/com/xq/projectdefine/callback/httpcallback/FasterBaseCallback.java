@@ -1,4 +1,4 @@
-package com.xq.projectdefine.callback;
+package com.xq.projectdefine.callback.httpcallback;
 
 
 public interface FasterBaseCallback<T> {

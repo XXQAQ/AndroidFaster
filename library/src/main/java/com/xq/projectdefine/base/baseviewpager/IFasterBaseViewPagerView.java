@@ -1,7 +1,6 @@
 package com.xq.projectdefine.base.baseviewpager;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -75,7 +74,7 @@ public interface IFasterBaseViewPagerView<T extends IFasterBaseViewPagerPresente
             getViewPagerBuilder().tl.setupWithViewPager(getViewPagerBuilder().vp);
         }
 
-        getViewPagerBuilder().vp.setAdapter(new FragmentPagerAdapter(getCPFragmentManager(),list_fragment,list_title));
+        getViewPagerBuilder().vp.setAdapter(new UniverseFragmentPagerAdapter(getCPFragmentManager(),list_fragment,list_title));
 
     }
 
