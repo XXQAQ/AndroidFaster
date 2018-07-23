@@ -1,5 +1,6 @@
 package com.xq.projectdefine.util.tools;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,7 +10,17 @@ import java.util.List;
 public final class PropertyUtils {
 
     /**
-     * 利用反射实现对象之间属性复制
+     * 利用反射实现数据擦除
+     * @param object
+     */
+    public static void clearProperties(Object object) throws Exception {
+        Constructor constructor=object.getClass().getConstructor();
+        constructor.setAccessible(true);
+        copyProperties(constructor.newInstance(),object);
+    }
+
+    /**
+     * 利用反射实现对象之间属性复制(复制的属性必须实现set与get方法)
      * @param from
      * @param to
      */

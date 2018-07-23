@@ -170,7 +170,7 @@ public final class ToastUtils {
      */
     public static void showLong(@StringRes final int resId, final Object... args) {
         if (args != null && args.length == 0) {
-            show(resId, Toast.LENGTH_SHORT);
+            show(resId, Toast.LENGTH_LONG);
         } else {
             show(resId, Toast.LENGTH_LONG, args);
         }
@@ -184,7 +184,7 @@ public final class ToastUtils {
      */
     public static void showLong(final String format, final Object... args) {
         if (args != null && args.length == 0) {
-            show(format, Toast.LENGTH_SHORT);
+            show(format, Toast.LENGTH_LONG);
         } else {
             show(format, Toast.LENGTH_LONG, args);
         }
@@ -221,19 +221,27 @@ public final class ToastUtils {
         }
     }
 
-    private static void show(@StringRes final int resId, final int duration) {
+    public static void showToast(final CharSequence text, final int duration){
+        show(text,duration);
+    }
+
+    public static void showToast(final CharSequence text){
+        show(text);
+    }
+
+    public static void show(@StringRes final int resId, final int duration) {
         show(getApp().getResources().getText(resId).toString(), duration);
     }
 
-    private static void show(@StringRes final int resId, final int duration, final Object... args) {
+    public static void show(@StringRes final int resId, final int duration, final Object... args) {
         show(String.format(getApp().getResources().getString(resId), args), duration);
     }
 
-    private static void show(final String format, final int duration, final Object... args) {
+    public static void show(final String format, final int duration, final Object... args) {
         show(String.format(format, args), duration);
     }
 
-    private static void show(final CharSequence text, final int duration) {
+    public static void show(final CharSequence text, final int duration) {
         HANDLER.post(new Runnable() {
             @SuppressLint("ShowToast")
             @Override
@@ -251,9 +259,13 @@ public final class ToastUtils {
                     sToast.setGravity(sGravity, sXOffset, sYOffset);
                 }
                 setBg(tvMessage);
-                showToast();
+                toast();
             }
         });
+    }
+
+    public static void show(final CharSequence text){
+        show(text,Toast.LENGTH_SHORT);
     }
 
     private static void show(final View view, final int duration) {
@@ -268,12 +280,12 @@ public final class ToastUtils {
                     sToast.setGravity(sGravity, sXOffset, sYOffset);
                 }
                 setBg();
-                showToast();
+                toast();
             }
         });
     }
 
-    private static void showToast() {
+    private static void toast() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.N_MR1) {
             try {
                 Field field = View.class.getDeclaredField("mContext");
