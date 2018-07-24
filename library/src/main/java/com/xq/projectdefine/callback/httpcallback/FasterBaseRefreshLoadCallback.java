@@ -62,7 +62,7 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
 
     @Override
     default void afterRefresh(T t) {
-        getCallbackBuilder().simpleRefreshLoadView.afterRefresh();
+        getCallbackBuilder().refreshLoadView.afterRefresh();
     }
 
     @Override
@@ -75,10 +75,6 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
     public static class CallbackBuilder extends FasterBaseSimpleRefreshLoadCallback.CallbackBuilder{
         public IFasterBaseRefreshLoadView refreshLoadView;
         public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder prensenterBuilder;
-        {
-            simpleRefreshLoadView = refreshLoadView;
-            simplePrensenterBuilder = prensenterBuilder;
-        }
     }
 
 }

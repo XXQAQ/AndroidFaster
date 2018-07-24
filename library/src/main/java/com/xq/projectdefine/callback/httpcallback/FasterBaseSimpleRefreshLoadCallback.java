@@ -21,39 +21,39 @@ public interface FasterBaseSimpleRefreshLoadCallback<T> extends FasterBaseCallba
 
     default void requestError(Object... objects) {
         FasterBaseCallback.super.requestError(objects);
-        if (getCallbackBuilder().simpleRefreshLoadView != null)
-            getCallbackBuilder().simpleRefreshLoadView.afterRefreshLoadErro();
+        if (getCallbackBuilder().refreshLoadView != null)
+            getCallbackBuilder().refreshLoadView.afterRefreshLoadErro();
     }
 
     @Override
     default void requestFinish(T t,Object... objects) {
         FasterBaseCallback.super.requestFinish(t,objects);
-        if (getCallbackBuilder().simpleRefreshLoadView != null)
+        if (getCallbackBuilder().refreshLoadView != null)
         {
-            if (getCallbackBuilder().simplePrensenterBuilder.isRefresh)
+            if (getCallbackBuilder().prensenterBuilder.isRefresh)
                 afterRefresh(t);
             else
                 afterLoadmore(t);
 
             if (isEmpty(t))
-                getCallbackBuilder().simpleRefreshLoadView.afterEmpty();
+                getCallbackBuilder().refreshLoadView.afterEmpty();
         }
     }
 
     default void operateSuccess(T t){
-        if (getCallbackBuilder().simpleRefreshLoadView != null)
+        if (getCallbackBuilder().refreshLoadView != null)
         {
             if (!isEmpty(t))
-                getCallbackBuilder().simplePrensenterBuilder.page++;
+                getCallbackBuilder().prensenterBuilder.page++;
         }
     }
 
     default void afterRefresh(T t){
-        getCallbackBuilder().simpleRefreshLoadView.afterRefresh(t);
+        getCallbackBuilder().refreshLoadView.afterRefresh(t);
     }
 
     default void afterLoadmore(T t){
-        getCallbackBuilder().simpleRefreshLoadView.afterLoadmore(t);
+        getCallbackBuilder().refreshLoadView.afterLoadmore(t);
     }
 
     default boolean isEmpty(Object object){
@@ -72,8 +72,8 @@ public interface FasterBaseSimpleRefreshLoadCallback<T> extends FasterBaseCallba
     public CallbackBuilder getCallbackBuilder();
 
     public static class CallbackBuilder {
-        public IFasterBaseSimpleRefreshLoadView simpleRefreshLoadView;
-        public IFasterBaseSimpleRefreshLoadPresenter.RefreshLoadBuilder simplePrensenterBuilder;
+        public IFasterBaseSimpleRefreshLoadView refreshLoadView;
+        public IFasterBaseSimpleRefreshLoadPresenter.RefreshLoadBuilder prensenterBuilder;
     }
 
 }
