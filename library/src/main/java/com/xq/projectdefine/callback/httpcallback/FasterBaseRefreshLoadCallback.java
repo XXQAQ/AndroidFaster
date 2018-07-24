@@ -75,6 +75,10 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
     public static class CallbackBuilder extends FasterBaseSimpleRefreshLoadCallback.CallbackBuilder{
         public IFasterBaseRefreshLoadView refreshLoadView;
         public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder prensenterBuilder;
+        {
+            simpleRefreshLoadView = refreshLoadView;
+            simplePrensenterBuilder = prensenterBuilder;
+        }
     }
 
 }
