@@ -46,16 +46,16 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
             if (list.size() <1)
                 getCallbackBuilder().refreshLoadView.afterRefreshLoadEnd();
 
-            if (getCallbackBuilder().prensenterBuilder.isRefresh)
+            if (getCallbackBuilder().refreshLoadBuilder.isRefresh)
             {
-                getCallbackBuilder().prensenterBuilder.list_data.clear();
-                getCallbackBuilder().prensenterBuilder.list_data.addAll(list);
+                getCallbackBuilder().refreshLoadBuilder.list_data.clear();
+                getCallbackBuilder().refreshLoadBuilder.list_data.addAll(list);
             }
             else
             {
-                getCallbackBuilder().prensenterBuilder.list_data.addAll(list);
+                getCallbackBuilder().refreshLoadBuilder.list_data.addAll(list);
                 if (list.size() > 0)
-                    getCallbackBuilder().prensenterBuilder.page++;
+                    getCallbackBuilder().refreshLoadBuilder.page++;
             }
         }
     }
@@ -67,14 +67,14 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
 
     @Override
     default void afterLoadmore(T t) {
-        getCallbackBuilder().refreshLoadView.afterLoadmore(getCallbackBuilder().prensenterBuilder.list_data.size());
+        getCallbackBuilder().refreshLoadView.afterLoadmore(getCallbackBuilder().refreshLoadBuilder.list_data.size());
     }
 
     public CallbackBuilder getCallbackBuilder();
 
     public static class CallbackBuilder extends FasterBaseSimpleRefreshLoadCallback.CallbackBuilder{
         public IFasterBaseRefreshLoadView refreshLoadView;
-        public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder prensenterBuilder;
+        public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder refreshLoadBuilder;
     }
 
 }
