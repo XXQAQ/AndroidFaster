@@ -221,23 +221,25 @@ public final class ToastUtils {
         }
     }
 
+    @Deprecated
     public static void showToast(final CharSequence text, final int duration){
         show(text,duration);
     }
 
+    @Deprecated
     public static void showToast(final CharSequence text){
         show(text);
     }
 
-    public static void show(@StringRes final int resId, final int duration) {
+    private static void show(@StringRes final int resId, final int duration) {
         show(getApp().getResources().getText(resId).toString(), duration);
     }
 
-    public static void show(@StringRes final int resId, final int duration, final Object... args) {
+    private static void show(@StringRes final int resId, final int duration, final Object... args) {
         show(String.format(getApp().getResources().getString(resId), args), duration);
     }
 
-    public static void show(final String format, final int duration, final Object... args) {
+    private static void show(final String format, final int duration, final Object... args) {
         show(String.format(format, args), duration);
     }
 

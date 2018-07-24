@@ -75,8 +75,13 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
 
     //集合类型数据加载完成后调用
     default void afterLoadmore(int position) {
+        afterLoadmore(0,position);
+    }
+
+    //集合类型数据加载完成后调用
+    default void afterLoadmore(int begin ,int end) {
         IFasterBaseSimpleRefreshLoadView.super.afterLoadmore();
-        getRefreshLoadBuilder().rv.getAdapter().notifyItemRangeChanged(0,position);
+        getRefreshLoadBuilder().rv.getAdapter().notifyItemRangeChanged(begin,end);
     }
 
     //初始化适配器，主要写给P层调用
