@@ -38,43 +38,43 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
         else
             return;
 
-        if (getCallbackBuilder().baseRefreshLoadview != null)
+        if (getCallbackBuilder().refreshLoadView != null)
         {
             if (list == null)
                 list = new LinkedList();
 
             if (list.size() <1)
-                getCallbackBuilder().baseRefreshLoadview.afterRefreshLoadEnd();
+                getCallbackBuilder().refreshLoadView.afterRefreshLoadEnd();
 
-            if (getCallbackBuilder().refreshLoadBuilder.isRefresh)
+            if (getCallbackBuilder().prensenterBuilder.isRefresh)
             {
-                getCallbackBuilder().refreshLoadBuilder.list_data.clear();
-                getCallbackBuilder().refreshLoadBuilder.list_data.addAll(list);
+                getCallbackBuilder().prensenterBuilder.list_data.clear();
+                getCallbackBuilder().prensenterBuilder.list_data.addAll(list);
             }
             else
             {
-                getCallbackBuilder().refreshLoadBuilder.list_data.addAll(list);
+                getCallbackBuilder().prensenterBuilder.list_data.addAll(list);
                 if (list.size() > 0)
-                    getCallbackBuilder().refreshLoadBuilder.page++;
+                    getCallbackBuilder().prensenterBuilder.page++;
             }
         }
     }
 
     @Override
     default void afterRefresh(T t) {
-        getCallbackBuilder().refreshLoadView.afterRefresh();
+        getCallbackBuilder().simpleRefreshLoadView.afterRefresh();
     }
 
     @Override
     default void afterLoadmore(T t) {
-        getCallbackBuilder().baseRefreshLoadview.afterLoadmore(getCallbackBuilder().refreshLoadBuilder.list_data.size());
+        getCallbackBuilder().refreshLoadView.afterLoadmore(getCallbackBuilder().prensenterBuilder.list_data.size());
     }
 
     public CallbackBuilder getCallbackBuilder();
 
     public static class CallbackBuilder extends FasterBaseSimpleRefreshLoadCallback.CallbackBuilder{
-        public IFasterBaseRefreshLoadView baseRefreshLoadview;
-        public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder refreshLoadBuilder;
+        public IFasterBaseRefreshLoadView refreshLoadView;
+        public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder prensenterBuilder;
     }
 
 }
