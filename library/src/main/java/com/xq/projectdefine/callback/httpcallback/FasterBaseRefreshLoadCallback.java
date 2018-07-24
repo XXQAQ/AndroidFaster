@@ -11,6 +11,10 @@ import java.util.List;
 
 public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> {
 
+    default void requestStart(Object... objects) {
+
+    }
+
     default void requestSuccess(T t, Object... objects) {
 
         List list = null;
