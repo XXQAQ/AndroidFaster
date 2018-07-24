@@ -9,14 +9,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> {
+public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefreshLoadCallback<T> {
 
     default void requestStart(Object... objects) {
-
+        FasterBaseSimpleRefreshLoadCallback.super.requestStart(objects);
     }
 
     default void requestSuccess(T t, Object... objects) {
+        FasterBaseSimpleRefreshLoadCallback.super.requestSuccess(t,objects);
+    }
 
+    default void requestError(Object... objects) {
+        FasterBaseSimpleRefreshLoadCallback.super.requestError(objects);
+    }
+
+    @Override
+    default void requestFinish(T t,Object... objects) {
+        FasterBaseSimpleRefreshLoadCallback.super.requestFinish(t,objects);
+    }
+
+    default void operateSuccess(T t){
         List list = null;
 
         if (t instanceof List)
@@ -48,28 +60,19 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseCallback<T> 
         }
     }
 
-    default void requestError(Object... objects) {
-        if (getCallbackBuilder().baseRefreshLoadview != null)
-            getCallbackBuilder().baseRefreshLoadview.afterRefreshLoadErro();
+    @Override
+    default void afterRefresh(T t) {
+        getCallbackBuilder().refreshLoadView.afterRefresh();
     }
 
     @Override
-    default void requestFinish(Object... objects) {
-        if (getCallbackBuilder().baseRefreshLoadview != null)
-        {
-            if (getCallbackBuilder().refreshLoadBuilder.isRefresh)
-                getCallbackBuilder().baseRefreshLoadview.afterRefresh();
-            else
-                getCallbackBuilder().baseRefreshLoadview.afterLoadmore(getCallbackBuilder().refreshLoadBuilder.list_data.size());
-
-            if (getCallbackBuilder().refreshLoadBuilder.list_data == null || getCallbackBuilder().refreshLoadBuilder.list_data.size()<=0)
-                getCallbackBuilder().baseRefreshLoadview.afterEmpty();
-        }
+    default void afterLoadmore(T t) {
+        getCallbackBuilder().baseRefreshLoadview.afterLoadmore(getCallbackBuilder().refreshLoadBuilder.list_data.size());
     }
 
     public CallbackBuilder getCallbackBuilder();
 
-    public static class CallbackBuilder {
+    public static class CallbackBuilder extends FasterBaseSimpleRefreshLoadCallback.CallbackBuilder{
         public IFasterBaseRefreshLoadView baseRefreshLoadview;
         public IFasterBaseRefreshLoadPresenter.RefreshLoadBuilder refreshLoadBuilder;
     }
