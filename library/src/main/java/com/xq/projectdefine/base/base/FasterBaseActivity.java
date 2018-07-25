@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseArray;
+
+import com.xq.projectdefine.callback.ActivityResultCallback;
 
 
 public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppCompatActivity implements IFasterBasePresenter<T> {
@@ -86,22 +89,40 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
+        ActivityResultCallback callback = array_resultCallback.get(requestCode);
+        array_resultCallback.remove(requestCode);
+        if (null != callback)
+        {
+            switch (resultCode)
+            {
+                case Activity.RESULT_OK:
+                    callback.onSuccess(data);
+                    break;
+                case Activity.RESULT_CANCELED:
+                    callback.onCancel();
+                    break;
+            }
+        }
     }
 
     @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
+    public void startActivity(Class mClass) {
+        startActivity(new Intent(getContext(),mClass));
     }
 
-    @Override
-    public void startActivities(Intent[] intents) {
-        super.startActivities(intents);
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
+    //封装startActivityForResult成回调的形式
+    private SparseArray<ActivityResultCallback> array_resultCallback = new SparseArray();
+    public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
+        int requestCode;
+        if (callback != null)
+        {
+            requestCode = callback.hashCode();
+            requestCode &= 0x0000ffff;
+            array_resultCallback.append(requestCode,callback);
+            startActivityForResult(intent, requestCode);
+        }
+        else    startActivity(intent);
     }
 
     @Override

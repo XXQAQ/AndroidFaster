@@ -6,6 +6,6 @@ import java.util.Objects;
 
 public interface SuccessCallback {
 
-    public void onCallback(SuccessBehavior behavior, Object... objects);
+    public void onCallback(SuccessBehavior behavior);
 
 }

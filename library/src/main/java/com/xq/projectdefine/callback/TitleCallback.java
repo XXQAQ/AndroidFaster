@@ -4,6 +4,6 @@ import com.xq.projectdefine.bean.behavior.TitleBehavior;
 
 public interface TitleCallback {
 
-    public void onCallback(TitleBehavior behavior, Object... objects);
+    public void onCallback(TitleBehavior behavior);
 
 }

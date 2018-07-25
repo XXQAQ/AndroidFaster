@@ -21,7 +21,7 @@ public interface AbsPresenter<T extends AbsView> extends PresenterLife {
     //如果当前P层服务于Fragment，则返回对应Fragment，否则返回null
     public Fragment getAreFragment();
 
-    //如果当前V层服务于Activity，则返回对应Activity，否则返回null
+    //如果当前P层服务于Activity，则返回对应Activity，否则返回null
     public Activity getAreActivity();
 
     //结束自身，如果是Activity则等同于调用finish,如果是Fragment则将从FragmentManager中移除
@@ -30,12 +30,6 @@ public interface AbsPresenter<T extends AbsView> extends PresenterLife {
     //关闭当前页面
     public void finish();
 
-    //打开Activity
-    public void startActivity(Intent intent);
-
-    //打开一堆Activity
-    public void startActivities(Intent[] intents);
-
-    //打开带返回值的Activity
-    public void startActivityForResult(Intent intent, int requestCode);
+    //指定Class快捷跳转页面
+    public void startActivity(Class mClass);
 }

@@ -8,9 +8,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.xq.projectdefine.callback.ActivityResultCallback;
 
 public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Fragment implements IFasterBasePresenter<T> {
 
@@ -109,26 +112,48 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
+        ActivityResultCallback callback = spa_resultCallback.get(requestCode);
+        if (null != callback)
+        {
+            switch (resultCode)
+            {
+                case Activity.RESULT_OK:
+                    callback.onSuccess(data);
+                    break;
+                case Activity.RESULT_CANCELED:
+                    callback.onCancel();
+                    break;
+            }
+        }
     }
 
     @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
+    public void startActivity(Class mClass) {
+        startActivity(new Intent(getContext(),mClass));
     }
 
-    @Override
+    //为了与Activity保持同步创建此方法
     public void startActivities(Intent[] intents) {
         getContext().startActivities(intents);
     }
 
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
+    //封装startActivityForResult为回调的形式
+    private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
+    public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
+        int requestCode;
+        if (callback != null)
+        {
+            requestCode = callback.hashCode();
+            requestCode &= 0x0000ffff;
+            spa_resultCallback.append(requestCode,callback);
+            startActivityForResult(intent, requestCode);
+        }
+        else    startActivity(intent);
     }
 
     @Override
     public void finishSelf() {
-        getFragmentManager().beginTransaction().remove(this).commit();
+        getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
     }
 
     @Override
