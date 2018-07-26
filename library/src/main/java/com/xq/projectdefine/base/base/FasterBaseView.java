@@ -29,7 +29,8 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
             rootView = getPresenter().getAreFragment().getView();
         }
 
-        autoFindView();
+        if (isAutoFindView())
+            autoFindView();
     }
 
     @Override
@@ -76,6 +77,11 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
                 return true;
         }
         return false;
+    }
+
+    //重定义此方法返回false可以取消默认自动的findViewById
+    protected boolean isAutoFindView(){
+        return true;
     }
 
     //自动findViewById(必须保证布局文件中的id与变量名一致)
