@@ -95,22 +95,12 @@ public interface IFasterBaseSimpleRefreshLoadView<T extends IFasterBaseSimpleRef
 
     //刷新完成后调用
     default void afterRefresh() {
-        afterRefresh(null);
-    }
-
-    //刷新完成后调用
-    default void afterRefresh(Object... objects){
         if (getRefreshLoadBuilder().refreshView != null)
             getRefreshLoadBuilder().refreshView.finishRefreshing();
     }
 
     //加载完成后调用
     default void afterLoadmore() {
-        afterLoadmore(null);
-    }
-
-    //加载完成后调用
-    default void afterLoadmore(Object... objects){
         if (getRefreshLoadBuilder().refreshView != null)
             getRefreshLoadBuilder().refreshView.finishLoadmore();
     }

@@ -53,24 +53,10 @@ public interface IFasterBaseRefreshLoadView<T extends IFasterBaseRefreshLoadPres
         getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
     }
 
-    //刷新完成后调用
-    @Deprecated
-    @Override
-    default void afterRefresh(Object... objects) {
-        IFasterBaseSimpleRefreshLoadView.super.afterRefresh(objects);
-    }
-
     //加载完成后调用
     default void afterLoadmore() {
         IFasterBaseSimpleRefreshLoadView.super.afterLoadmore();
         getRefreshLoadBuilder().rv.getAdapter().notifyDataSetChanged();
-    }
-
-    //加载完成后调用
-    @Deprecated
-    @Override
-    default void afterLoadmore(Object... objects) {
-        IFasterBaseSimpleRefreshLoadView.super.afterLoadmore(objects);
     }
 
     //集合类型数据加载完成后调用

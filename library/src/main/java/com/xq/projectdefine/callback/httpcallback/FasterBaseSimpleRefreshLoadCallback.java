@@ -26,34 +26,34 @@ public interface FasterBaseSimpleRefreshLoadCallback<T> extends FasterBaseCallba
     }
 
     @Override
-    default void requestFinish(T t,Object... objects) {
-        FasterBaseCallback.super.requestFinish(t,objects);
+    default void requestFinish(Object... objects) {
+        FasterBaseCallback.super.requestFinish(objects);
         if (getCallbackBuilder().simpleRefreshLoadView != null)
         {
             if (getCallbackBuilder().simpleRefreshLoadBuilder.isRefresh)
-                afterRefresh(t);
+                afterRefresh();
             else
-                afterLoadmore(t);
-
-            if (isEmpty(t))
-                getCallbackBuilder().simpleRefreshLoadView.afterEmpty();
+                afterLoadmore();
         }
     }
 
     default void operateSuccess(T t){
         if (getCallbackBuilder().simpleRefreshLoadView != null)
         {
-            if (!isEmpty(t))
-                getCallbackBuilder().simpleRefreshLoadBuilder.page++;
+            if (isEmpty(t))
+                getCallbackBuilder().simpleRefreshLoadView.afterEmpty();
+            else
+               if (!getCallbackBuilder().simpleRefreshLoadBuilder.isRefresh)
+                   getCallbackBuilder().simpleRefreshLoadBuilder.page++;
         }
     }
 
-    default void afterRefresh(T t){
-        getCallbackBuilder().simpleRefreshLoadView.afterRefresh(t);
+    default void afterRefresh(){
+        getCallbackBuilder().simpleRefreshLoadView.afterRefresh();
     }
 
-    default void afterLoadmore(T t){
-        getCallbackBuilder().simpleRefreshLoadView.afterLoadmore(t);
+    default void afterLoadmore(){
+        getCallbackBuilder().simpleRefreshLoadView.afterLoadmore();
     }
 
     default boolean isEmpty(Object object){
@@ -71,7 +71,7 @@ public interface FasterBaseSimpleRefreshLoadCallback<T> extends FasterBaseCallba
 
     public CallbackBuilder getCallbackBuilder();
 
-    public static class CallbackBuilder {
+    public static class CallbackBuilder extends FasterBaseCallback.CallbackBuilder{
         public IFasterBaseSimpleRefreshLoadView simpleRefreshLoadView;
         public IFasterBaseSimpleRefreshLoadPresenter.RefreshLoadBuilder simpleRefreshLoadBuilder;
     }

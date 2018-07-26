@@ -24,8 +24,8 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
     }
 
     @Override
-    default void requestFinish(T t,Object... objects) {
-        FasterBaseSimpleRefreshLoadCallback.super.requestFinish(t,objects);
+    default void requestFinish(Object... objects) {
+        FasterBaseSimpleRefreshLoadCallback.super.requestFinish(objects);
     }
 
     default void operateSuccess(T t){
@@ -61,12 +61,12 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
     }
 
     @Override
-    default void afterRefresh(T t) {
+    default void afterRefresh() {
         getCallbackBuilder().refreshLoadView.afterRefresh();
     }
 
     @Override
-    default void afterLoadmore(T t) {
+    default void afterLoadmore() {
         getCallbackBuilder().refreshLoadView.afterLoadmore(getCallbackBuilder().refreshLoadBuilder.list_data.size());
     }
 
