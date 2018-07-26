@@ -1,8 +1,11 @@
 package com.xq.projectdefine.callback.httpcallback;
 
 
-public interface FasterBaseCallback<T> {
+import android.text.TextUtils;
 
+import java.util.List;
+
+public interface FasterBaseCallback<T> {
 
     default void requestStart(Object... objects) {
 
@@ -20,6 +23,8 @@ public interface FasterBaseCallback<T> {
         if (operating(t,objects))
         {
             getCallbackBuilder().isOperateSuccess = true;
+            if (!isEmpty(t))
+                getCallbackBuilder().isEmpty = false;
             operateSuccess(t);
         }
     }
@@ -28,10 +33,25 @@ public interface FasterBaseCallback<T> {
 
     public void operateSuccess(T t);
 
+    default boolean isEmpty(Object object){
+        if (object  == null)
+            return true;
+
+        if (object instanceof List && ((List)object).size() <= 0)
+            return true;
+
+        if (object instanceof CharSequence && TextUtils.isEmpty((CharSequence) object))
+            return true;
+
+        return false;
+    }
+
     public CallbackBuilder getCallbackBuilder();
 
     public static class CallbackBuilder{
-        public boolean isOperateSuccess;
+        //以下变量均在requestSuccess方法完成后才具备意义
+        public boolean isOperateSuccess = false;
+        public boolean isEmpty = true;
     }
 
 }

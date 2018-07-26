@@ -30,7 +30,6 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
 
     default void operateSuccess(T t){
         List list = null;
-
         if (t instanceof List)
             list = (List) t;
         else    if (t instanceof ListBehavior)
@@ -43,7 +42,7 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
             if (list == null)
                 list = new LinkedList();
 
-            if (list.size() <1)
+            if (list.size() <= 0)
                 getCallbackBuilder().refreshLoadView.afterRefreshLoadEnd();
 
             if (getCallbackBuilder().refreshLoadBuilder.isRefresh)
@@ -54,8 +53,6 @@ public interface FasterBaseRefreshLoadCallback<T> extends FasterBaseSimpleRefres
             else
             {
                 getCallbackBuilder().refreshLoadBuilder.list_data.addAll(list);
-                if (list.size() > 0)
-                    getCallbackBuilder().refreshLoadBuilder.page++;
             }
         }
     }

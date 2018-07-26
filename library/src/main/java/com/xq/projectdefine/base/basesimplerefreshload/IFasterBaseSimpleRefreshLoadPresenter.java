@@ -35,9 +35,8 @@ public interface IFasterBaseSimpleRefreshLoadPresenter<T extends IFasterBaseSimp
 
     //开始刷新
     default void refresh(Object... objects) {
-        getRefreshLoadBuilder().page = 1;
         getRefreshLoadBuilder().isRefresh = true;
-        refreshLoad(true, getRefreshLoadBuilder().page,objects);
+        refreshLoad(true, 1,objects);
     }
 
     //开始加载

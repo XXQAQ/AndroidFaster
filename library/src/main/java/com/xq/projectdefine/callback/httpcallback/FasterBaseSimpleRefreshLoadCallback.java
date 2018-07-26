@@ -31,20 +31,20 @@ public interface FasterBaseSimpleRefreshLoadCallback<T> extends FasterBaseCallba
         if (getCallbackBuilder().simpleRefreshLoadView != null)
         {
             if (getCallbackBuilder().simpleRefreshLoadBuilder.isRefresh)
+            {
+                if (!getCallbackBuilder().isEmpty)
+                    getCallbackBuilder().simpleRefreshLoadBuilder.page = 1;
                 afterRefresh();
+            }
             else
+            {
+                if (!getCallbackBuilder().isEmpty)
+                    getCallbackBuilder().simpleRefreshLoadBuilder.page++;
                 afterLoadmore();
-        }
-    }
+            }
 
-    default void operateSuccess(T t){
-        if (getCallbackBuilder().simpleRefreshLoadView != null)
-        {
-            if (isEmpty(t))
+            if (getCallbackBuilder().isEmpty)
                 getCallbackBuilder().simpleRefreshLoadView.afterEmpty();
-            else
-               if (!getCallbackBuilder().simpleRefreshLoadBuilder.isRefresh)
-                   getCallbackBuilder().simpleRefreshLoadBuilder.page++;
         }
     }
 
@@ -54,19 +54,6 @@ public interface FasterBaseSimpleRefreshLoadCallback<T> extends FasterBaseCallba
 
     default void afterLoadmore(){
         getCallbackBuilder().simpleRefreshLoadView.afterLoadmore();
-    }
-
-    default boolean isEmpty(Object object){
-        if (object  == null)
-            return true;
-
-        if (object instanceof List && ((List)object).size() <= 0)
-            return true;
-
-        if (object instanceof CharSequence && TextUtils.isEmpty((CharSequence) object))
-            return true;
-
-        return false;
     }
 
     public CallbackBuilder getCallbackBuilder();
