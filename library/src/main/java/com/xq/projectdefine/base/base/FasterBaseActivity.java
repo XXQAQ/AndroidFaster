@@ -125,6 +125,18 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         else    startActivity(intent);
     }
 
+    @Deprecated
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
+        super.startActivityForResult(intent, requestCode, options);
+    }
+
+    @Deprecated
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
     @Override
     public Fragment getAreFragment() {
         return null;

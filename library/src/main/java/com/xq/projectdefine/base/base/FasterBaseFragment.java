@@ -151,6 +151,18 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         else    startActivity(intent);
     }
 
+    @Deprecated
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
+        super.startActivityForResult(intent, requestCode, options);
+    }
+
+    @Deprecated
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
     @Override
     public void finishSelf() {
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
