@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.xq.projectdefine.callback.ActivityResultCallback;
+import com.xq.projectdefine.util.callback.ActivityResultCallback;
 
 public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Fragment implements IFasterBasePresenter<T> {
 

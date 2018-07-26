@@ -1,4 +1,4 @@
-package com.xq.projectdefine.callback;
+package com.xq.projectdefine.util.callback;
 
 import com.xq.projectdefine.bean.behavior.ListBehavior;
 

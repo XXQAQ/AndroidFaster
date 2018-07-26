@@ -10,7 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 
-import com.xq.projectdefine.callback.ActivityResultCallback;
+import com.xq.projectdefine.util.callback.ActivityResultCallback;
 
 
 public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppCompatActivity implements IFasterBasePresenter<T> {

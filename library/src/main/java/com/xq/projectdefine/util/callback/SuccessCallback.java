@@ -1,8 +1,6 @@
-package com.xq.projectdefine.callback;
+package com.xq.projectdefine.util.callback;
 
 import com.xq.projectdefine.bean.behavior.SuccessBehavior;
-
-import java.util.Objects;
 
 public interface SuccessCallback {
 

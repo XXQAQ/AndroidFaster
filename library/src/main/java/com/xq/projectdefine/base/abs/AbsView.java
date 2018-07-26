@@ -72,68 +72,68 @@ public interface AbsView<T extends AbsPresenter> extends ViewLife {
         return getRootView().findViewById(id);
     }
 
-    //以下封装 添加Fragment的便捷方法
-    default void addFragment(Fragment fragment){
-        addFragment(fragment,false);
-    }
-
-    default void addFragment(Fragment fragment,boolean isOverride){
-        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
-        if (getCPFragmentManager().findFragmentByTag(fragment.getClass().getName()) != null)
-            if (isOverride)
-                transaction.remove(fragment);
-            else
-                return;
-        transaction.add(fragment,fragment.getClass().getName());
-        transaction.commitAllowingStateLoss();
-    }
-
-    default void addFragment(int id,Fragment fragment){
-        addFragment(id,fragment,false);
-    }
-
-    default void addFragment(int id,Fragment fragment,boolean isOverride){
-        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
-        if (getCPFragmentManager().findFragmentByTag(fragment.getClass().getName()) != null)
-            if (isOverride)
-                transaction.remove(fragment);
-            else
-                return;
-        transaction.add(id,fragment,fragment.getClass().getName());
-        transaction.commitAllowingStateLoss();
-    }
-
-    default void replaceFragment(int id,Fragment fragment){
-        replaceFragment(id,fragment,false);
-    }
-
-    default void replaceFragment(int id, Fragment fragment,boolean isOverride) {
-        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
-        if (getCPFragmentManager().findFragmentByTag(fragment.getClass().getName()) != null)
-            if (!isOverride)
-                return;
-        transaction.replace(id,fragment,fragment.getClass().getName());
-        transaction.commitAllowingStateLoss();
-    }
-
-    default void removeFragment(String fragmentName){
-        removeFragment(getCPFragmentManager().findFragmentByTag(fragmentName.getClass().getName()));
-    }
-
-    default void removeFragment(Fragment fragment){
-        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
-        transaction.remove(fragment);
-        transaction.commitAllowingStateLoss();
-    }
-
-    default void clearFragments(){
-        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
-        for (Fragment fragment : getCPFragmentManager().getFragments())
-        {
-            transaction.remove(fragment);
-        }
-        transaction.commitAllowingStateLoss();
-    }
+//    //以下封装 添加Fragment的便捷方法
+//    default void addFragment(Fragment fragment){
+//        addFragment(fragment,false);
+//    }
+//
+//    default void addFragment(Fragment fragment,boolean isOverride){
+//        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
+//        if (getCPFragmentManager().findFragmentByTag(fragment.getClass().getName()) != null)
+//            if (isOverride)
+//                transaction.remove(fragment);
+//            else
+//                return;
+//        transaction.add(fragment,fragment.getClass().getName());
+//        transaction.commitAllowingStateLoss();
+//    }
+//
+//    default void addFragment(int id,Fragment fragment){
+//        addFragment(id,fragment,false);
+//    }
+//
+//    default void addFragment(int id,Fragment fragment,boolean isOverride){
+//        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
+//        if (getCPFragmentManager().findFragmentByTag(fragment.getClass().getName()) != null)
+//            if (isOverride)
+//                transaction.remove(fragment);
+//            else
+//                return;
+//        transaction.add(id,fragment,fragment.getClass().getName());
+//        transaction.commitAllowingStateLoss();
+//    }
+//
+//    default void replaceFragment(int id,Fragment fragment){
+//        replaceFragment(id,fragment,false);
+//    }
+//
+//    default void replaceFragment(int id, Fragment fragment,boolean isOverride) {
+//        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
+//        if (getCPFragmentManager().findFragmentByTag(fragment.getClass().getName()) != null)
+//            if (!isOverride)
+//                return;
+//        transaction.replace(id,fragment,fragment.getClass().getName());
+//        transaction.commitAllowingStateLoss();
+//    }
+//
+//    default void removeFragment(String fragmentName){
+//        removeFragment(getCPFragmentManager().findFragmentByTag(fragmentName.getClass().getName()));
+//    }
+//
+//    default void removeFragment(Fragment fragment){
+//        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
+//        transaction.remove(fragment);
+//        transaction.commitAllowingStateLoss();
+//    }
+//
+//    default void clearFragments(){
+//        FragmentTransaction transaction = getCPFragmentManager().beginTransaction();
+//        for (Fragment fragment : getCPFragmentManager().getFragments())
+//        {
+//            transaction.remove(fragment);
+//        }
+//        transaction.commitAllowingStateLoss();
+//    }
 
 
 }

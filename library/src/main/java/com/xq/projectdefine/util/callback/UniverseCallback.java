@@ -1,4 +1,4 @@
-package com.xq.projectdefine.callback;
+package com.xq.projectdefine.util.callback;
 
 //万能Callback
 public interface UniverseCallback {

@@ -1,4 +1,4 @@
-package com.xq.projectdefine.callback.httpcallback;
+package com.xq.projectdefine.util.callback.httpcallback;
 
 
 import android.text.TextUtils;

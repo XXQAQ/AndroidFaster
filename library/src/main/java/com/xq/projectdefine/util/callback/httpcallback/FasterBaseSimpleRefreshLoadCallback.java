@@ -1,12 +1,8 @@
-package com.xq.projectdefine.callback.httpcallback;
+package com.xq.projectdefine.util.callback.httpcallback;
 
-
-import android.text.TextUtils;
 
 import com.xq.projectdefine.base.basesimplerefreshload.IFasterBaseSimpleRefreshLoadPresenter;
 import com.xq.projectdefine.base.basesimplerefreshload.IFasterBaseSimpleRefreshLoadView;
-
-import java.util.List;
 
 
 public interface FasterBaseSimpleRefreshLoadCallback<T> extends FasterBaseCallback<T> {
