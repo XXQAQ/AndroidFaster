@@ -75,12 +75,18 @@ public interface IFasterBaseSimpleRefreshLoadView<T extends IFasterBaseSimpleRef
 
     //开始刷新，主要写给P层调用
     default void startRefresh(){
-        getRefreshLoadBuilder().refreshView.startRefresh();
+        if (getRefreshLoadBuilder().refreshView != null)
+            getRefreshLoadBuilder().refreshView.startRefresh();
+        else
+            refreshing();
     }
 
     //开始加载，主要写给P层调用
     default void startLoadmore(){
-        getRefreshLoadBuilder().refreshView.startLoadmore();
+        if (getRefreshLoadBuilder().refreshView != null)
+            getRefreshLoadBuilder().refreshView.startLoadmore();
+        else
+            loadmoring();
     }
 
     //通知P层刷新，可以选择重写该方法，在刷新时传入更多参数
