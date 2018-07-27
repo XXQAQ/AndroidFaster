@@ -2,6 +2,7 @@ package com.xq.projectdefine.base.base;
 
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 
 import com.xq.projectdefine.util.callback.ActivityResultCallback;
 
@@ -138,16 +140,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public Fragment getAreFragment() {
-        return null;
-    }
-
-    @Override
-    public Activity getAreActivity() {
-        return this;
-    }
-
-    @Override
     public void finishSelf() {
         finish();
     }
@@ -155,6 +147,30 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     @Override
     public void finish() {
         super.finish();
+    }
+
+    @Override
+    public void back() {
+        new Thread(){
+            public void run() {
+                try{
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                }
+                catch (Exception e) {
+                }
+            }
+        }.start();
+    }
+
+    @Override
+    public Fragment getAreFragment() {
+        return null;
+    }
+
+    @Override
+    public Activity getAreActivity() {
+        return this;
     }
 
     @Override

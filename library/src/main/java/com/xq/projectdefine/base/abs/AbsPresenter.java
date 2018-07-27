@@ -30,6 +30,9 @@ public interface AbsPresenter<T extends AbsView> extends PresenterLife {
     //关闭当前页面
     public void finish();
 
+    //回退(兼容Activity与Fragment的使用情形)
+    public void back();
+
     //指定Class快捷跳转页面
     public void startActivity(Class mClass);
 }
