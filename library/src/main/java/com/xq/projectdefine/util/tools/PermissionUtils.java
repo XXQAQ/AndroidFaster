@@ -268,6 +268,9 @@ public final class PermissionUtils {
         requestCallback();
     }
 
+    private static Application getApp(){
+        return FasterInterface.getApp();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static class PermissionActivity extends Activity {
@@ -348,7 +351,4 @@ public final class PermissionUtils {
         void onActivityCreate(Activity activity);
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
-    }
 }

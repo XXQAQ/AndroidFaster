@@ -322,6 +322,10 @@ public final class LocationUtils {
         return provider0.equals(provider1);
     }
 
+    private static Application getApp(){
+        return FasterInterface.getApp();
+    }
+
     private static class MyLocationListener
             implements LocationListener {
         /**
@@ -402,7 +406,4 @@ public final class LocationUtils {
         void onStatusChanged(String provider, int status, Bundle extras);//位置状态发生改变
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
-    }
 }

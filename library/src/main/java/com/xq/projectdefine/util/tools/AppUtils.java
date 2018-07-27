@@ -812,6 +812,10 @@ public final class AppUtils {
         return new String(ret);
     }
 
+    private static Application getApp(){
+        return FasterInterface.getApp();
+    }
+
     /**
      * The application's information.
      */
@@ -1032,7 +1036,5 @@ public final class AppUtils {
         }
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
-    }
+
 }

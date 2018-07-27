@@ -43,6 +43,14 @@ public final class ThreadUtils {
     }
 
     /**
+     * Run on the main thread.
+     *
+     * @param runnable The Runnable
+     */
+    public static void runOnUiThread(Runnable runnable){
+        Deliver.post(runnable);
+    }
+    /**
      * Return a thread pool that reuses a fixed number of threads
      * operating off a shared unbounded queue, using the provided
      * ThreadFactory to create new threads when needed.

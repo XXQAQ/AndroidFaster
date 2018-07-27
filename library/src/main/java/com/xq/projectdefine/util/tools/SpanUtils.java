@@ -887,6 +887,10 @@ public final class SpanUtils {
         mBuilder.setSpan(new SpaceSpan(spaceSize, spaceColor), start, end, flag);
     }
 
+    private static Application getApp(){
+        return FasterInterface.getApp();
+    }
+
     class CustomLineHeightSpan extends CharacterStyle
             implements LineHeightSpan {
 
@@ -1298,9 +1302,5 @@ public final class SpanUtils {
         public void updateDrawState(final TextPaint tp) {
             tp.setShadowLayer(radius, dx, dy, shadowColor);
         }
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 }

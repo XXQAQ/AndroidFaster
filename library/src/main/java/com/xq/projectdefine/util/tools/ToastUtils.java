@@ -349,6 +349,10 @@ public final class ToastUtils {
         return inflate != null ? inflate.inflate(layoutId, null) : null;
     }
 
+    private static Application getApp(){
+        return FasterInterface.getApp();
+    }
+
     private static final class ApplicationContextWrapperForApi25 extends ContextWrapper {
 
         ApplicationContextWrapperForApi25() {
@@ -410,9 +414,5 @@ public final class ToastUtils {
                 base.removeView(view);
             }
         }
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 }
