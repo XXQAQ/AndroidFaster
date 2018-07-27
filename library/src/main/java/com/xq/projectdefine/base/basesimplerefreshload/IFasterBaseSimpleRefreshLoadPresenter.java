@@ -33,14 +33,22 @@ public interface IFasterBaseSimpleRefreshLoadPresenter<T extends IFasterBaseSimp
 
     }
 
+    default void startRefresh(){
+        getBindView().startRefresh();
+    }
+
+    default void startLoadmore(){
+        getBindView().startLoadmore();
+    }
+
     //开始刷新
-    default void refresh(Object... objects) {
+    default void refreshing(Object... objects) {
         getRefreshLoadBuilder().isRefresh = true;
         refreshLoad(true, 1,objects);
     }
 
     //开始加载
-    default void loadmore(Object... objects) {
+    default void loadmoring(Object... objects) {
         getRefreshLoadBuilder().isRefresh = false;
         refreshLoad(false, getRefreshLoadBuilder().page+1,objects);
     }

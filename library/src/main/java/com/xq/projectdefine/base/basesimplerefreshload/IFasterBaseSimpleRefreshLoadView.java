@@ -25,7 +25,7 @@ public interface IFasterBaseSimpleRefreshLoadView<T extends IFasterBaseSimpleRef
 
                 @Override
                 public void onRefresh(RefreshLoadView view) {
-                    refreshPresenter();
+                    refreshing();
                 }
 
                 @Override
@@ -40,7 +40,7 @@ public interface IFasterBaseSimpleRefreshLoadView<T extends IFasterBaseSimpleRef
 
                 @Override
                 public void onLoadmore(RefreshLoadView view) {
-                    loadmorePresenter();
+                    loadmoring();
                 }
 
                 @Override
@@ -84,13 +84,13 @@ public interface IFasterBaseSimpleRefreshLoadView<T extends IFasterBaseSimpleRef
     }
 
     //通知P层刷新，可以选择重写该方法，在刷新时传入更多参数
-    default void refreshPresenter() {
-        getPresenter().refresh();
+    default void refreshing() {
+        getPresenter().refreshing();
     }
 
     //通知P层加载，可以选择重写该方法，在加载时传入更多参数
-    default void loadmorePresenter() {
-        getPresenter().loadmore();
+    default void loadmoring() {
+        getPresenter().loadmoring();
     }
 
     //刷新完成后调用
