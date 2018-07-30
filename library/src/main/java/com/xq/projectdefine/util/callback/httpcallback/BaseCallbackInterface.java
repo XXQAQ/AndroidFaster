@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-public interface FasterBaseCallback<T> {
+public interface BaseCallbackInterface<T> {
 
     default void requestStart(Object... objects) {
 
