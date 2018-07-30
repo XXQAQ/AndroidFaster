@@ -38,6 +38,21 @@ public interface AbsView<T extends AbsPresenter> extends ViewLife {
         return getPresenter().getAreActivity();
     }
 
+    //结束自身，如果是Activity则等同于调用finish,如果是Fragment则将从FragmentManager中移除
+    default void finishSelf() {
+        getPresenter().finishSelf();
+    }
+
+    //关闭当前页面
+    default void finish() {
+        getPresenter().finish();
+    }
+
+    //回退(兼容Activity与Fragment的使用情形)
+    default void back() {
+        getPresenter().back();
+    }
+
     //获取Window
     default Window getWindow() {
         return ((Activity)getContext()).getWindow();
