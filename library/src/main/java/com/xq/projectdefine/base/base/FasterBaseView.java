@@ -1,11 +1,21 @@
 package com.xq.projectdefine.base.base;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
+import com.xq.projectdefine.base.abs.AbsViewDelegate;
 import com.xq.projectdefine.base.life.ViewLife;
+import com.xq.projectdefine.util.tools.ImageUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -18,7 +28,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
     protected View rootView;
 
-    private List<ViewLife> list_life = new LinkedList<>();
+    private List<AbsViewDelegate> list_delegate = new LinkedList<>();
 
     public FasterBaseView(T presenter) {
         this.presenter = presenter;
@@ -39,27 +49,32 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         if (isAutoFindView())
             autoFindView();
 
-        for (ViewLife life : list_life)     life.afterOnCreate(savedInstanceState);
+        for (ViewLife life : list_delegate)     life.afterOnCreate(savedInstanceState);
     }
 
     @Override
     public void onResume() {
-        for (ViewLife life : list_life)     life.onResume();
+        for (ViewLife life : list_delegate)     life.onResume();
     }
 
     @Override
     public void onPause() {
-        for (ViewLife life : list_life)     life.onPause();
+        for (ViewLife life : list_delegate)     life.onPause();
     }
 
     @Override
     public void onDestroy() {
-        for (ViewLife life : list_life)     life.onDestroy();
+        for (ViewLife life : list_delegate)     life.onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        for (ViewLife life : list_life)     life.onSaveInstanceState(outState);
+        for (ViewLife life : list_delegate)     life.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public List<AbsViewDelegate> getDelegates() {
+        return list_delegate;
     }
 
     @Override
@@ -77,9 +92,52 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return rootView;
     }
 
-    @Override
-    public List<ViewLife> getLifes() {
-        return list_life;
+    public Fragment getAreFragment() {
+        return getPresenter().getAreFragment();
+    }
+
+    public Activity getAreActivity() {
+        return getPresenter().getAreActivity();
+    }
+
+    public void finishSelf() {
+        getPresenter().finishSelf();
+    }
+
+    public void finish() {
+        getPresenter().finish();
+    }
+
+    public void back() {
+        getPresenter().back();
+    }
+
+    public Window getWindow() {
+        return ((Activity)getContext()).getWindow();
+    }
+
+    public WindowManager getWindowManager(){
+        return getWindow().getWindowManager();
+    }
+
+    public FragmentManager getCPFragmentManager() {
+        if (getAreActivity() != null)
+            return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
+        else     if (getAreFragment() != null)
+            return (getAreFragment()).getChildFragmentManager();
+        return null;
+    }
+
+    public LayoutInflater getLayoutInflater(){
+        return (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public Bitmap getRootViewBitmap(){
+        return ImageUtils.view2Bitmap(getRootView());
+    }
+
+    public View findViewById(int id){
+        return getRootView().findViewById(id);
     }
 
     //判断是否顶部容器

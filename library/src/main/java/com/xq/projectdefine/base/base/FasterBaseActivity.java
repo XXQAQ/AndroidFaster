@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 
+import com.xq.projectdefine.base.abs.AbsPresenterDelegate;
 import com.xq.projectdefine.base.life.PresenterLife;
 import com.xq.projectdefine.util.callback.ActivityResultCallback;
 
@@ -25,7 +26,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     protected T view = createBindView();
 
-    private List<PresenterLife> list_life = new LinkedList<>();
+    private List<AbsPresenterDelegate> list_delegate = new LinkedList<>();
 
     //重写该方法，返回对应View层
     protected abstract T createBindView();
@@ -65,7 +66,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
-        for (PresenterLife life:list_life)  life.afterOnCreate(savedInstanceState);
+        for (PresenterLife life: list_delegate)  life.afterOnCreate(savedInstanceState);
     }
 
     @Override
@@ -74,7 +75,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         if (getBindView() != null) getBindView().onResume();
 
-        for (PresenterLife life:list_life)  life.onResume();
+        for (PresenterLife life: list_delegate)  life.onResume();
     }
 
     @Override
@@ -83,7 +84,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         if (getBindView() != null) getBindView().onPause();
 
-        for (PresenterLife life:list_life)  life.onPause();
+        for (PresenterLife life: list_delegate)  life.onPause();
     }
 
     @Override
@@ -92,7 +93,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         if (getBindView() != null) getBindView().onDestroy();
 
-        for (PresenterLife life:list_life)  life.onDestroy();
+        for (PresenterLife life: list_delegate)  life.onDestroy();
     }
 
     @Override
@@ -120,7 +121,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
             }
         }
 
-        for (PresenterLife life:list_life)  life.onActivityResult(requestCode,resultCode,data);
+        for (PresenterLife life: list_delegate)  life.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -199,7 +200,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public List<PresenterLife> getLifes() {
-        return list_life;
+    public List<AbsPresenterDelegate> getDelegates() {
+        return list_delegate;
     }
 }

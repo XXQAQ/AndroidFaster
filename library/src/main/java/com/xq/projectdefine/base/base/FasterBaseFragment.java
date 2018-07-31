@@ -9,13 +9,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.xq.projectdefine.base.abs.AbsPresenterDelegate;
 import com.xq.projectdefine.base.life.PresenterLife;
 import com.xq.projectdefine.util.callback.ActivityResultCallback;
 
@@ -26,14 +26,9 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     protected Context context;
 
-    protected T view;
+    protected T view = createBindView();
 
-    private List<PresenterLife> list_life = new LinkedList<>();
-
-    //构造方案
-    {
-        view = createBindView();
-    }
+    private List<AbsPresenterDelegate> list_delegate = new LinkedList<>();
 
     //重写该方法，返回对应View层
     protected abstract T createBindView();
@@ -91,7 +86,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
-        for (PresenterLife life:list_life)  life.afterOnCreate(savedInstanceState);
+        for (PresenterLife life: list_delegate)  life.afterOnCreate(savedInstanceState);
     }
 
     @Override
@@ -100,7 +95,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
         if (getBindView() != null) getBindView().onResume();
 
-        for (PresenterLife life:list_life)  life.onResume();
+        for (PresenterLife life: list_delegate)  life.onResume();
     }
 
     @Override
@@ -109,7 +104,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
         if (getBindView() != null) getBindView().onPause();
 
-        for (PresenterLife life:list_life)  life.onPause();
+        for (PresenterLife life: list_delegate)  life.onPause();
     }
 
     @Override
@@ -118,7 +113,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
         if (getBindView() != null) getBindView().onDestroy();
 
-        for (PresenterLife life:list_life)  life.onDestroy();
+        for (PresenterLife life: list_delegate)  life.onDestroy();
     }
 
     @Override
@@ -146,7 +141,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
             }
         }
 
-        for (PresenterLife life:list_life)  life.onActivityResult(requestCode,resultCode,data);
+        for (PresenterLife life: list_delegate)  life.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -230,8 +225,8 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
-    public List<PresenterLife> getLifes() {
-        return list_life;
+    public List<AbsPresenterDelegate> getDelegates() {
+        return list_delegate;
     }
 
 }
