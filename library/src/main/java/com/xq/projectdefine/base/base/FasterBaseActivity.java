@@ -12,17 +12,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 
+import com.xq.projectdefine.base.life.PresenterLife;
 import com.xq.projectdefine.util.callback.ActivityResultCallback;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppCompatActivity implements IFasterBasePresenter<T> {
 
-    protected T view;
+    protected Context context = this;
 
-    //构造方案
-    {
-        view = createBindView();
-    }
+    protected T view = createBindView();
+
+    private List<PresenterLife> list_life = new LinkedList<>();
 
     //重写该方法，返回对应View层
     protected abstract T createBindView();
@@ -62,38 +65,48 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
-
+        for (PresenterLife life:list_life)  life.afterOnCreate(savedInstanceState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         if (getBindView() != null) getBindView().onResume();
+
+        for (PresenterLife life:list_life)  life.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
         if (getBindView() != null) getBindView().onPause();
+
+        for (PresenterLife life:list_life)  life.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         if (getBindView() != null) getBindView().onDestroy();
+
+        for (PresenterLife life:list_life)  life.onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         if (getBindView() != null) getBindView().onSaveInstanceState(outState);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ActivityResultCallback callback = array_resultCallback.get(requestCode);
-        array_resultCallback.remove(requestCode);
+        ActivityResultCallback callback = spa_resultCallback.get(requestCode);
+        spa_resultCallback.remove(requestCode);
         if (null != callback)
         {
             switch (resultCode)
@@ -106,6 +119,8 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
                     break;
             }
         }
+
+        for (PresenterLife life:list_life)  life.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -114,14 +129,14 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     //封装startActivityForResult成回调的形式
-    private SparseArray<ActivityResultCallback> array_resultCallback = new SparseArray();
+    private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
     public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
         int requestCode;
         if (callback != null)
         {
             requestCode = callback.hashCode();
             requestCode &= 0x0000ffff;
-            array_resultCallback.append(requestCode,callback);
+            spa_resultCallback.append(requestCode,callback);
             startActivityForResult(intent, requestCode);
         }
         else    startActivity(intent);
@@ -180,6 +195,11 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public Context getContext() {
-        return this;
+        return context;
+    }
+
+    @Override
+    public List<PresenterLife> getLifes() {
+        return list_life;
     }
 }

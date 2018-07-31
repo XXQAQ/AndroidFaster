@@ -4,14 +4,21 @@ package com.xq.projectdefine.base.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+
+import com.xq.projectdefine.base.life.ViewLife;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class FasterBaseView<T extends IFasterBasePresenter> implements IFasterBaseView<T> {
 
     protected T presenter;
 
     protected View rootView;
+
+    private List<ViewLife> list_life = new LinkedList<>();
 
     public FasterBaseView(T presenter) {
         this.presenter = presenter;
@@ -31,26 +38,28 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
         if (isAutoFindView())
             autoFindView();
+
+        for (ViewLife life : list_life)     life.afterOnCreate(savedInstanceState);
     }
 
     @Override
     public void onResume() {
-
+        for (ViewLife life : list_life)     life.onResume();
     }
 
     @Override
     public void onPause() {
-
+        for (ViewLife life : list_life)     life.onPause();
     }
 
     @Override
     public void onDestroy() {
-
+        for (ViewLife life : list_life)     life.onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-
+        for (ViewLife life : list_life)     life.onSaveInstanceState(outState);
     }
 
     @Override
@@ -68,6 +77,11 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return rootView;
     }
 
+    @Override
+    public List<ViewLife> getLifes() {
+        return list_life;
+    }
+
     //判断是否顶部容器
     protected boolean isTopContainer(){
         Annotation[] annotations = getClass().getAnnotations();
@@ -79,7 +93,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return false;
     }
 
-    //重定义此方法返回false可以取消默认自动的findViewById
+    //重定义此方法返回false可以取消默认findViewById
     protected boolean isAutoFindView(){
         return true;
     }

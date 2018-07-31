@@ -16,13 +16,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.xq.projectdefine.base.life.PresenterLife;
 import com.xq.projectdefine.util.callback.ActivityResultCallback;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Fragment implements IFasterBasePresenter<T> {
 
-    private Context context;
+    protected Context context;
 
     protected T view;
+
+    private List<PresenterLife> list_life = new LinkedList<>();
 
     //构造方案
     {
@@ -85,37 +91,48 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
-
+        for (PresenterLife life:list_life)  life.afterOnCreate(savedInstanceState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         if (getBindView() != null) getBindView().onResume();
+
+        for (PresenterLife life:list_life)  life.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
         if (getBindView() != null) getBindView().onPause();
+
+        for (PresenterLife life:list_life)  life.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         if (getBindView() != null) getBindView().onDestroy();
+
+        for (PresenterLife life:list_life)  life.onDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         if (getBindView() != null) getBindView().onSaveInstanceState(outState);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         ActivityResultCallback callback = spa_resultCallback.get(requestCode);
+        spa_resultCallback.remove(requestCode);
         if (null != callback)
         {
             switch (resultCode)
@@ -128,6 +145,8 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
                     break;
             }
         }
+
+        for (PresenterLife life:list_life)  life.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
@@ -209,4 +228,10 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     public Context getContext() {
         return context;
     }
+
+    @Override
+    public List<PresenterLife> getLifes() {
+        return list_life;
+    }
+
 }
