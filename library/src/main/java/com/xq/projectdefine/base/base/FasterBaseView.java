@@ -151,12 +151,12 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return false;
     }
 
-    //重定义此方法返回false可以取消默认findViewById
+    //返回false可以取消默认findViewById
     protected boolean isAutoFindView(){
         return true;
     }
 
-    //自动findViewById(必须保证布局文件中的id与变量名一致)
+    //自动findViewById
     private void autoFindView() {
         Class mClass = this.getClass();
         while (true)

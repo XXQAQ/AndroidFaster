@@ -3,9 +3,7 @@ package com.xq.projectdefine.base.abs;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
-
 import com.xq.projectdefine.base.life.PresenterLife;
-
 import java.util.List;
 
 public abstract class AbsPresenterDelegate<T extends AbsView> implements AbsPresenter<T>,PresenterLife {
@@ -57,8 +55,4 @@ public abstract class AbsPresenterDelegate<T extends AbsView> implements AbsPres
         presenter.back();
     }
 
-    @Override
-    public void startActivity(Class mClass) {
-        presenter.startActivity(mClass);
-    }
 }

@@ -15,20 +15,16 @@ public interface BaseCallbackInterface<T> {
 
     }
 
-    default void requestFinish(Object... objects) {
-
-    }
-
     default void requestSuccess(T t, Object... objects) {
         if (operating(t,objects))
         {
             getCallbackBuilder().isOperateSuccess = true;
-            if (!isEmpty(t))
-                getCallbackBuilder().isEmpty = false;
             operateSuccess(t);
         }
     }
+    default void requestFinish(T t, Object... objects) {
 
+    }
     public boolean operating(T t, Object... objects);
 
     public void operateSuccess(T t);
@@ -51,7 +47,6 @@ public interface BaseCallbackInterface<T> {
     public static class CallbackBuilder{
         //以下变量均在requestSuccess方法完成后才具备意义
         public boolean isOperateSuccess = false;
-        public boolean isEmpty = true;
     }
 
 }

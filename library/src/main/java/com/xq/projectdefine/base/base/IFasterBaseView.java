@@ -1,25 +1,10 @@
 package com.xq.projectdefine.base.base;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-
 import com.xq.projectdefine.base.abs.AbsView;
 import com.xq.projectdefine.base.life.ViewLife;
-import com.xq.projectdefine.util.tools.ImageUtils;
 
-import java.util.List;
-
-
-public interface IFasterBaseView<T extends IFasterBasePresenter> extends AbsView<T>, ViewLife{
+public interface IFasterBaseView<T extends IFasterBasePresenter> extends AbsView<T>, ViewLife {
 
     //返回布局ID
     public int getLayoutId();

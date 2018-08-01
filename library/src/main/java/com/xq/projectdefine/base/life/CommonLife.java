@@ -2,7 +2,7 @@ package com.xq.projectdefine.base.life;
 
 import android.os.Bundle;
 
-public interface BaseLife {
+public interface CommonLife {
 
     public void afterOnCreate(Bundle savedInstanceState);
 
