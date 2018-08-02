@@ -7,12 +7,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.util.List;
 
 public interface AbsView<T extends AbsPresenter> extends AbsCommon {
 
-    //获取当前View层所有delegate
-    public List<AbsViewDelegate> getDelegates();
+    //注入代理
+    public void inject(AbsViewDelegate delegate);
 
     //获取当前View层对应P层
     public T getPresenter();

@@ -229,4 +229,9 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         return list_delegate;
     }
 
+    @Override
+    public void inject(AbsPresenterDelegate delegate) {
+        getDelegates().add(delegate);
+    }
+
 }

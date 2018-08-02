@@ -78,6 +78,11 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
+    public void inject(AbsViewDelegate delegate) {
+        getDelegates().add(delegate);
+    }
+
+    @Override
     public T getPresenter() {
         return presenter;
     }

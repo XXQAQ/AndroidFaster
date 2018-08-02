@@ -15,7 +15,7 @@ public interface AbsCommon {
     //如果当前P层服务于Activity，则返回对应Activity，否则返回null
     public Activity getAreActivity();
 
-    //结束自身，如果是Activity则等同于调用finish,如果是Fragment则将从FragmentManager中移除
+    //结束自身，如果是Activity则等同于调用finish,如果是Fragment则从FragmentManager中移除
     public void finishSelf();
 
     //关闭当前页面

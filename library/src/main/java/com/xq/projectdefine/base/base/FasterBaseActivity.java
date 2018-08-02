@@ -203,4 +203,9 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     public List<AbsPresenterDelegate> getDelegates() {
         return list_delegate;
     }
+
+    @Override
+    public void inject(AbsPresenterDelegate delegate) {
+        getDelegates().add(delegate);
+    }
 }

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-public interface BaseCallbackInterface<T> {
+public interface AbsCallback<T> {
 
     default void requestStart(Object... objects) {
 
@@ -44,8 +44,8 @@ public interface BaseCallbackInterface<T> {
 
     public CallbackBuilder getCallbackBuilder();
 
-    public static class CallbackBuilder{
-        //以下变量均在requestSuccess方法完成后才具备意义
+    public class CallbackBuilder{
+        //下变量在requestSuccess方法完成后才具备意义
         public boolean isOperateSuccess = false;
     }
 

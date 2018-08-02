@@ -2,9 +2,15 @@ package com.xq.projectdefine.base.base;
 
 
 import com.xq.projectdefine.base.abs.AbsView;
+import com.xq.projectdefine.base.abs.AbsViewDelegate;
 import com.xq.projectdefine.base.life.ViewLife;
 
+import java.util.List;
+
 public interface IFasterBaseView<T extends IFasterBasePresenter> extends AbsView<T>, ViewLife {
+
+    //获取当前View层所有delegate
+    public List<AbsViewDelegate> getDelegates();
 
     //返回布局ID
     public int getLayoutId();

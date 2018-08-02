@@ -2,6 +2,8 @@ package com.xq.projectdefine.base.abs;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.xq.projectdefine.base.life.PresenterLife;
 import java.util.List;
@@ -12,7 +14,32 @@ public abstract class AbsPresenterDelegate<T extends AbsView> implements AbsPres
 
     public AbsPresenterDelegate(AbsPresenter presenter) {
         this.presenter = presenter;
-        getDelegates().add(this);
+        inject(this);
+    }
+
+    @Override
+    public void afterOnCreate(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
     }
 
     @Override
@@ -26,8 +53,8 @@ public abstract class AbsPresenterDelegate<T extends AbsView> implements AbsPres
     }
 
     @Override
-    public List<AbsPresenterDelegate> getDelegates() {
-        return presenter.getDelegates();
+    public void inject(AbsPresenterDelegate delegate) {
+        presenter.inject(delegate);
     }
 
     @Override

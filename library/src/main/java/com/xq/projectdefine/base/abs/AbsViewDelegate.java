@@ -20,7 +20,7 @@ public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView
 
     public AbsViewDelegate(AbsView view) {
         this.view = view;
-        getDelegates().add(this);
+        inject(this);
     }
 
     @Override
@@ -34,8 +34,8 @@ public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView
     }
 
     @Override
-    public List<AbsViewDelegate> getDelegates() {
-        return view.getDelegates();
+    public void inject(AbsViewDelegate delegate) {
+        view.inject(delegate);
     }
 
     @Override
@@ -97,4 +97,5 @@ public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView
     public View findViewById(int id) {
         return view.findViewById(id);
     }
+
 }
