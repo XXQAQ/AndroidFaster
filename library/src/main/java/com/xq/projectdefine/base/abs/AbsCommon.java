@@ -24,4 +24,10 @@ public interface AbsCommon {
     //回退(兼容Activity与Fragment的使用情形)
     public void back();
 
+    //获取String资源
+    public String getString(int id);
+
+    //获取color资源
+    public int getColor(int id);
+
 }

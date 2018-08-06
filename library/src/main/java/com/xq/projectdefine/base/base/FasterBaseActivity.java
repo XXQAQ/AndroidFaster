@@ -156,6 +156,26 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
+    public T getBindView() {
+        return view;
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
+    public Fragment getAreFragment() {
+        return null;
+    }
+
+    @Override
+    public Activity getAreActivity() {
+        return this;
+    }
+
+    @Override
     public void finishSelf() {
         finish();
     }
@@ -180,26 +200,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public Fragment getAreFragment() {
-        return null;
-    }
-
-    @Override
-    public Activity getAreActivity() {
-        return this;
-    }
-
-    @Override
-    public T getBindView() {
-        return view;
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
     public List<AbsPresenterDelegate> getDelegates() {
         return list_delegate;
     }
@@ -208,4 +208,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     public void inject(AbsPresenterDelegate delegate) {
         getDelegates().add(delegate);
     }
+
+
 }

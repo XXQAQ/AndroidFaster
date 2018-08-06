@@ -117,6 +117,16 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         getPresenter().back();
     }
 
+    @Override
+    public String getString(int id) {
+        return getContext().getResources().getString(id);
+    }
+
+    @Override
+    public int getColor(int id) {
+        return getContext().getResources().getColor(id);
+    }
+
     public Window getWindow() {
         return ((Activity)getContext()).getWindow();
     }

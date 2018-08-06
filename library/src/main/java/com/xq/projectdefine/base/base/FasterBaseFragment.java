@@ -181,6 +181,26 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
+    public T getBindView() {
+        return view;
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
+    public Fragment getAreFragment() {
+        return this;
+    }
+
+    @Override
+    public Activity getAreActivity() {
+        return null;
+    }
+
+    @Override
     public void finishSelf() {
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
     }
@@ -205,23 +225,8 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
-    public Fragment getAreFragment() {
-        return this;
-    }
-
-    @Override
-    public Activity getAreActivity() {
-        return null;
-    }
-
-    @Override
-    public T getBindView() {
-        return view;
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
+    public int getColor(int id) {
+        return getContext().getResources().getColor(id);
     }
 
     @Override
