@@ -8,7 +8,7 @@ import java.io.Serializable;
 public interface TitleBehavior extends Serializable{
 
     //返回标题
-    public String getTitle();
+    public CharSequence getTitle();
 
     //附加信息
     public Object getTag();

@@ -10,17 +10,17 @@ import java.io.Serializable;
 //TitleBehavior的最简单实现类
 public class TitleBean implements TitleBehavior ,Serializable{
 
-    protected String title;
+    protected CharSequence title;
     protected Object tag;
 
     public TitleBean() {
     }
 
-    public TitleBean(String title) {
+    public TitleBean(CharSequence title) {
         this.title = title;
     }
 
-    public TitleBean(String title, Object tag) {
+    public TitleBean(CharSequence title, Object tag) {
         this.title = title;
         this.tag = tag;
     }
@@ -33,7 +33,7 @@ public class TitleBean implements TitleBehavior ,Serializable{
     }
 
     @Override
-    public String getTitle() {
+    public CharSequence getTitle() {
         return title;
     }
 
@@ -42,7 +42,7 @@ public class TitleBean implements TitleBehavior ,Serializable{
         return tag;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(CharSequence title) {
         this.title = title;
     }
 

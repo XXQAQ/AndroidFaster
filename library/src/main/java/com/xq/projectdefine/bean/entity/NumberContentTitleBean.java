@@ -7,13 +7,13 @@ import com.xq.projectdefine.bean.behavior.NumberContentTitleBehavior;
 
 public class NumberContentTitleBean extends TitleBean implements NumberContentTitleBehavior {
 
-    protected String content;
+    protected CharSequence content;
     protected Number number;
 
     public NumberContentTitleBean() {
     }
 
-    public NumberContentTitleBean(String title, String content, Number number) {
+    public NumberContentTitleBean(CharSequence title, CharSequence content, Number number) {
         super(title);
         this.content = content;
         this.number = number;
@@ -27,11 +27,11 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
                 '}';
     }
 
-    public String getContent() {
+    public CharSequence getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(CharSequence content) {
         this.content = content;
     }
 

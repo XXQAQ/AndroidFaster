@@ -11,7 +11,7 @@ public interface SwitchBehavior extends Serializable{
     public boolean isOpen();
 
     //当前开关状态的描述，如果不需要返回null即可
-    public String stateDescript();
+    public CharSequence stateDescript();
 
     public Object getTag();
 

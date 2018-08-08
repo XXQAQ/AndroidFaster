@@ -12,8 +12,8 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
     public NumberTitleBean() {
     }
 
-    public NumberTitleBean(String title, Number number) {
-        this.title = title;
+    public NumberTitleBean(CharSequence title, Number number) {
+        super(title);
         this.number = number;
     }
 
@@ -24,7 +24,6 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
                 ", number=" + number +
                 '}';
     }
-
 
     public Number getNumber() {
         return number;
