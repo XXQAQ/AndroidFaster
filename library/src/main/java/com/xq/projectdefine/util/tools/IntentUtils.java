@@ -34,7 +34,7 @@ public final class IntentUtils {
      * @param intent The intent
      * @return is Availeble
      */
-    private boolean isIntentAvaileble(Intent intent){
+    public static boolean isIntentAvaileble(Intent intent){
         List resolves = getApp().getPackageManager().queryIntentActivities(intent,0);
         return resolves.size()>0;
     }
@@ -51,7 +51,6 @@ public final class IntentUtils {
     public static Intent getInstallAppIntent(final String filePath) {
         return getInstallAppIntent(getFileByPath(filePath), false);
     }
-
     /**
      * Return the intent of install app.
      * <p>Target APIs greater than 25 must hold
