@@ -98,4 +98,14 @@ public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView
         return view.findViewById(id);
     }
 
+    @Override
+    public String getString(int id) {
+        return view.getString(id);
+    }
+
+    @Override
+    public int getColor(int id) {
+        return view.getColor(id);
+    }
+
 }

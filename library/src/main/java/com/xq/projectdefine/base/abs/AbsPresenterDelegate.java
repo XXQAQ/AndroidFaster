@@ -82,4 +82,13 @@ public abstract class AbsPresenterDelegate<T extends AbsView> implements AbsPres
         presenter.back();
     }
 
+    @Override
+    public String getString(int id) {
+        return presenter.getString(id);
+    }
+
+    @Override
+    public int getColor(int id) {
+        return presenter.getColor(id);
+    }
 }
