@@ -64,7 +64,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
     @Override
     public void onDestroy() {
-        for (ViewLife life : list_delegate)     life.onDestroy();
+        for (ViewLife life : list_delegate)     life.onDestroy();   list_delegate.clear();
     }
 
     @Override

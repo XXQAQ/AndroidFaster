@@ -93,7 +93,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         if (getBindView() != null) getBindView().onDestroy();
 
-        for (PresenterLife life: list_delegate)  life.onDestroy();
+        for (PresenterLife life: list_delegate)  life.onDestroy();  list_delegate.clear();
     }
 
     @Override
