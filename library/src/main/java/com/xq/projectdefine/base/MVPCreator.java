@@ -42,12 +42,12 @@ public class MVPCreator {
 	
 	private String createActivity(){
 		
-		return String.format(PRESENTER,name+"Activity",parents+"Activity",name+"View",name+"Presenter",name+"Presenter",name+"Presenter",name+"Presenter",name+"Presenter",name+"Presenter");
+		return String.format(PRESENTER,name+"Activity",parents+"Activity",name+"View",name+"Presenter");
 	}
 	
 	private String createFragment(){
 
-		return String.format(PRESENTER,name+"Fragment",parents+"Fragment",name+"View",name+"Presenter",name+"Presenter",name+"Presenter",name+"Presenter",name+"Presenter",name+"Presenter");
+		return String.format(PRESENTER,name+"Fragment",parents+"Fragment",name+"View",name+"Presenter");
 	}
 	
 	private String createInterfaceView(){
@@ -57,7 +57,7 @@ public class MVPCreator {
 	
 	private String createView(){
 
-		return String.format(VIEW,name+"View",parents+"View",name+"Presenter",name+"View",name+"View",name+"View",name+"View",name+"View",name+"View");
+		return String.format(VIEW,name+"View",parents+"View",name+"Presenter",name+"View");
 	}
 	
 	static class FileUtil{
@@ -98,129 +98,15 @@ public class MVPCreator {
 	}
 
 	private static String IPRESENTER = "public interface I%s extends I%s<I%s> {\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void afterOnCreate(Bundle savedInstanceState) {\n" +
-			" \n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onResume() {\n" +
-			"        \n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onPause() {\n" +
-			"        \n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onDestroy() {\n" +
-			"        \n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onActivityResult(int requestCode, int resultCode, Intent intent) {\n" +
-			"        \n" +
-			"    }\n" +
-			"    \n" +
 			"}";
 
 	private static String PRESENTER = "public class %s extends %s<I%s> implements I%s {\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void afterOnCreate(Bundle savedInstanceState) {\n" +
-			"        super.afterOnCreate(savedInstanceState);\n" +
-			"        I%s.super.afterOnCreate(savedInstanceState);\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onResume() {\n" +
-			"        super.onResume();\n" +
-			"        I%s.super.onResume();\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onPause() {\n" +
-			"        super.onPause();\n" +
-			"        I%s.super.onPause();\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onDestroy() {\n" +
-			"        super.onDestroy();\n" +
-			"        I%s.super.onDestroy();\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onActivityResult(int requestCode, int resultCode, Intent intent) {\n" +
-			"        super.onActivityResult(requestCode, resultCode, intent);\n" +
-			"        I%s.super.onActivityResult(requestCode, resultCode, intent);\n" +
-			"    }\n" +
-			"\n" +
 			"}";
 
 	private static final String IVIEW = "public interface I%s extends I%s<I%s> {\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void afterOnCreate(Bundle savedInstanceState) {\n" +
-			"\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onResume() {\n" +
-			"\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onPause() {\n" +
-			"\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onDestroy() {\n" +
-			"\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    default void onSaveInstanceState(Bundle bundle) {\n" +
-			"\n" +
-			"    }\n" +
-			"    \n" +
 			"}";
 
 	private static final String VIEW = "public class %s extends %s<I%s> implements I%s {\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void afterOnCreate(Bundle savedInstanceState) {\n" +
-			"        super.afterOnCreate(savedInstanceState);\n" +
-			"        I%s.super.afterOnCreate(savedInstanceState);\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onResume() {\n" +
-			"        super.onResume();\n" +
-			"        I%s.super.onResume();\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onPause() {\n" +
-			"        super.onPause();\n" +
-			"        I%s.super.onPause();\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onDestroy() {\n" +
-			"        super.onDestroy();\n" +
-			"        I%s.super.onDestroy();\n" +
-			"    }\n" +
-			"\n" +
-			"    @Override\n" +
-			"    public void onSaveInstanceState(Bundle outState) {\n" +
-			"        super.onSaveInstanceState(outState);\n" +
-			"        I%s.super.onSaveInstanceState(outState);\n" +
-			"    }\n" +
-			"\n" +
 			"}";
 
 }
