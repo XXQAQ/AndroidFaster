@@ -36,7 +36,7 @@ public final class AppUtils {
      * @param listener
      */
     private static ForegroundCallbacks callbacks;
-    public static void registForegroundState(ForegroundCallbacks.Listener listener){
+    public static void addForegroundListener(ForegroundCallbacks.Listener listener){
         if (callbacks == null){
             callbacks = new ForegroundCallbacks();
             getApp().registerActivityLifecycleCallbacks(callbacks);
