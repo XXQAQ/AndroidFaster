@@ -125,21 +125,6 @@ public final class BarUtils {
     }
 
     /**
-     * Set the content layout full the StatusBar, but do not hide StatusBar.
-     */
-    public static void setStatusBarFull(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = activity.getWindow();
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility()
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }
-    }
-
-    /**
      * Add the top margin size equals status bar's height for view.
      *
      * @param view The view.
@@ -551,19 +536,6 @@ public final class BarUtils {
             return res.getDimensionPixelSize(resourceId);
         } else {
             return 0;
-        }
-    }
-
-    /**
-     * Set the content layout full the NavigationBar, but do not hide NavigationBar.
-     */
-    public static void setNavBarFull(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = activity.getWindow();
-            View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setNavigationBarColor(Color.TRANSPARENT);
         }
     }
 

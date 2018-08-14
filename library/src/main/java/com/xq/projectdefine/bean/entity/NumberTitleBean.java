@@ -25,6 +25,24 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        NumberTitleBean that = (NumberTitleBean) o;
+
+        return number != null ? number.equals(that.number) : that.number == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (number != null ? number.hashCode() : 0);
+        return result;
+    }
+
     public Number getNumber() {
         return number;
     }

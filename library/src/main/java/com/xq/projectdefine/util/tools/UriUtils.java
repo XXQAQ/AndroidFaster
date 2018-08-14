@@ -18,6 +18,11 @@ import java.io.File;
 
 public final class UriUtils {
 
+    /**
+     * File转Uri
+     * @param file
+     * @return
+     */
     public static Uri getUriForFile(final File file) {
         if (file == null) return null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -28,6 +33,11 @@ public final class UriUtils {
         }
     }
 
+    /**
+     * Uri转File(兼容了安卓4.4，7.0上下的各种版本)
+     * @param uri
+     * @return
+     */
     public static String getFileForUri(Uri uri) {
         if (getApp() == null || uri == null)
             return null;
@@ -90,34 +100,18 @@ public final class UriUtils {
         return null;
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is ExternalStorageProvider.
-     */
     private static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is DownloadsProvider.
-     */
     private static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is MediaProvider.
-     */
     private static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
-    /**
-     * @param uri The Uri to check.
-     * @return Whether the Uri authority is Google Photos.
-     */
     private static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }

@@ -38,44 +38,93 @@ import java.lang.reflect.Method;
 
 public final class ScreenUtils {
 
+    /**
+     * dp to px
+     * @param c
+     * @param dpValue
+     * @return
+     */
     public static int dip2px(Context c, float dpValue) {
         final float scale = c.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
+    /**
+     * dp to sp
+     * @param c
+     * @param dpValue
+     * @return
+     */
     public static int dip2sp(Context c, float dpValue) {
         return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, c.getResources().getDisplayMetrics()));
     }
 
+    /**
+     * px to dp
+     * @param c
+     * @param pxValue
+     * @return
+     */
     public static int px2dip(Context c, float pxValue) {
         final float scale = c.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
-
+    /**
+     * px to sp
+     * @param c
+     * @param pxValue
+     * @return
+     */
     public static int px2sp(Context c, float pxValue) {
         float fontScale = c.getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
 
-
+    /**
+     * sp tp px
+     * @param c
+     * @param spValue
+     * @return
+     */
     public static int sp2px(Context c, float spValue) {
         float fontScale = c.getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
 
+    /**
+     * sp to dp
+     * @param c
+     * @param spValue
+     * @return
+     */
     public static int sp2dip(Context c, float spValue) {
         return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, c.getResources().getDisplayMetrics()));
     }
 
+    /**
+     * 获取屏幕宽度(px)
+     * @param c
+     * @return
+     */
     public static int getScreenW(Context c) {
         return c.getResources().getDisplayMetrics().widthPixels;
     }
 
+    /**
+     * 获取屏幕高度(px)
+     * @param c
+     * @return
+     */
     public static int getScreenH(Context c) {
         return c.getResources().getDisplayMetrics().heightPixels;
     }
 
+    /**
+     * 获取屏幕内容高度(px)
+     * @param context
+     * @return
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int getScreenRealH(Context context) {
         int h;
@@ -98,61 +147,60 @@ public final class ScreenUtils {
         return h;
     }
 
-    public static String getDensity(Context ctx) {
-        String densityStr = null;
-        final int density = ctx.getResources().getDisplayMetrics().densityDpi;
-        switch (density) {
-            case DisplayMetrics.DENSITY_LOW:
-                densityStr = "LDPI";
-                break;
-            case DisplayMetrics.DENSITY_MEDIUM:
-                densityStr = "MDPI";
-                break;
-            case DisplayMetrics.DENSITY_TV:
-                densityStr = "TVDPI";
-                break;
-            case DisplayMetrics.DENSITY_HIGH:
-                densityStr = "HDPI";
-                break;
-            case DisplayMetrics.DENSITY_XHIGH:
-                densityStr = "XHDPI";
-                break;
-            case DisplayMetrics.DENSITY_400:
-                densityStr = "XMHDPI";
-                break;
-            case DisplayMetrics.DENSITY_XXHIGH:
-                densityStr = "XXHDPI";
-                break;
-            case DisplayMetrics.DENSITY_XXXHIGH:
-                densityStr = "XXXHDPI";
-                break;
-        }
-        return densityStr;
+    /**
+     * 获取屏幕DPI级别
+     * @param ctx
+     * @return
+     */
+    public static int getDensity(Context ctx) {
+        return ctx.getResources().getDisplayMetrics().densityDpi;
     }
 
+    /**
+     * 设置为全屏无状态栏模式
+     * @param activity
+     */
     public static void setFullScreen(@NonNull final Activity activity) {
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 
+    /**
+     * 设置横屏
+     * @param activity
+     */
     public static void setLandscape(@NonNull final Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    /**
+     * 设置竖屏
+     * @param activity
+     */
     public static void setPortrait(@NonNull final Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
+    /**
+     * @return 是否横屏
+     */
     public static boolean isLandscape() {
         return getApp().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
     }
 
+    /**
+     * @return 是否竖屏
+     */
     public static boolean isPortrait() {
         return getApp().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT;
     }
 
+    /**
+     * @param activity
+     * @return 屏幕旋转角度
+     */
     public static int getScreenRotation(@NonNull final Activity activity) {
         switch (activity.getWindowManager().getDefaultDisplay().getRotation()) {
             case Surface.ROTATION_0:

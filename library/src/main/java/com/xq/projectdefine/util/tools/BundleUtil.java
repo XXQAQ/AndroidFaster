@@ -13,13 +13,21 @@ import java.util.ArrayList;
 
 public final class BundleUtil {
 
+    //以下为Bundle常用Key
     public static final String KEY_DATA = "data";
     public static final String KEY_TYPE = "type";
     public static final String KEY_RESULT = "result";
 
+    /**
+     * 链式构造Bundle的Builder
+     */
     public static class Builder {
 
         private Bundle bundle = new Bundle();
+
+        /**
+         * 以下所有方法使用请完全参照Bundle的put方法
+         */
 
         public Builder putAll(Bundle bundle) {
             bundle.putAll(bundle);

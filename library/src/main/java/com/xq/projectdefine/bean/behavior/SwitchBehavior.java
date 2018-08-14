@@ -13,6 +13,7 @@ public interface SwitchBehavior extends Serializable{
     //当前开关状态的描述，如果不需要返回null即可
     public CharSequence stateDescript();
 
+    //附加信息
     public Object getTag();
 
 }

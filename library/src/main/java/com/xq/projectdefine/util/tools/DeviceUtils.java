@@ -32,6 +32,9 @@ public final class DeviceUtils {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
+    /**
+     * @return return the UUID（唯一标识符）
+     */
     public static String getPsuedoUniqueID() {
         String devIDShort = "35" + (Build.BOARD.length() % 10) + (Build.BRAND.length() % 10);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -27,6 +27,26 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        NumberContentTitleBean that = (NumberContentTitleBean) o;
+
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        return number != null ? number.equals(that.number) : that.number == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (number != null ? number.hashCode() : 0);
+        return result;
+    }
+
     public CharSequence getContent() {
         return content;
     }

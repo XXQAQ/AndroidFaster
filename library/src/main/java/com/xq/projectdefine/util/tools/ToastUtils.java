@@ -221,28 +221,38 @@ public final class ToastUtils {
         }
     }
 
+    /**
+     * show the sToast.
+     * @param text
+     * @param duration
+     */
     @Deprecated
     public static void showToast(final CharSequence text, final int duration){
         show(text,duration);
     }
 
+    /**
+     * show the sToast.
+     * @param text
+     */
     @Deprecated
     public static void showToast(final CharSequence text){
         show(text);
     }
 
-    private static void show(@StringRes final int resId, final int duration) {
-        show(getApp().getResources().getText(resId).toString(), duration);
+    /**
+     * show the sToast.
+     * @param text
+     */
+    public static void show(final CharSequence text){
+        show(text,Toast.LENGTH_SHORT);
     }
 
-    private static void show(@StringRes final int resId, final int duration, final Object... args) {
-        show(String.format(getApp().getResources().getString(resId), args), duration);
-    }
-
-    private static void show(final String format, final int duration, final Object... args) {
-        show(String.format(format, args), duration);
-    }
-
+    /**
+     * show the sToast.
+     * @param text
+     * @param duration
+     */
     public static void show(final CharSequence text, final int duration) {
         HANDLER.post(new Runnable() {
             @SuppressLint("ShowToast")
@@ -266,8 +276,16 @@ public final class ToastUtils {
         });
     }
 
-    public static void show(final CharSequence text){
-        show(text,Toast.LENGTH_SHORT);
+    private static void show(@StringRes final int resId, final int duration) {
+        show(getApp().getResources().getText(resId).toString(), duration);
+    }
+
+    private static void show(final String format, final int duration, final Object... args) {
+        show(String.format(format, args), duration);
+    }
+
+    private static void show(@StringRes final int resId, final int duration, final Object... args) {
+        show(String.format(getApp().getResources().getString(resId), args), duration);
     }
 
     private static void show(final View view, final int duration) {

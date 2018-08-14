@@ -32,6 +32,19 @@ public final class AppUtils {
     }
 
     /**
+     * Monitor App before and after state (after calling this method is not recommended to use app.registerActivityLifecycleCallbacks)
+     * @param listener
+     */
+    private static ForegroundCallbacks callbacks;
+    public static void registForegroundState(ForegroundCallbacks.Listener listener){
+        if (callbacks == null){
+            callbacks = new ForegroundCallbacks();
+            getApp().registerActivityLifecycleCallbacks(callbacks);
+        }
+        callbacks.addListener(listener);
+    }
+
+    /**
      * Install the app.
      * <p>Target APIs greater than 25 must hold
      * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
@@ -817,98 +830,8 @@ public final class AppUtils {
     }
 
     /**
-     * The application's information.
+     * 为您的Application注册该监听后可以从中获取当前App的前台状态
      */
-    public static class AppInfo {
-
-        private String   packageName;
-        private String   name;
-        private Drawable icon;
-        private String   packagePath;
-        private String   versionName;
-        private int      versionCode;
-        private boolean  isSystem;
-
-        public Drawable getIcon() {
-            return icon;
-        }
-
-        public void setIcon(final Drawable icon) {
-            this.icon = icon;
-        }
-
-        public boolean isSystem() {
-            return isSystem;
-        }
-
-        public void setSystem(final boolean isSystem) {
-            this.isSystem = isSystem;
-        }
-
-        public String getPackageName() {
-            return packageName;
-        }
-
-        public void setPackageName(final String packageName) {
-            this.packageName = packageName;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(final String name) {
-            this.name = name;
-        }
-
-        public String getPackagePath() {
-            return packagePath;
-        }
-
-        public void setPackagePath(final String packagePath) {
-            this.packagePath = packagePath;
-        }
-
-        public int getVersionCode() {
-            return versionCode;
-        }
-
-        public void setVersionCode(final int versionCode) {
-            this.versionCode = versionCode;
-        }
-
-        public String getVersionName() {
-            return versionName;
-        }
-
-        public void setVersionName(final String versionName) {
-            this.versionName = versionName;
-        }
-
-        public AppInfo(String packageName, String name, Drawable icon, String packagePath,
-                       String versionName, int versionCode, boolean isSystem) {
-            this.setName(name);
-            this.setIcon(icon);
-            this.setPackageName(packageName);
-            this.setPackagePath(packagePath);
-            this.setVersionName(versionName);
-            this.setVersionCode(versionCode);
-            this.setSystem(isSystem);
-        }
-
-        @Override
-        public String toString() {
-            return "pkg name: " + getPackageName() +
-                    "\napp icon: " + getIcon() +
-                    "\napp name: " + getName() +
-                    "\napp path: " + getPackagePath() +
-                    "\napp v name: " + getVersionName() +
-                    "\napp v code: " + getVersionCode() +
-                    "\nis system: " + isSystem();
-        }
-    }
-
-    //为您的Application注册该监听后，可通过单例对象获取当前App的前台情况.需要注意：在使用addListener时容易导致监听重复添加，尽量在单例情景下使用
     public static class ForegroundCallbacks implements Application.ActivityLifecycleCallbacks {
         public static final long CHECK_DELAY = 500;
         private static ForegroundCallbacks instance;
@@ -1035,6 +958,99 @@ public final class AppUtils {
             public void onBecameBackground();
         }
     }
+
+    /**
+     * The application's information.
+     */
+    public static class AppInfo {
+
+        private String   packageName;
+        private String   name;
+        private Drawable icon;
+        private String   packagePath;
+        private String   versionName;
+        private int      versionCode;
+        private boolean  isSystem;
+
+        public Drawable getIcon() {
+            return icon;
+        }
+
+        public void setIcon(final Drawable icon) {
+            this.icon = icon;
+        }
+
+        public boolean isSystem() {
+            return isSystem;
+        }
+
+        public void setSystem(final boolean isSystem) {
+            this.isSystem = isSystem;
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
+
+        public void setPackageName(final String packageName) {
+            this.packageName = packageName;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public String getPackagePath() {
+            return packagePath;
+        }
+
+        public void setPackagePath(final String packagePath) {
+            this.packagePath = packagePath;
+        }
+
+        public int getVersionCode() {
+            return versionCode;
+        }
+
+        public void setVersionCode(final int versionCode) {
+            this.versionCode = versionCode;
+        }
+
+        public String getVersionName() {
+            return versionName;
+        }
+
+        public void setVersionName(final String versionName) {
+            this.versionName = versionName;
+        }
+
+        public AppInfo(String packageName, String name, Drawable icon, String packagePath,
+                       String versionName, int versionCode, boolean isSystem) {
+            this.setName(name);
+            this.setIcon(icon);
+            this.setPackageName(packageName);
+            this.setPackagePath(packagePath);
+            this.setVersionName(versionName);
+            this.setVersionCode(versionCode);
+            this.setSystem(isSystem);
+        }
+
+        @Override
+        public String toString() {
+            return "pkg name: " + getPackageName() +
+                    "\napp icon: " + getIcon() +
+                    "\napp name: " + getName() +
+                    "\napp path: " + getPackagePath() +
+                    "\napp v name: " + getVersionName() +
+                    "\napp v code: " + getVersionCode() +
+                    "\nis system: " + isSystem();
+        }
+    }
+
 
 
 }

@@ -2,11 +2,13 @@ package com.xq.projectdefine.util.tools;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Deprecated
 public final class IDUtils {
 
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
+    /**
+     * @return 每次调用该方法都会获取一个唯一的ID
+     */
     public synchronized static int getId() {
         for (; ; ) {
             final int result = sNextGeneratedId.get();

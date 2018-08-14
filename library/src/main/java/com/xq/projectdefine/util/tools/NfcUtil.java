@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
  * SDK 最低版本为 14
  */
 @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
-public class NfcUtil {
+public final class NfcUtil {
     /* NFC 适配器 */
     private NfcAdapter mAdapter;
     /* NDEF 标签读取监听 */
