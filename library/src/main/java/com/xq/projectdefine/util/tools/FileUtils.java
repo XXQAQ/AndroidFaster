@@ -15,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public final class FileUtils {
 
@@ -1171,13 +1172,13 @@ public final class FileUtils {
         if (byteNum < 0) {
             return "shouldn't be less than zero!";
         } else if (byteNum < 1024) {
-            return String.format("%.3fB", (double) byteNum);
+            return String.format(Locale.getDefault(), "%.3fB", (double) byteNum);
         } else if (byteNum < 1048576) {
-            return String.format("%.3fKB", (double) byteNum / 1024);
+            return String.format(Locale.getDefault(), "%.3fKB", (double) byteNum / 1024);
         } else if (byteNum < 1073741824) {
-            return String.format("%.3fMB", (double) byteNum / 1048576);
+            return String.format(Locale.getDefault(), "%.3fMB", (double) byteNum / 1048576);
         } else {
-            return String.format("%.3fGB", (double) byteNum / 1073741824);
+            return String.format(Locale.getDefault(), "%.3fGB", (double) byteNum / 1073741824);
         }
     }
 

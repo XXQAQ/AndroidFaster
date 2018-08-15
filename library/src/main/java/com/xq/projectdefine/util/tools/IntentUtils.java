@@ -39,7 +39,6 @@ public final class IntentUtils {
         return resolves.size()>0;
     }
 
-
     /**
      * Return the intent of install app.
      * <p>Target APIs greater than 25 must hold
@@ -51,6 +50,7 @@ public final class IntentUtils {
     public static Intent getInstallAppIntent(final String filePath) {
         return getInstallAppIntent(getFileByPath(filePath), false);
     }
+
     /**
      * Return the intent of install app.
      * <p>Target APIs greater than 25 must hold
@@ -94,84 +94,7 @@ public final class IntentUtils {
             data = Uri.fromFile(file);
         } else {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            String authority = getApp().getPackageName() + ".utilcode.provider";
-            data = FileProvider.getUriForFile(getApp(), authority, file);
-        }
-        intent.setDataAndType(data, type);
-        return getIntent(intent, isNewTask);
-    }
-
-    /**
-     * Return the intent of install app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
-     * @param filePath  The path of file.
-     * @param authority Target APIs greater than 23 must hold the authority of a FileProvider
-     *                  defined in a {@code <provider>} element in your app's manifest.
-     * @return the intent of install app
-     */
-    @Deprecated
-    public static Intent getInstallAppIntent(final String filePath, final String authority) {
-        return getInstallAppIntent(getFileByPath(filePath), authority, false);
-    }
-
-    /**
-     * Return the intent of install app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
-     * @param file      The file.
-     * @param authority Target APIs greater than 23 must hold the authority of a FileProvider
-     *                  defined in a {@code <provider>} element in your app's manifest.
-     * @return the intent of install app
-     */
-    @Deprecated
-    public static Intent getInstallAppIntent(final File file, final String authority) {
-        return getInstallAppIntent(file, authority, false);
-    }
-
-    /**
-     * Return the intent of install app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
-     * @param filePath  The path of file.
-     * @param authority Target APIs greater than 23 must hold the authority of a FileProvider
-     *                  defined in a {@code <provider>} element in your app's manifest.
-     * @param isNewTask True to add flag of new task, false otherwise.
-     * @return the intent of install app
-     */
-    @Deprecated
-    public static Intent getInstallAppIntent(final String filePath,
-                                             final String authority,
-                                             final boolean isNewTask) {
-        return getInstallAppIntent(getFileByPath(filePath), authority, isNewTask);
-    }
-
-    /**
-     * Return the intent of install app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
-     * @param file      The file.
-     * @param authority Target APIs greater than 23 must hold the authority of a FileProvider
-     *                  defined in a {@code <provider>} element in your app's manifest.
-     * @param isNewTask True to add flag of new task, false otherwise.
-     * @return the intent of install app
-     */
-    @Deprecated
-    public static Intent getInstallAppIntent(final File file,
-                                             final String authority,
-                                             final boolean isNewTask) {
-        if (file == null) return null;
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri data;
-        String type = "application/vnd.android.package-archive";
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            data = Uri.fromFile(file);
-        } else {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            String authority = FasterInterface.getFileProvider();
             data = FileProvider.getUriForFile(getApp(), authority, file);
         }
         intent.setDataAndType(data, type);

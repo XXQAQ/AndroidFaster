@@ -97,22 +97,27 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return rootView;
     }
 
+    @Override
     public Fragment getAreFragment() {
         return getPresenter().getAreFragment();
     }
 
+    @Override
     public Activity getAreActivity() {
         return getPresenter().getAreActivity();
     }
 
+    @Override
     public void finishSelf() {
         getPresenter().finishSelf();
     }
 
+    @Override
     public void finish() {
         getPresenter().finish();
     }
 
+    @Override
     public void back() {
         getPresenter().back();
     }
@@ -131,10 +136,12 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return ((Activity)getContext()).getWindow();
     }
 
+    @Override
     public WindowManager getWindowManager(){
         return getWindow().getWindowManager();
     }
 
+    @Override
     public FragmentManager getCPFragmentManager() {
         if (getAreActivity() != null)
             return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
@@ -143,16 +150,24 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return null;
     }
 
+    @Override
     public LayoutInflater getLayoutInflater(){
         return (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    @Override
     public Bitmap getRootViewBitmap(){
         return ImageUtils.view2Bitmap(getRootView());
     }
 
+    @Override
     public View findViewById(int id){
         return getRootView().findViewById(id);
+    }
+
+    @Override
+    public void initFragment(Fragment fragment) {
+
     }
 
     //判断是否顶部容器

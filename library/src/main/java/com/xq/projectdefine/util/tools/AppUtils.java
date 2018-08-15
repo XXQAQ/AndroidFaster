@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -72,35 +73,6 @@ public final class AppUtils {
      * <p>Target APIs greater than 25 must hold
      * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
      *
-     * @param filePath  The path of file.
-     * @param authority Target APIs greater than 23 must hold the authority of a FileProvider
-     *                  defined in a {@code <provider>} element in your app's manifest.
-     */
-    @Deprecated
-    public static void installApp(final String filePath, final String authority) {
-        installApp(getFileByPath(filePath), authority);
-    }
-
-    /**
-     * Install the app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
-     * @param file      The file.
-     * @param authority Target APIs greater than 23 must hold the authority of a FileProvider
-     *                  defined in a {@code <provider>} element in your app's manifest.
-     */
-    @Deprecated
-    public static void installApp(final File file, final String authority) {
-        if (!isFileExists(file)) return;
-        getApp().startActivity(IntentUtils.getInstallAppIntent(file, authority, true));
-    }
-
-    /**
-     * Install the app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
      * @param activity    The activity.
      * @param filePath    The path of file.
      * @param requestCode If &gt;= 0, this code will be returned in
@@ -127,48 +99,6 @@ public final class AppUtils {
                                   final int requestCode) {
         if (!isFileExists(file)) return;
         activity.startActivityForResult(IntentUtils.getInstallAppIntent(file), requestCode);
-    }
-
-    /**
-     * Install the app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
-     * @param activity    The activity.
-     * @param filePath    The path of file.
-     * @param authority   Target APIs greater than 23 must hold the authority of a FileProvider
-     *                    defined in a {@code <provider>} element in your app's manifest.
-     * @param requestCode If &gt;= 0, this code will be returned in
-     *                    onActivityResult() when the activity exits.
-     */
-    @Deprecated
-    public static void installApp(final Activity activity,
-                                  final String filePath,
-                                  final String authority,
-                                  final int requestCode) {
-        installApp(activity, getFileByPath(filePath), authority, requestCode);
-    }
-
-    /**
-     * Install the app.
-     * <p>Target APIs greater than 25 must hold
-     * {@code <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />}</p>
-     *
-     * @param activity    The activity.
-     * @param file        The file.
-     * @param authority   Target APIs greater than 23 must hold the authority of a FileProvider
-     *                    defined in a {@code <provider>} element in your app's manifest.
-     * @param requestCode If &gt;= 0, this code will be returned in
-     *                    onActivityResult() when the activity exits.
-     */
-    @Deprecated
-    public static void installApp(final Activity activity,
-                                  final File file,
-                                  final String authority,
-                                  final int requestCode) {
-        if (!isFileExists(file)) return;
-        activity.startActivityForResult(IntentUtils.getInstallAppIntent(file, authority),
-                requestCode);
     }
 
     /**
@@ -335,6 +265,16 @@ public final class AppUtils {
     /**
      * Return whether the app is installed.
      *
+     * @param packageName The name of the package.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAppInstalled(@NonNull final String packageName) {
+        return !isSpace(packageName) && getApp().getPackageManager().getLaunchIntentForPackage(packageName) != null;
+    }
+
+    /**
+     * Return whether the app is installed.
+     *
      * @param action   The Intent action, such as ACTION_VIEW.
      * @param category The desired category.
      * @return {@code true}: yes<br>{@code false}: no
@@ -346,16 +286,6 @@ public final class AppUtils {
         PackageManager pm = getApp().getPackageManager();
         ResolveInfo info = pm.resolveActivity(intent, 0);
         return info != null;
-    }
-
-    /**
-     * Return whether the app is installed.
-     *
-     * @param packageName The name of the package.
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public static boolean isAppInstalled(@NonNull final String packageName) {
-        return !isSpace(packageName) && IntentUtils.getLaunchAppIntent(packageName) != null;
     }
 
     /**
@@ -490,9 +420,9 @@ public final class AppUtils {
      */
     public static void launchAppDetailsSettings(final String packageName) {
         if (isSpace(packageName)) return;
-        getApp().startActivity(
-                IntentUtils.getLaunchAppDetailsSettingsIntent(packageName, true)
-        );
+        Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS");
+        intent.setData(Uri.parse("package:" + packageName));
+        getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     /**
