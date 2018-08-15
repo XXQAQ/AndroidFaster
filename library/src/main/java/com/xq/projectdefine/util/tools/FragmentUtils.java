@@ -19,14 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * <pre>
- *     author: Blankj
- *     blog  : http://blankj.com
- *     time  : 2017/01/17
- *     desc  : utils about fragment
- * </pre>
- */
+
 public final class FragmentUtils {
 
     private static final int TYPE_ADD_FRAGMENT       = 0x01;
@@ -1824,10 +1817,6 @@ public final class FragmentUtils {
                     + ((next == null || next.isEmpty()) ? "no child" : next.toString());
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // interface
-    ///////////////////////////////////////////////////////////////////////////
 
     public interface OnBackClickListener {
         boolean onBackClick();
