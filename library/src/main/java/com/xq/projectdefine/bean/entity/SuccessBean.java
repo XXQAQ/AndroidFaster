@@ -6,6 +6,13 @@ public class SuccessBean implements SuccessBehavior{
 
     private boolean isSuccess;
 
+    public SuccessBean() {
+    }
+
+    public SuccessBean(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
     @Override
     public String toString() {
         return "SuccessBean{" +
