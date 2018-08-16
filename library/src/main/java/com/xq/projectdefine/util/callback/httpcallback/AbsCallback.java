@@ -7,14 +7,17 @@ import java.util.List;
 
 public interface AbsCallback<T> {
 
+    //请求开始
     default void requestStart(Object... objects) {
 
     }
 
+    //请求错误
     default void requestError(Object... objects) {
 
     }
 
+    //请求成功
     default void requestSuccess(T t, Object... objects) {
         if (operating(t,objects))
         {
@@ -22,25 +25,17 @@ public interface AbsCallback<T> {
             operateSuccess(t);
         }
     }
+
+    //请求结束
     default void requestFinish(T t, Object... objects) {
 
     }
+
+    //判断业务操作是否成功
     public boolean operating(T t, Object... objects);
 
+    //业务操作成功之后调用的方法
     public void operateSuccess(T t);
-
-    default boolean isEmpty(Object object){
-        if (object  == null)
-            return true;
-
-        if (object instanceof List && ((List)object).size() <= 0)
-            return true;
-
-        if (object instanceof CharSequence && TextUtils.isEmpty((CharSequence) object))
-            return true;
-
-        return false;
-    }
 
     public CallbackBuilder getCallbackBuilder();
 

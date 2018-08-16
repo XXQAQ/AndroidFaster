@@ -15,6 +15,7 @@ import android.view.WindowManager;
 
 import com.xq.projectdefine.base.abs.AbsViewDelegate;
 import com.xq.projectdefine.base.life.ViewLife;
+import com.xq.projectdefine.util.tools.FragmentUtils;
 import com.xq.projectdefine.util.tools.ImageUtils;
 
 import java.lang.annotation.Annotation;
@@ -168,6 +169,38 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public void initFragment(Fragment fragment) {
 
+    }
+
+    //添加Fragment
+    protected void addFragment(Fragment fragment,int containerId){
+        addFragment(fragment,containerId,false);
+    }
+
+    protected void addFragment(Fragment fragment,int containerId,boolean isHide){
+        addFragment(fragment,containerId,false,false);
+    }
+
+    protected void addFragment(Fragment fragment,int containerId,boolean isHide,boolean isAddStack){
+        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isHide,isAddStack);;
+    }
+
+    //替换Fragment
+    protected void replaceFragment(Fragment fragment,int containerId){
+        replaceFragment(fragment,containerId,false);
+    }
+
+    protected void replaceFragment(Fragment fragment,int containerId,boolean isAddStack){
+        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId,isAddStack);
+    }
+
+    //移除Fragment
+    protected void removeFragment(String fragmentName){
+        FragmentUtils.remove(getCPFragmentManager().findFragmentByTag(fragmentName));
+    }
+
+    //移除所有Fragment
+    protected void removeAllFragment(){
+        FragmentUtils.removeAll(getCPFragmentManager());
     }
 
     //判断是否顶部容器
