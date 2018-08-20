@@ -193,6 +193,16 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         FragmentUtils.replace(getCPFragmentManager(),fragment,containerId,isAddStack);
     }
 
+    //隐藏Fragment
+    protected void hideFragment(String fragmentName){
+        FragmentUtils.hide(getCPFragmentManager().findFragmentByTag(fragmentName));
+    }
+
+    //显示Fragment
+    protected void showFragment(String fragmentName){
+        FragmentUtils.show(getCPFragmentManager().findFragmentByTag(fragmentName));
+    }
+
     //移除Fragment
     protected void removeFragment(String fragmentName){
         FragmentUtils.remove(getCPFragmentManager().findFragmentByTag(fragmentName));
