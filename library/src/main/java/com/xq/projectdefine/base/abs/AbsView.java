@@ -25,8 +25,11 @@ public interface AbsView<T extends AbsPresenter> extends AbsCommon {
     //获取WindowManager
     public WindowManager getWindowManager();
 
-    //获取对应FragmentManager，无需判断Activity或者Fragment的使用情景
+    //获取子FragmentManager，无需判断Activity或者Fragment的使用情景
     public FragmentManager getCPFragmentManager();
+
+    //获取管理当前页面的FragmentManager
+    public FragmentManager getFragmentManager();
 
     //获取布局构造器
     public LayoutInflater getLayoutInflater();

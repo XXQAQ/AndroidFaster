@@ -16,6 +16,7 @@ public interface AbsCommon {
     public Activity getAreActivity();
 
     //结束自身，如果是Activity则等同于调用finish,如果是Fragment则移除Fragment自身而不会关闭Activity
+    @Deprecated
     public void finishSelf();
 
     //关闭当前页面

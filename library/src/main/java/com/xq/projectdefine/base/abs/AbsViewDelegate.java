@@ -84,6 +84,11 @@ public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView
     }
 
     @Override
+    public FragmentManager getFragmentManager() {
+        return view.getFragmentManager();
+    }
+
+    @Override
     public LayoutInflater getLayoutInflater() {
         return view.getLayoutInflater();
     }

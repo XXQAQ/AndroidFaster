@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -152,6 +153,15 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
+    public FragmentManager getFragmentManager() {
+        if (getAreActivity() != null)
+            return ((AppCompatActivity)getAreActivity()).getSupportFragmentManager();
+        else     if (getAreFragment() != null)
+            return (getAreFragment()).getFragmentManager();
+        return null;
+    }
+
+    @Override
     public LayoutInflater getLayoutInflater(){
         return (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -171,47 +181,96 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
     }
 
+
+
     //添加Fragment
+    protected void addFragment(Fragment fragment){
+        getCPFragmentManager().beginTransaction().add(fragment,fragment.getClass().getName()).commitAllowingStateLoss();
+    }
     protected void addFragment(Fragment fragment,int containerId){
         addFragment(fragment,containerId,false);
     }
-
     protected void addFragment(Fragment fragment,int containerId,boolean isHide){
-        addFragment(fragment,containerId,false,false);
+        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isHide);
     }
-
-    protected void addFragment(Fragment fragment,int containerId,boolean isHide,boolean isAddStack){
-        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isHide,isAddStack);;
+    protected void addFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
+        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);;
     }
 
     //替换Fragment
     protected void replaceFragment(Fragment fragment,int containerId){
-        replaceFragment(fragment,containerId,false);
+        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId);
     }
-
-    protected void replaceFragment(Fragment fragment,int containerId,boolean isAddStack){
-        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId,isAddStack);
+    protected void replaceFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
+        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);
     }
 
     //隐藏Fragment
     protected void hideFragment(String fragmentName){
-        FragmentUtils.hide(getCPFragmentManager().findFragmentByTag(fragmentName));
+        hideFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
+    }
+    protected void hideFragment(Fragment fragment){
+        FragmentUtils.hide(fragment);
+    }
+
+    //如果当前页面是Fragment，则隐藏自身
+    protected void hideMe(){
+        if (getAreFragment() != null)
+            FragmentUtils.hide(getAreFragment());
     }
 
     //显示Fragment
     protected void showFragment(String fragmentName){
-        FragmentUtils.show(getCPFragmentManager().findFragmentByTag(fragmentName));
+        showFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
+    }
+    protected void showFragment(Fragment fragment){
+        FragmentUtils.show(fragment);
+    }
+
+    //如果当前页面是Fragment，则显示自身
+    protected void showMe(){
+        if (getAreFragment() != null)
+            FragmentUtils.show(getAreFragment());
     }
 
     //移除Fragment
     protected void removeFragment(String fragmentName){
-        FragmentUtils.remove(getCPFragmentManager().findFragmentByTag(fragmentName));
+        removeFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
+    }
+    protected void removeFragment(Fragment fragment){
+        FragmentUtils.remove(fragment);
     }
 
-    //移除所有Fragment
-    protected void removeAllFragment(){
-        FragmentUtils.removeAll(getCPFragmentManager());
+    //如果当前页面是Fragment，则移除自身
+    protected void removeMe(){
+        if (getAreFragment() != null)
+            FragmentUtils.show(getAreFragment());
     }
+
+//    //弹出Fragment
+//    protected void popFragment(){
+//        FragmentUtils.pop(getCPFragmentManager());
+//    }
+//    protected void popFragmentImmediate(){
+//        FragmentUtils.pop(getCPFragmentManager(),true);
+//    }
+//
+//    //显示所有Fragment
+//    protected void showAllFragment(){
+//        FragmentUtils.show(getCPFragmentManager());
+//    }
+//
+//    //隐藏所有Fragment
+//    protected void hideAllFragment(){
+//        FragmentUtils.hide(getCPFragmentManager());
+//    }
+//
+//    //移除所有Fragment
+//    protected void removeAllFragment(){
+//        FragmentUtils.removeAll(getCPFragmentManager());
+//    }
+
+
 
     //判断是否顶部容器
     protected boolean isTopContainer(){
@@ -257,5 +316,4 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
                 break;
         }
     }
-
 }
