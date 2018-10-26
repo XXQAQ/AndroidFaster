@@ -12,8 +12,6 @@ import android.view.WindowManager;
 
 import com.xq.projectdefine.base.life.ViewLife;
 
-import java.util.List;
-
 public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView<T>,ViewLife {
 
     protected AbsView<T> view;
@@ -84,8 +82,8 @@ public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView
     }
 
     @Override
-    public FragmentManager getFragmentManager() {
-        return view.getFragmentManager();
+    public FragmentManager getParentFragmentManager() {
+        return view.getParentFragmentManager();
     }
 
     @Override

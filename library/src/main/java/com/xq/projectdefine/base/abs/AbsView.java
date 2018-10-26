@@ -29,7 +29,7 @@ public interface AbsView<T extends AbsPresenter> extends AbsCommon {
     public FragmentManager getCPFragmentManager();
 
     //获取管理当前页面的FragmentManager
-    public FragmentManager getFragmentManager();
+    public FragmentManager getParentFragmentManager();
 
     //获取布局构造器
     public LayoutInflater getLayoutInflater();

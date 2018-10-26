@@ -153,7 +153,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
-    public FragmentManager getFragmentManager() {
+    public FragmentManager getParentFragmentManager() {
         if (getAreActivity() != null)
             return ((AppCompatActivity)getAreActivity()).getSupportFragmentManager();
         else     if (getAreFragment() != null)
