@@ -183,31 +183,38 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
 
 
+
+    //以下为Fragment快捷管理
+
+    protected FragmentManager whichFragmentManager(){
+        return getCPFragmentManager();
+    }
+
     //添加Fragment
     protected void addFragment(Fragment fragment){
-        getCPFragmentManager().beginTransaction().add(fragment,fragment.getClass().getName()).commitAllowingStateLoss();
+        whichFragmentManager().beginTransaction().add(fragment,fragment.getClass().getName()).commitAllowingStateLoss();
     }
     protected void addFragment(Fragment fragment,int containerId){
         addFragment(fragment,containerId,false);
     }
     protected void addFragment(Fragment fragment,int containerId,boolean isHide){
-        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isHide);
+        FragmentUtils.add(whichFragmentManager(),fragment,containerId,isHide);
     }
     protected void addFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
-        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);;
+        FragmentUtils.add(whichFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);;
     }
 
     //替换Fragment
     protected void replaceFragment(Fragment fragment,int containerId){
-        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId);
+        FragmentUtils.replace(whichFragmentManager(),fragment,containerId);
     }
     protected void replaceFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
-        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);
+        FragmentUtils.replace(whichFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);
     }
 
     //隐藏Fragment
     protected void hideFragment(String fragmentName){
-        hideFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
+        hideFragment(whichFragmentManager().findFragmentByTag(fragmentName));
     }
     protected void hideFragment(Fragment fragment){
         FragmentUtils.hide(fragment);
@@ -221,7 +228,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
     //显示Fragment
     protected void showFragment(String fragmentName){
-        showFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
+        showFragment(whichFragmentManager().findFragmentByTag(fragmentName));
     }
     protected void showFragment(Fragment fragment){
         FragmentUtils.show(fragment);
@@ -235,7 +242,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
     //移除Fragment
     protected void removeFragment(String fragmentName){
-        removeFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
+        removeFragment(whichFragmentManager().findFragmentByTag(fragmentName));
     }
     protected void removeFragment(Fragment fragment){
         FragmentUtils.remove(fragment);
@@ -244,31 +251,31 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     //如果当前页面是Fragment，则移除自身
     protected void removeMe(){
         if (getAreFragment() != null)
-            FragmentUtils.show(getAreFragment());
+            FragmentUtils.remove(getAreFragment());
     }
 
-//    //弹出Fragment
-//    protected void popFragment(){
-//        FragmentUtils.pop(getCPFragmentManager());
-//    }
-//    protected void popFragmentImmediate(){
-//        FragmentUtils.pop(getCPFragmentManager(),true);
-//    }
-//
-//    //显示所有Fragment
-//    protected void showAllFragment(){
-//        FragmentUtils.show(getCPFragmentManager());
-//    }
-//
-//    //隐藏所有Fragment
-//    protected void hideAllFragment(){
-//        FragmentUtils.hide(getCPFragmentManager());
-//    }
-//
-//    //移除所有Fragment
-//    protected void removeAllFragment(){
-//        FragmentUtils.removeAll(getCPFragmentManager());
-//    }
+    //弹出Fragment
+    protected void popFragment(){
+        FragmentUtils.pop(whichFragmentManager());
+    }
+    protected void popFragmentImmediate(){
+        FragmentUtils.pop(whichFragmentManager(),true);
+    }
+
+    //显示所有Fragment
+    protected void showAllFragment(){
+        FragmentUtils.show(whichFragmentManager());
+    }
+
+    //隐藏所有Fragment
+    protected void hideAllFragment(){
+        FragmentUtils.hide(whichFragmentManager());
+    }
+
+    //移除所有Fragment
+    protected void removeAllFragment(){
+        FragmentUtils.removeAll(whichFragmentManager());
+    }
 
 
 
