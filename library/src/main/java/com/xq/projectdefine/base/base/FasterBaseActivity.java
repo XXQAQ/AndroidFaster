@@ -192,16 +192,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public void back() {
-        new Thread(){
-            public void run() {
-                try{
-                    Instrumentation inst = new Instrumentation();
-                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-                }
-                catch (Exception e) {
-                }
-            }
-        }.start();
+        onBackPressed();
     }
 
     @Override

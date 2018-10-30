@@ -212,16 +212,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     @Override
     public void back() {
-        new Thread(){
-            public void run() {
-                try{
-                    Instrumentation inst = new Instrumentation();
-                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-                }
-                catch (Exception e) {
-                }
-            }
-        }.start();
+        ((Activity)getContext()).onBackPressed();
     }
 
     @Override
