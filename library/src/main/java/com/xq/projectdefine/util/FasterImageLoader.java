@@ -1,16 +1,11 @@
 package com.xq.projectdefine.util;
 
 import android.content.Context;
-import android.util.Size;
 import android.widget.ImageView;
 
-public class AbsImageLoader{
+public class FasterImageLoader {
 
     protected static Loader loader;
-
-    protected AbsImageLoader(){
-
-    }
 
     public static void loadImage(Context context, ImageView view, String url, Object... objects) {
         loader.loadImage(context,view,url,objects);
@@ -19,7 +14,6 @@ public class AbsImageLoader{
     public static void loadImage(Context context, ImageView view, String url, int placeHolder, Object... objects) {
         loader.loadImage(context,view,url,placeHolder,objects);
     }
-
 
     public static abstract class Loader{
 

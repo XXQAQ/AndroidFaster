@@ -1,11 +1,9 @@
 package com.xq.projectdefine.util.callback.httpcallback;
 
 
-import android.text.TextUtils;
 
-import java.util.List;
 
-public interface AbsCallback<T> {
+public interface FasterHttpCallback<T> {
 
     //请求开始
     default void requestStart(Object... objects) {
