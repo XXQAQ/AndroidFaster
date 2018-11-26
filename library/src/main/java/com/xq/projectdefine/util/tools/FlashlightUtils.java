@@ -1,17 +1,13 @@
 package com.xq.projectdefine.util.tools;
 
-import android.app.Application;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.Log;
-
-import com.xq.projectdefine.FasterInterface;
-
 import java.io.IOException;
-
 import static android.hardware.Camera.Parameters.FLASH_MODE_OFF;
 import static android.hardware.Camera.Parameters.FLASH_MODE_TORCH;
+import static com.xq.projectdefine.FasterInterface.getApp;
 
 public final class FlashlightUtils {
 
@@ -123,10 +119,6 @@ public final class FlashlightUtils {
 
     private static final class LazyHolder {
         private static final FlashlightUtils INSTANCE = new FlashlightUtils();
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 
 }

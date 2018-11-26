@@ -6,7 +6,6 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -902,7 +901,7 @@ public final class ThreadUtils {
         ScheduledExecutorService scheduled = TASK_SCHEDULED.get(task);
         if (scheduled != null) {
             TASK_SCHEDULED.remove(task);
-            shutdownAndAwaitTermination(scheduled);
+            scheduled.shutdownNow();
         }
     }
 
@@ -960,22 +959,6 @@ public final class ThreadUtils {
         }
     }
 
-    private static void shutdownAndAwaitTermination(final ExecutorService pool) {
-        pool.shutdown();
-        try {
-            if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-                pool.shutdownNow();
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-                    System.err.println("Pool did not terminate");
-                }
-            }
-        } catch (InterruptedException e) {
-            pool.shutdownNow();
-            Thread.currentThread().interrupt();
-            e.printStackTrace();
-        }
-    }
-
     public abstract static class SimpleTask<T> extends Task<T> {
 
         @Override
@@ -994,7 +977,7 @@ public final class ThreadUtils {
 
         private boolean isSchedule;
 
-        private volatile int state;
+        private volatile     int state;
         private static final int NEW         = 0;
         private static final int COMPLETING  = 1;
         private static final int CANCELLED   = 2;
@@ -1068,9 +1051,9 @@ public final class ThreadUtils {
     private static final class UtilsThreadFactory extends AtomicLong
             implements ThreadFactory {
         private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
-        private final ThreadGroup group;
-        private final String      namePrefix;
-        private final int         priority;
+        private final        ThreadGroup   group;
+        private final        String        namePrefix;
+        private final        int           priority;
 
         UtilsThreadFactory(String prefix, int priority) {
             SecurityManager s = System.getSecurityManager();
@@ -1118,7 +1101,7 @@ public final class ThreadUtils {
             }
         }
 
-        private static void post(final Runnable runnable) {
+        static void post(final Runnable runnable) {
             if (MAIN_HANDLER != null) {
                 MAIN_HANDLER.post(runnable);
             } else {

@@ -1,453 +1,395 @@
 package com.xq.projectdefine.util.tools;
 
-import android.app.Application;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
+import static com.xq.projectdefine.FasterInterface.getApp;
 
-import com.xq.projectdefine.FasterInterface;
-
-
-public final class PathUtils {
+public class PathUtils {
 
     private PathUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
     /**
-     * 获取 Android 系统根目录
-     * <pre>path: /system</pre>
+     * Return the path of /system.
      *
-     * @return 系统根目录
+     * @return the path of /system
      */
     public static String getRootPath() {
         return Environment.getRootDirectory().getAbsolutePath();
     }
 
     /**
-     * 获取 data 目录
-     * <pre>path: /data</pre>
+     * Return the path of /data.
      *
-     * @return data 目录
+     * @return the path of /data
      */
     public static String getDataPath() {
         return Environment.getDataDirectory().getAbsolutePath();
     }
 
     /**
-     * 获取缓存目录
-     * <pre>path: data/cache</pre>
+     * Return the path of /cache.
      *
-     * @return 缓存目录
+     * @return the path of /cache
      */
-    public static String getIntDownloadCachePath() {
+    public static String getDownloadCachePath() {
         return Environment.getDownloadCacheDirectory().getAbsolutePath();
     }
 
     /**
-     * 获取此应用的缓存目录
-     * <pre>path: /data/data/package/cache</pre>
+     * Return the path of /data/data/package.
      *
-     * @return 此应用的缓存目录
+     * @return the path of /data/data/package
      */
-    public static String getAppIntCachePath() {
+    public static String getInternalAppDataPath() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return getApp().getApplicationInfo().dataDir;
+        }
+        return getApp().getDataDir().getAbsolutePath();
+    }
+
+    /**
+     * Return the path of /data/data/package/code_cache.
+     *
+     * @return the path of /data/data/package/code_cache
+     */
+    public static String getInternalAppCodeCacheDir() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return getApp().getApplicationInfo().dataDir + "/code_cache";
+        }
+        return getApp().getCodeCacheDir().getAbsolutePath();
+    }
+
+    /**
+     * Return the path of /data/data/package/cache.
+     *
+     * @return the path of /data/data/package/cache
+     */
+    public static String getInternalAppCachePath() {
         return getApp().getCacheDir().getAbsolutePath();
     }
 
     /**
-     * 获取此应用的文件目录
-     * <pre>path: /data/data/package/files</pre>
+     * Return the path of /data/data/package/databases.
      *
-     * @return 此应用的文件目录
+     * @return the path of /data/data/package/databases
      */
-    public static String getAppIntFilesPath() {
-        return getApp().getFilesDir().getAbsolutePath();
+    public static String getInternalAppDbsPath() {
+        return getApp().getApplicationInfo().dataDir + "/databases";
     }
 
     /**
-     * 获取此应用的数据库文件目录
-     * <pre>path: /data/data/package/databases/name</pre>
+     * Return the path of /data/data/package/databases/name.
      *
-     * @param name 数据库文件名
-     * @return 数据库文件目录
+     * @param name The name of database.
+     * @return the path of /data/data/package/databases/name
      */
-    public static String getAppIntDbPath(String name) {
+    public static String getInternalAppDbPath(String name) {
         return getApp().getDatabasePath(name).getAbsolutePath();
     }
 
     /**
-     * 获取 Android 外置储存的根目录
-     * <pre>path: /storage/emulated/0</pre>
+     * Return the path of /data/data/package/files.
      *
-     * @return 外置储存根目录
+     * @return the path of /data/data/package/files
      */
-    public static String getExtStoragePath() {
+    public static String getInternalAppFilesPath() {
+        return getApp().getFilesDir().getAbsolutePath();
+    }
+
+    /**
+     * Return the path of /data/data/package/shared_prefs.
+     *
+     * @return the path of /data/data/package/shared_prefs
+     */
+    public static String getInternalAppSpPath() {
+        return getApp().getApplicationInfo().dataDir + "shared_prefs";
+    }
+
+    /**
+     * Return the path of /data/data/package/no_backup.
+     *
+     * @return the path of /data/data/package/no_backup
+     */
+    public static String getInternalAppNoBackupFilesPath() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return getApp().getApplicationInfo().dataDir + "no_backup";
+        }
+        return getApp().getNoBackupFilesDir().getAbsolutePath();
+    }
+
+    /**
+     * Return the path of /storage/emulated/0.
+     *
+     * @return the path of /storage/emulated/0
+     */
+    public static String getExternalStoragePath() {
+        if (isExternalStorageDisable()) return "";
         return Environment.getExternalStorageDirectory().getAbsolutePath();
     }
 
     /**
-     * 获取闹钟铃声目录
-     * <pre>path: /storage/emulated/0/Alarms</pre>
+     * Return the path of /storage/emulated/0/Music.
      *
-     * @return 闹钟铃声目录
+     * @return the path of /storage/emulated/0/Music
      */
-    public static String getExtAlarmsPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS)
-                .getAbsolutePath();
+    public static String getExternalMusicPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath();
     }
 
     /**
-     * 获取相机拍摄的照片和视频的目录
-     * <pre>path: /storage/emulated/0/DCIM</pre>
+     * Return the path of /storage/emulated/0/Podcasts.
      *
-     * @return 照片和视频目录
+     * @return the path of /storage/emulated/0/Podcasts
      */
-    public static String getExtDcimPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-                .getAbsolutePath();
+    public static String getExternalPodcastsPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS).getAbsolutePath();
     }
 
     /**
-     * 获取文档目录
-     * <pre>path: /storage/emulated/0/Documents</pre>
+     * Return the path of /storage/emulated/0/Ringtones.
      *
-     * @return 文档目录
+     * @return the path of /storage/emulated/0/Ringtones
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static String getExtDocumentsPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-                .getAbsolutePath();
+    public static String getExternalRingtonesPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES).getAbsolutePath();
     }
 
     /**
-     * 获取下载目录
-     * <pre>path: /storage/emulated/0/Download</pre>
+     * Return the path of /storage/emulated/0/Alarms.
      *
-     * @return 下载目录
+     * @return the path of /storage/emulated/0/Alarms
      */
-    public static String getExtDownloadsPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .getAbsolutePath();
+    public static String getExternalAlarmsPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS).getAbsolutePath();
     }
 
     /**
-     * 获取视频目录
-     * <pre>path: /storage/emulated/0/Movies</pre>
+     * Return the path of /storage/emulated/0/Notifications.
      *
-     * @return 视频目录
+     * @return the path of /storage/emulated/0/Notifications
      */
-    public static String getExtMoviesPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-                .getAbsolutePath();
+    public static String getExternalNotificationsPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_NOTIFICATIONS).getAbsolutePath();
     }
 
     /**
-     * 获取音乐目录
-     * <pre>path: /storage/emulated/0/Music</pre>
+     * Return the path of /storage/emulated/0/Pictures.
      *
-     * @return 音乐目录
+     * @return the path of /storage/emulated/0/Pictures
      */
-    public static String getExtMusicPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-                .getAbsolutePath();
+    public static String getExternalPicturesPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
     }
 
     /**
-     * 获取提示音目录
-     * <pre>path: /storage/emulated/0/Notifications</pre>
+     * Return the path of /storage/emulated/0/Movies.
      *
-     * @return 提示音目录
+     * @return the path of /storage/emulated/0/Movies
      */
-    public static String getExtNotificationsPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_NOTIFICATIONS)
-                .getAbsolutePath();
+    public static String getExternalMoviesPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath();
     }
 
     /**
-     * 获取图片目录
-     * <pre>path: /storage/emulated/0/Pictures</pre>
+     * Return the path of /storage/emulated/0/Download.
      *
-     * @return 图片目录
+     * @return the path of /storage/emulated/0/Download
      */
-    public static String getExtPicturesPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                .getAbsolutePath();
+    public static String getExternalDownloadsPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     }
 
     /**
-     * 获取 Podcasts 目录
-     * <pre>path: /storage/emulated/0/Podcasts</pre>
+     * Return the path of /storage/emulated/0/DCIM.
      *
-     * @return Podcasts 目录
+     * @return the path of /storage/emulated/0/DCIM
      */
-    public static String getExtPodcastsPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS)
-                .getAbsolutePath();
+    public static String getExternalDcimPath() {
+        if (isExternalStorageDisable()) return "";
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
     }
 
     /**
-     * 获取铃声目录
-     * <pre>path: /storage/emulated/0/Ringtones</pre>
+     * Return the path of /storage/emulated/0/Documents.
      *
-     * @return 下载目录
+     * @return the path of /storage/emulated/0/Documents
      */
-    public static String getExtRingtonesPath() {
-        return Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)
-                .getAbsolutePath();
+    public static String getExternalDocumentsPath() {
+        if (isExternalStorageDisable()) return "";
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents";
+        }
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的缓存目录
-     * <pre>path: /storage/emulated/0/Android/data/package/cache</pre>
+     * Return the path of /storage/emulated/0/Android/data/package.
      *
-     * @return 此应用在外置储存中的缓存目录
+     * @return the path of /storage/emulated/0/Android/data/package
      */
-    public static String getAppExtCachePath() {
+    public static String getExternalAppDataPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalCacheDir().getParentFile().getAbsolutePath();
+    }
+
+    /**
+     * Return the path of /storage/emulated/0/Android/data/package/cache.
+     *
+     * @return the path of /storage/emulated/0/Android/data/package/cache
+     */
+    public static String getExternalAppCachePath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
         return getApp().getExternalCacheDir().getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的文件目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files.
      *
-     * @return 此应用在外置储存中的文件目录
+     * @return the path of /storage/emulated/0/Android/data/package/files
      */
-    public static String getAppExtFilePath() {
+    public static String getExternalAppFilesPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
         return getApp().getExternalFilesDir(null).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的闹钟铃声目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Alarms</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Music.
      *
-     * @return 此应用在外置储存中的闹钟铃声目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Music
      */
-    public static String getAppExtAlarmsPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_ALARMS)
-                .getAbsolutePath();
+    public static String getExternalAppMusicPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的相机目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/DCIM</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Podcasts.
      *
-     * @return 此应用在外置储存中的相机目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Podcasts
      */
-    public static String getAppExtDcimPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_DCIM)
-                .getAbsolutePath();
+    public static String getExternalAppPodcastsPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_PODCASTS).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的文档目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Documents</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Ringtones.
      *
-     * @return 此应用在外置储存中的文档目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Ringtones
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static String getAppExtDocumentsPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-                .getAbsolutePath();
+    public static String getExternalAppRingtonesPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_RINGTONES).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的闹钟目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Download</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Alarms.
      *
-     * @return 此应用在外置储存中的闹钟目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Alarms
      */
-    public static String getAppExtDownloadPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-                .getAbsolutePath();
+    public static String getExternalAppAlarmsPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_ALARMS).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的视频目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Movies</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Notifications.
      *
-     * @return 此应用在外置储存中的视频目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Notifications
      */
-    public static String getAppExtMoviesPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_MOVIES)
-                .getAbsolutePath();
+    public static String getExternalAppNotificationsPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_NOTIFICATIONS).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的音乐目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Music</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Pictures.
      *
-     * @return 此应用在外置储存中的音乐目录
+     * @return path of /storage/emulated/0/Android/data/package/files/Pictures
      */
-    public static String getAppExtMusicPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-                .getAbsolutePath();
+    public static String getExternalAppPicturesPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的提示音目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Notifications</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Movies.
      *
-     * @return 此应用在外置储存中的提示音目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Movies
      */
-    public static String getAppExtNotificationsPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_NOTIFICATIONS)
-                .getAbsolutePath();
+    public static String getExternalAppMoviesPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_MOVIES).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的图片目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Pictures</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Download.
      *
-     * @return 此应用在外置储存中的图片目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Download
      */
-    public static String getAppExtPicturesPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                .getAbsolutePath();
+    public static String getExternalAppDownloadPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的 Podcasts 目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Podcasts</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/DCIM.
      *
-     * @return 此应用在外置储存中的 Podcasts 目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/DCIM
      */
-    public static String getAppExtPodcastsPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_PODCASTS)
-                .getAbsolutePath();
+    public static String getExternalAppDcimPath() {
+        if (isExternalStorageDisable()) return "";
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath();
     }
 
     /**
-     * 获取此应用在外置储存中的铃声目录
-     * <pre>path: /storage/emulated/0/Android/data/package/files/Ringtones</pre>
+     * Return the path of /storage/emulated/0/Android/data/package/files/Documents.
      *
-     * @return 此应用在外置储存中的铃声目录
+     * @return the path of /storage/emulated/0/Android/data/package/files/Documents
      */
-    public static String getAppExtRingtonesPath() {
-        return getApp().getExternalFilesDir(Environment.DIRECTORY_RINGTONES)
-                .getAbsolutePath();
+    public static String getExternalAppDocumentsPath() {
+        if (isExternalStorageDisable()) return "";
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            //noinspection ConstantConditions
+            return getApp().getExternalFilesDir(null).getAbsolutePath() + "/Documents";
+        }
+        //noinspection ConstantConditions
+        return getApp().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).getAbsolutePath();
     }
 
     /**
-     * 获取此应用的 Obb 目录
-     * <pre>path: /storage/emulated/0/Android/obb/package</pre>
-     * <pre>一般用来存放游戏数据包</pre>
+     * Return the path of /storage/emulated/0/Android/obb/package.
      *
-     * @return 此应用的 Obb 目录
+     * @return the path of /storage/emulated/0/Android/obb/package
      */
-    public static String getObbPath() {
+    public static String getExternalAppObbPath() {
+        if (isExternalStorageDisable()) return "";
         return getApp().getObbDir().getAbsolutePath();
     }
 
-    public static String getFilePathByUri(Context context, Uri uri) {
-        String path = null;
-        // 以 file:// 开头的
-        if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
-            path = uri.getPath();
-            return path;
-        }
-        // 以 content:// 开头的，比如 content://media/extenral/images/media/17766
-        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme()) && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    if (columnIndex > -1) {
-                        path = cursor.getString(columnIndex);
-                    }
-                }
-                cursor.close();
-            }
-            return path;
-        }
-        // 4.4及之后的 是以 content:// 开头的，比如 content://com.android.providers.media.documents/document/image%3A235700
-        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme()) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (DocumentsContract.isDocumentUri(context, uri)) {
-                if (isExternalStorageDocument(uri)) {
-                    // ExternalStorageProvider
-                    final String docId = DocumentsContract.getDocumentId(uri);
-                    final String[] split = docId.split(":");
-                    final String type = split[0];
-                    if ("primary".equalsIgnoreCase(type)) {
-                        path = Environment.getExternalStorageDirectory() + "/" + split[1];
-                        return path;
-                    }
-                } else if (isDownloadsDocument(uri)) {
-                    // DownloadsProvider
-                    final String id = DocumentsContract.getDocumentId(uri);
-                    final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
-                            Long.valueOf(id));
-                    path = getDataColumn(context, contentUri, null, null);
-                    return path;
-                } else if (isMediaDocument(uri)) {
-                    // MediaProvider
-                    final String docId = DocumentsContract.getDocumentId(uri);
-                    final String[] split = docId.split(":");
-                    final String type = split[0];
-                    Uri contentUri = null;
-                    if ("image".equals(type)) {
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("video".equals(type)) {
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("audio".equals(type)) {
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                    }
-                    final String selection = "_id=?";
-                    final String[] selectionArgs = new String[]{split[1]};
-                    path = getDataColumn(context, contentUri, selection, selectionArgs);
-                    return path;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-        Cursor cursor = null;
-        final String column = "_data";
-        final String[] projection = {column};
-        try {
-            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                final int column_index = cursor.getColumnIndexOrThrow(column);
-                return cursor.getString(column_index);
-            }
-        } finally {
-            if (cursor != null)
-                cursor.close();
-        }
-        return null;
-    }
-
-    private static boolean isExternalStorageDocument(Uri uri) {
-        return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
-
-    private static boolean isDownloadsDocument(Uri uri) {
-        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
-    }
-
-    private static boolean isMediaDocument(Uri uri) {
-        return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
+    private static boolean isExternalStorageDisable() {
+        return !Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
     }
 }

@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-//一键生成MVP标准模板的工具。请将本文件拖拽至您的eclipse工程中运行。如需调整请自行修改，以下为示例代码
+//一键生成MVP标准模板的工具。如需调整请自行修改，以下为示例代码
 //	new MVP(name).create();
 public class MVPCreator {
 	

@@ -1,6 +1,7 @@
 package com.xq.projectdefine;
 
 import android.app.Application;
+import com.xq.projectdefine.util.tools.AppUtils;
 
 public class FasterInterface {
 
@@ -20,6 +21,7 @@ public class FasterInterface {
         FasterInterface.fileProvider = fileProvider;
         FasterInterface.isAutoPermission = isAutoPermission;
 
+        AppUtils.registerActivityLifecycleCallbacks();
     }
 
     public static Application getApp() {
@@ -33,4 +35,5 @@ public class FasterInterface {
     public static boolean isIsAutoPermission() {
         return isAutoPermission;
     }
+
 }

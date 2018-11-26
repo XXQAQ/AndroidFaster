@@ -1,26 +1,21 @@
 package com.xq.projectdefine.util.tools;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.content.FileProvider;
-
-import com.xq.projectdefine.FasterInterface;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import static android.Manifest.permission.CALL_PHONE;
-
+import static com.xq.projectdefine.FasterInterface.getApp;
+import static com.xq.projectdefine.FasterInterface.getFileProvider;
 
 public final class IntentUtils {
 
@@ -29,14 +24,39 @@ public final class IntentUtils {
     }
 
     /**
-     * Check the Intent is Availeble
+     * Return whether the intent is available.
      *
-     * @param intent The intent
-     * @return is Availeble
+     * @param intent The intent.
+     * @return {@code true}: yes<br>{@code false}: no
      */
-    public static boolean isIntentAvaileble(Intent intent){
-        List resolves = getApp().getPackageManager().queryIntentActivities(intent,0);
-        return resolves.size()>0;
+    public static boolean isIntentAvailable(final Intent intent) {
+        return getApp()
+                .getPackageManager()
+                .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                .size() > 0;
+    }
+
+    public static Intent getMailIntent(String mailID) {
+        Uri uri = Uri.parse("mailto:" + mailID);
+        return getIntent(new Intent(Intent.ACTION_SENDTO, uri),false);
+    }
+
+    public static Intent getWebIntent(String url) {
+        Uri uri = Uri.parse(url);
+        return getIntent(new Intent(Intent.ACTION_VIEW, uri),false);
+    }
+
+    public static Intent getContactsIntent() {
+        Uri uri = Uri.parse("content://contacts/people");
+        return getIntent(new Intent(Intent.ACTION_PICK, uri),false);
+    }
+
+    public static Intent getSettingsIntent(String action) {
+        Intent intent = new Intent();
+        ComponentName comp = new ComponentName("com.android.settings", action);
+        intent.setComponent(comp);
+        intent.setAction("android.intent.action.VIEW");
+        return getIntent(intent,false);
     }
 
     /**
@@ -94,7 +114,7 @@ public final class IntentUtils {
             data = Uri.fromFile(file);
         } else {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            String authority = FasterInterface.getFileProvider();
+            String authority = getFileProvider();
             data = FileProvider.getUriForFile(getApp(), authority, file);
         }
         intent.setDataAndType(data, type);
@@ -195,7 +215,6 @@ public final class IntentUtils {
         intent.putExtra(Intent.EXTRA_TEXT, content);
         return getIntent(intent, isNewTask);
     }
-
 
     /**
      * Return the intent of share image.
@@ -556,33 +575,13 @@ public final class IntentUtils {
         return getIntent(intent, isNewTask);
     }
 
-    public static Intent getMailIntent(String mailID) {
-        Uri uri = Uri.parse("mailto:" + mailID);
-        return getIntent(new Intent(Intent.ACTION_SENDTO, uri),false);
-    }
-
-    public static Intent getWebIntent(String url) {
-        Uri uri = Uri.parse(url);
-        return getIntent(new Intent(Intent.ACTION_VIEW, uri),false);
-
-    }
-
-    public static Intent getContactsIntent() {
-        Uri uri = Uri.parse("content://contacts/people");
-        return getIntent(new Intent(Intent.ACTION_PICK, uri),false);
-    }
-
-    public static Intent getSettingsIntent(String action) {
-        Intent intent = new Intent();
-        ComponentName comp = new ComponentName("com.android.settings", action);
-        intent.setComponent(comp);
-        intent.setAction("android.intent.action.VIEW");
-        return getIntent(intent,false);
-    }
-
     private static Intent getIntent(final Intent intent, final boolean isNewTask) {
         return isNewTask ? intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) : intent;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
+    ///////////////////////////////////////////////////////////////////////////
 
     private static File getFileByPath(final String filePath) {
         return isSpace(filePath) ? null : new File(filePath);
@@ -601,18 +600,82 @@ public final class IntentUtils {
     private static Uri file2Uri(final File file) {
         if (file == null) return null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return FileProvider.getUriForFile(getApp(), getFileProvider(), file);
+            String authority = getFileProvider();
+            return FileProvider.getUriForFile(getApp(), authority, file);
         } else {
             return Uri.fromFile(file);
         }
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
-    }
-
-    private static String getFileProvider(){
-        return FasterInterface.getFileProvider();
-    }
-
+//    /**
+//     * 获取选择照片的 Intent
+//     *
+//     * @return
+//     */
+//    public static Intent getPickIntentWithGallery() {
+//        Intent intent = new Intent(Intent.ACTION_PICK);
+//        return intent.setType("image*//*");
+//    }
+//
+//    /**
+//     * 获取从文件中选择照片的 Intent
+//     *
+//     * @return
+//     */
+//    public static Intent getPickIntentWithDocuments() {
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        return intent.setType("image*//*");
+//    }
+//
+//
+//    public static Intent buildImageGetIntent(final Uri saveTo, final int outputX, final int outputY, final boolean returnData) {
+//        return buildImageGetIntent(saveTo, 1, 1, outputX, outputY, returnData);
+//    }
+//
+//    public static Intent buildImageGetIntent(Uri saveTo, int aspectX, int aspectY,
+//                                             int outputX, int outputY, boolean returnData) {
+//        Intent intent = new Intent();
+//        if (Build.VERSION.SDK_INT < 19) {
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//        } else {
+//            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+//            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        }
+//        intent.setType("image*//*");
+//        intent.putExtra("output", saveTo);
+//        intent.putExtra("aspectX", aspectX);
+//        intent.putExtra("aspectY", aspectY);
+//        intent.putExtra("outputX", outputX);
+//        intent.putExtra("outputY", outputY);
+//        intent.putExtra("scale", true);
+//        intent.putExtra("return-data", returnData);
+//        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+//        return intent;
+//    }
+//
+//    public static Intent buildImageCropIntent(final Uri uriFrom, final Uri uriTo, final int outputX, final int outputY, final boolean returnData) {
+//        return buildImageCropIntent(uriFrom, uriTo, 1, 1, outputX, outputY, returnData);
+//    }
+//
+//    public static Intent buildImageCropIntent(Uri uriFrom, Uri uriTo, int aspectX, int aspectY,
+//                                              int outputX, int outputY, boolean returnData) {
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        intent.setDataAndType(uriFrom, "image*//*");
+//        intent.putExtra("crop", "true");
+//        intent.putExtra("output", uriTo);
+//        intent.putExtra("aspectX", aspectX);
+//        intent.putExtra("aspectY", aspectY);
+//        intent.putExtra("outputX", outputX);
+//        intent.putExtra("outputY", outputY);
+//        intent.putExtra("scale", true);
+//        intent.putExtra("return-data", returnData);
+//        intent.putExtra("outputFormat", Bitmap.CompressFormat.PNG.toString());
+//        return intent;
+//    }
+//
+//    public static Intent buildImageCaptureIntent(final Uri uri) {
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+//        return intent;
+//    }
 }

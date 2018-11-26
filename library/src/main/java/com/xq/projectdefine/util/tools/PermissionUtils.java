@@ -1,7 +1,6 @@
 package com.xq.projectdefine.util.tools;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +14,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-import com.xq.projectdefine.FasterInterface;
 import com.xq.projectdefine.util.constant.PermissionConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +21,11 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
+import static com.xq.projectdefine.FasterInterface.getApp;
 
 public final class PermissionUtils {
+
+    public final static String PERMISSION_ACTIVITY_CLASS_NAME = "com.xq.projectdefine.util.tools.PermissionUtils$PermissionActivity";
 
     private static final List<String> PERMISSIONS = getPermissions();
 
@@ -268,9 +268,6 @@ public final class PermissionUtils {
         requestCallback();
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static class PermissionActivity extends Activity {
@@ -325,6 +322,9 @@ public final class PermissionUtils {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // interface
+    ///////////////////////////////////////////////////////////////////////////
 
     public interface OnRationaleListener {
 
@@ -350,5 +350,4 @@ public final class PermissionUtils {
     public interface ThemeCallback {
         void onActivityCreate(Activity activity);
     }
-
 }

@@ -7,7 +7,6 @@ import android.os.PersistableBundle;
 import android.util.Size;
 import android.util.SizeF;
 import android.util.SparseArray;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 

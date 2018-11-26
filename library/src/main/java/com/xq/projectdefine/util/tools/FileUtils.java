@@ -1,13 +1,15 @@
 package com.xq.projectdefine.util.tools;
 
-
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
@@ -487,12 +489,36 @@ public final class FileUtils {
         }
         if (!createOrExistsDir(destFile.getParentFile())) return false;
         try {
-            return FileIOUtils.writeFileFromIS(destFile, new FileInputStream(srcFile), false)
+            return writeFileFromIS(destFile, new FileInputStream(srcFile))
                     && !(isMove && !deleteFile(srcFile));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * Delete the directory.
+     *
+     * @param filePath The path of file.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean delete(final String filePath) {
+        return delete(getFileByPath(filePath));
+    }
+
+    /**
+     * Delete the directory.
+     *
+     * @param file The file.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean delete(final File file) {
+        if (file == null) return false;
+        if (file.isDirectory()) {
+            return deleteDir(file);
+        }
+        return deleteFile(file);
     }
 
     /**
@@ -1150,7 +1176,15 @@ public final class FileUtils {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // copy from ConvertUtils
+    // interface
+    ///////////////////////////////////////////////////////////////////////////
+
+    public interface OnReplaceListener {
+        boolean onReplace();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
     ///////////////////////////////////////////////////////////////////////////
 
     private static final char HEX_DIGITS[] =
@@ -1192,7 +1226,33 @@ public final class FileUtils {
         return true;
     }
 
-    public interface OnReplaceListener {
-        boolean onReplace();
+    private static boolean writeFileFromIS(final File file,
+                                           final InputStream is) {
+        OutputStream os = null;
+        try {
+            os = new BufferedOutputStream(new FileOutputStream(file));
+            byte data[] = new byte[8192];
+            int len;
+            while ((len = is.read(data, 0, 8192)) != -1) {
+                os.write(data, 0, len);
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (os != null) {
+                    os.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

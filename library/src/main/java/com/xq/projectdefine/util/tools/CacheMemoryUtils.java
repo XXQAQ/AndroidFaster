@@ -2,16 +2,15 @@ package com.xq.projectdefine.util.tools;
 
 import android.support.annotation.NonNull;
 import android.support.v4.util.LruCache;
-import android.support.v4.util.SimpleArrayMap;
 import com.xq.projectdefine.util.constant.CacheConstants;
-
-import java.lang.reflect.Array;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class CacheMemoryUtils implements CacheConstants {
 
     private static final int DEFAULT_MAX_COUNT = 256;
 
-    private static final SimpleArrayMap<String, CacheMemoryUtils> CACHE_MAP = new SimpleArrayMap<>();
+    private static final Map<String, CacheMemoryUtils> CACHE_MAP = new ConcurrentHashMap<>();
 
     private final String                       mCacheKey;
     private final LruCache<String, CacheValue> mMemoryCache;
@@ -32,7 +31,17 @@ public final class CacheMemoryUtils implements CacheConstants {
      * @return the single {@link CacheMemoryUtils} instance
      */
     public static CacheMemoryUtils getInstance(final int maxCount) {
-        final String cacheKey = String.valueOf(maxCount);
+        return getInstance(String.valueOf(maxCount), maxCount);
+    }
+
+    /**
+     * Return the single {@link CacheMemoryUtils} instance.
+     *
+     * @param cacheKey The key of cache.
+     * @param maxCount The max count of cache.
+     * @return the single {@link CacheMemoryUtils} instance
+     */
+    public static CacheMemoryUtils getInstance(final String cacheKey, final int maxCount) {
         CacheMemoryUtils cache = CACHE_MAP.get(cacheKey);
         if (cache == null) {
             cache = new CacheMemoryUtils(cacheKey, new LruCache<String, CacheValue>(maxCount));
@@ -133,7 +142,7 @@ public final class CacheMemoryUtils implements CacheConstants {
         long   dueTime;
         Object value;
 
-        private CacheValue(long dueTime, Object value) {
+        CacheValue(long dueTime, Object value) {
             this.dueTime = dueTime;
             this.value = value;
         }

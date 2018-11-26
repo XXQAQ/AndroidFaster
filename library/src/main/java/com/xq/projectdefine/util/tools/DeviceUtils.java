@@ -1,7 +1,6 @@
 package com.xq.projectdefine.util.tools;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
@@ -9,22 +8,20 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.annotation.RequiresPermission;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-
-import com.xq.projectdefine.FasterInterface;
-
 import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.UUID;
-
 import static android.Manifest.permission.ACCESS_WIFI_STATE;
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static com.xq.projectdefine.FasterInterface.getApp;
 
 public final class DeviceUtils {
 
@@ -61,22 +58,8 @@ public final class DeviceUtils {
     public static boolean isPhone() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null && tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
-    }
-
-    /**
-     * Return the serial of device.
-     *
-     * @return the serial of device
-     */
-    @SuppressLint("HardwareIds")
-    @RequiresPermission(READ_PHONE_STATE)
-    public static String getSerial() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return Build.getSerial();
-        } else {
-            return Build.SERIAL;
-        }
+        //noinspection ConstantConditions
+        return tm.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
     }
 
     /**
@@ -92,14 +75,26 @@ public final class DeviceUtils {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (tm == null) return "";
+            //noinspection ConstantConditions
             String imei = tm.getImei();
             if (!TextUtils.isEmpty(imei)) return imei;
             String meid = tm.getMeid();
             return TextUtils.isEmpty(meid) ? "" : meid;
 
         }
-        return tm != null ? tm.getDeviceId() : "";
+        //noinspection ConstantConditions
+        return tm.getDeviceId();
+    }
+
+    /**
+     * Return the serial of device.
+     *
+     * @return the serial of device
+     */
+    @SuppressLint("HardwareIds")
+    @RequiresPermission(READ_PHONE_STATE)
+    public static String getSerial() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? Build.getSerial() : Build.SERIAL;
     }
 
     /**
@@ -115,9 +110,11 @@ public final class DeviceUtils {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return tm != null ? tm.getImei() : "";
+            //noinspection ConstantConditions
+            return tm.getImei();
         }
-        return tm != null ? tm.getDeviceId() : "";
+        //noinspection ConstantConditions
+        return tm.getDeviceId();
     }
 
     /**
@@ -133,10 +130,11 @@ public final class DeviceUtils {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return tm != null ? tm.getMeid() : "";
-        } else {
-            return tm != null ? tm.getDeviceId() : "";
+            //noinspection ConstantConditions
+            return tm.getMeid();
         }
+        //noinspection ConstantConditions
+        return tm.getDeviceId();
     }
 
     /**
@@ -151,7 +149,8 @@ public final class DeviceUtils {
     public static String getIMSI() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null ? tm.getSubscriberId() : "";
+        //noinspection ConstantConditions
+        return tm.getSubscriberId();
     }
 
     /**
@@ -168,7 +167,8 @@ public final class DeviceUtils {
     public static int getPhoneType() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null ? tm.getPhoneType() : -1;
+        //noinspection ConstantConditions
+        return tm.getPhoneType();
     }
 
     /**
@@ -179,7 +179,8 @@ public final class DeviceUtils {
     public static boolean isSimCardReady() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null && tm.getSimState() == TelephonyManager.SIM_STATE_READY;
+        //noinspection ConstantConditions
+        return tm.getSimState() == TelephonyManager.SIM_STATE_READY;
     }
 
     /**
@@ -190,7 +191,8 @@ public final class DeviceUtils {
     public static String getSimOperatorName() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        return tm != null ? tm.getSimOperatorName() : "";
+        //noinspection ConstantConditions
+        return tm.getSimOperatorName();
     }
 
     /**
@@ -201,8 +203,9 @@ public final class DeviceUtils {
     public static String getSimOperatorByMnc() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        String operator = tm != null ? tm.getSimOperator() : null;
-        if (operator == null) return null;
+        //noinspection ConstantConditions
+        String operator = tm.getSimOperator();
+        if (operator == null) return "";
         switch (operator) {
             case "46000":
             case "46002":
@@ -248,8 +251,8 @@ public final class DeviceUtils {
     public static String getPhoneStatus() {
         TelephonyManager tm =
                 (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
-        if (tm == null) return "";
         String str = "";
+        //noinspection ConstantConditions
         str += "DeviceId(IMEI) = " + tm.getDeviceId() + "\n";
         str += "DeviceSoftwareVersion = " + tm.getDeviceSoftwareVersion() + "\n";
         str += "Line1Number = " + tm.getLine1Number() + "\n";
@@ -286,12 +289,25 @@ public final class DeviceUtils {
     }
 
     /**
+     * Return whether ADB is enabled.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static boolean isAdbEnabled() {
+        return Settings.Secure.getInt(
+                getApp().getContentResolver(),
+                Settings.Global.ADB_ENABLED, 0
+        ) > 0;
+    }
+
+    /**
      * Return the version name of device's system.
      *
      * @return the version name of device's system
      */
     public static String getSDKVersionName() {
-        return Build.VERSION.RELEASE;
+        return android.os.Build.VERSION.RELEASE;
     }
 
     /**
@@ -300,7 +316,7 @@ public final class DeviceUtils {
      * @return version code of device's system
      */
     public static int getSDKVersionCode() {
-        return Build.VERSION.SDK_INT;
+        return android.os.Build.VERSION.SDK_INT;
     }
 
     /**
@@ -359,113 +375,6 @@ public final class DeviceUtils {
         return "";
     }
 
-    /**
-     * Return the manufacturer of the product/hardware.
-     * <p>e.g. Xiaomi</p>
-     *
-     * @return the manufacturer of the product/hardware
-     */
-    public static String getManufacturer() {
-        return Build.MANUFACTURER;
-    }
-
-    /**
-     * Return the model of device.
-     * <p>e.g. MI2SC</p>
-     *
-     * @return the model of device
-     */
-    public static String getModel() {
-        String model = Build.MODEL;
-        if (model != null) {
-            model = model.trim().replaceAll("\\s*", "");
-        } else {
-            model = "";
-        }
-        return model;
-    }
-
-    /**
-     * Return an ordered list of ABIs supported by this device. The most preferred ABI is the first
-     * element in the list.
-     *
-     * @return an ordered list of ABIs supported by this device
-     */
-    public static String[] getABIs() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return Build.SUPPORTED_ABIS;
-        } else {
-            if (!TextUtils.isEmpty(Build.CPU_ABI2)) {
-                return new String[]{Build.CPU_ABI, Build.CPU_ABI2};
-            }
-            return new String[]{Build.CPU_ABI};
-        }
-    }
-
-    /**
-     * Shutdown the device
-     * <p>Requires root permission
-     * or hold {@code android:sharedUserId="android.uid.system"},
-     * {@code <uses-permission android:name="android.permission.SHUTDOWN/>}
-     * in manifest.</p>
-     */
-    public static void shutdown() {
-        ShellUtils.execCmd("reboot -p", true);
-        Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
-        intent.putExtra("android.intent.extra.KEY_CONFIRM", false);
-        getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-    }
-
-    /**
-     * Reboot the device.
-     * <p>Requires root permission
-     * or hold {@code android:sharedUserId="android.uid.system"} in manifest.</p>
-     */
-    public static void reboot() {
-        ShellUtils.execCmd("reboot", true);
-        Intent intent = new Intent(Intent.ACTION_REBOOT);
-        intent.putExtra("nowait", 1);
-        intent.putExtra("interval", 1);
-        intent.putExtra("window", 0);
-        getApp().sendBroadcast(intent);
-    }
-
-    /**
-     * Reboot the device.
-     * <p>Requires root permission
-     * or hold {@code android:sharedUserId="android.uid.system"},
-     * {@code <uses-permission android:name="android.permission.REBOOT" />}</p>
-     *
-     * @param reason code to pass to the kernel (e.g., "recovery") to
-     *               request special boot modes, or null.
-     */
-    public static void reboot(final String reason) {
-        PowerManager mPowerManager =
-                (PowerManager) getApp().getSystemService(Context.POWER_SERVICE);
-        try {
-            if (mPowerManager == null) return;
-            mPowerManager.reboot(reason);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Reboot the device to recovery.
-     * <p>Requires root permission.</p>
-     */
-    public static void reboot2Recovery() {
-        ShellUtils.execCmd("reboot recovery", true);
-    }
-
-    /**
-     * Reboot the device to bootloader.
-     * <p>Requires root permission.</p>
-     */
-    public static void reboot2Bootloader() {
-        ShellUtils.execCmd("reboot bootloader", true);
-    }
-
     private static boolean isAddressNotInExcepts(final String address, final String... excepts) {
         if (excepts == null || excepts.length == 0) {
             return !"02:00:00:00:00:00".equals(address);
@@ -478,11 +387,10 @@ public final class DeviceUtils {
         return true;
     }
 
-    @SuppressLint({"HardwareIds", "MissingPermission"})
+    @SuppressLint({"HardwareIds", "MissingPermission", "WifiManagerLeak"})
     private static String getMacAddressByWifiInfo() {
         try {
-            Context context = getApp().getApplicationContext();
-            WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            WifiManager wifi = (WifiManager) getApp().getSystemService(Context.WIFI_SERVICE);
             if (wifi != null) {
                 WifiInfo info = wifi.getConnectionInfo();
                 if (info != null) return info.getMacAddress();
@@ -575,7 +483,105 @@ public final class DeviceUtils {
         return "02:00:00:00:00:00";
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
+    /**
+     * Return the manufacturer of the product/hardware.
+     * <p>e.g. Xiaomi</p>
+     *
+     * @return the manufacturer of the product/hardware
+     */
+    public static String getManufacturer() {
+        return Build.MANUFACTURER;
+    }
+
+    /**
+     * Return the model of device.
+     * <p>e.g. MI2SC</p>
+     *
+     * @return the model of device
+     */
+    public static String getModel() {
+        String model = Build.MODEL;
+        if (model != null) {
+            model = model.trim().replaceAll("\\s*", "");
+        } else {
+            model = "";
+        }
+        return model;
+    }
+
+    /**
+     * Return an ordered list of ABIs supported by this device. The most preferred ABI is the first
+     * element in the list.
+     *
+     * @return an ordered list of ABIs supported by this device
+     */
+    public static String[] getABIs() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return Build.SUPPORTED_ABIS;
+        } else {
+            if (!TextUtils.isEmpty(Build.CPU_ABI2)) {
+                return new String[]{Build.CPU_ABI, Build.CPU_ABI2};
+            }
+            return new String[]{Build.CPU_ABI};
+        }
+    }
+
+    /**
+     * Shutdown the device
+     * <p>Requires root permission
+     * or hold {@code android:sharedUserId="android.uid.system"},
+     * {@code <uses-permission android:name="android.permission.SHUTDOWN/>}
+     * in manifest.</p>
+     */
+    public static void shutdown() {
+        ShellUtils.execCmd("reboot -p", true);
+        Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
+        intent.putExtra("android.intent.extra.KEY_CONFIRM", false);
+        getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    /**
+     * Reboot the device.
+     * <p>Requires root permission
+     * or hold {@code android:sharedUserId="android.uid.system"} in manifest.</p>
+     */
+    public static void reboot() {
+        ShellUtils.execCmd("reboot", true);
+        Intent intent = new Intent(Intent.ACTION_REBOOT);
+        intent.putExtra("nowait", 1);
+        intent.putExtra("interval", 1);
+        intent.putExtra("window", 0);
+        getApp().sendBroadcast(intent);
+    }
+
+    /**
+     * Reboot the device.
+     * <p>Requires root permission
+     * or hold {@code android:sharedUserId="android.uid.system"},
+     * {@code <uses-permission android:name="android.permission.REBOOT" />}</p>
+     *
+     * @param reason code to pass to the kernel (e.g., "recovery") to
+     *               request special boot modes, or null.
+     */
+    public static void reboot(final String reason) {
+        PowerManager pm = (PowerManager) getApp().getSystemService(Context.POWER_SERVICE);
+        //noinspection ConstantConditions
+        pm.reboot(reason);
+    }
+
+    /**
+     * Reboot the device to recovery.
+     * <p>Requires root permission.</p>
+     */
+    public static void reboot2Recovery() {
+        ShellUtils.execCmd("reboot recovery", true);
+    }
+
+    /**
+     * Reboot the device to bootloader.
+     * <p>Requires root permission.</p>
+     */
+    public static void reboot2Bootloader() {
+        ShellUtils.execCmd("reboot bootloader", true);
     }
 }

@@ -1,40 +1,22 @@
-/*
- *   Copyright (C)  2016 android@19code.com
- *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
- */
-
 package com.xq.projectdefine.util.tools;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Application;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
+import android.support.annotation.RequiresPermission;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.Surface;
+import android.view.Window;
 import android.view.WindowManager;
-
-import com.xq.projectdefine.FasterInterface;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import static android.Manifest.permission.WRITE_SETTINGS;
+import static com.xq.projectdefine.FasterInterface.getApp;
 
 public final class ScreenUtils {
 
@@ -103,86 +85,127 @@ public final class ScreenUtils {
     }
 
     /**
-     * 获取屏幕宽度(px)
-     * @param c
-     * @return
+     * Return the width of screen, in pixel.
+     *
+     * @return the width of screen, in pixel
      */
-    public static int getScreenW(Context c) {
-        return c.getResources().getDisplayMetrics().widthPixels;
-    }
-
-    /**
-     * 获取屏幕高度(px)
-     * @param c
-     * @return
-     */
-    public static int getScreenH(Context c) {
-        return c.getResources().getDisplayMetrics().heightPixels;
-    }
-
-    /**
-     * 获取屏幕内容高度(px)
-     * @param context
-     * @return
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public static int getScreenRealH(Context context) {
-        int h;
-        WindowManager winMgr = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = winMgr.getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        if (Build.VERSION.SDK_INT >= 17) {
-            display.getRealMetrics(dm);
-            h = dm.heightPixels;
+    public static int getScreenWidth() {
+        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getRealSize(point);
         } else {
-            try {
-                Method method = Class.forName("android.view.Display").getMethod("getRealMetrics", DisplayMetrics.class);
-                method.invoke(display, dm);
-                h = dm.heightPixels;
-            } catch (Exception e) {
-                display.getMetrics(dm);
-                h = dm.heightPixels;
-            }
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getSize(point);
         }
-        return h;
+        return point.x;
     }
 
     /**
-     * 获取屏幕DPI级别
-     * @param ctx
-     * @return
+     * Return the height of screen, in pixel.
+     *
+     * @return the height of screen, in pixel
      */
-    public static int getDensity(Context ctx) {
-        return ctx.getResources().getDisplayMetrics().densityDpi;
+    public static int getScreenHeight() {
+        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        Point point = new Point();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getRealSize(point);
+        } else {
+            //noinspection ConstantConditions
+            wm.getDefaultDisplay().getSize(point);
+        }
+        return point.y;
     }
 
     /**
-     * 设置为全屏无状态栏模式
-     * @param activity
+     * Return the density of screen.
+     *
+     * @return the density of screen
+     */
+    public static float getScreenDensity() {
+        return Resources.getSystem().getDisplayMetrics().density;
+    }
+
+    /**
+     * Return the screen density expressed as dots-per-inch.
+     *
+     * @return the screen density expressed as dots-per-inch
+     */
+    public static int getScreenDensityDpi() {
+        return Resources.getSystem().getDisplayMetrics().densityDpi;
+    }
+
+    /**
+     * Set full screen.
+     *
+     * @param activity The activity.
      */
     public static void setFullScreen(@NonNull final Activity activity) {
-        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     /**
-     * 设置横屏
-     * @param activity
+     * Set non full screen.
+     *
+     * @param activity The activity.
+     */
+    public static void setNonFullScreen(@NonNull final Activity activity) {
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    /**
+     * Toggle full screen.
+     *
+     * @param activity The activity.
+     */
+    public static void toggleFullScreen(@NonNull final Activity activity) {
+        int fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        Window window = activity.getWindow();
+        if ((window.getAttributes().flags & fullScreenFlag) == fullScreenFlag) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+    }
+
+    /**
+     * Return whether screen is full.
+     *
+     * @param activity The activity.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isFullScreen(@NonNull final Activity activity) {
+        int fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        return (activity.getWindow().getAttributes().flags & fullScreenFlag) == fullScreenFlag;
+    }
+
+    /**
+     * Set the screen to landscape.
+     *
+     * @param activity The activity.
      */
     public static void setLandscape(@NonNull final Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     /**
-     * 设置竖屏
-     * @param activity
+     * Set the screen to portrait.
+     *
+     * @param activity The activity.
      */
     public static void setPortrait(@NonNull final Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /**
-     * @return 是否横屏
+     * Return whether screen is landscape.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isLandscape() {
         return getApp().getResources().getConfiguration().orientation
@@ -190,7 +213,9 @@ public final class ScreenUtils {
     }
 
     /**
-     * @return 是否竖屏
+     * Return whether screen is portrait.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isPortrait() {
         return getApp().getResources().getConfiguration().orientation
@@ -198,8 +223,10 @@ public final class ScreenUtils {
     }
 
     /**
-     * @param activity
-     * @return 屏幕旋转角度
+     * Return the rotation of screen.
+     *
+     * @param activity The activity.
+     * @return the rotation of screen
      */
     public static int getScreenRotation(@NonNull final Activity activity) {
         switch (activity.getWindowManager().getDefaultDisplay().getRotation()) {
@@ -216,7 +243,59 @@ public final class ScreenUtils {
         }
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
+    /**
+     * Return whether screen is locked.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isScreenLock() {
+        KeyguardManager km =
+                (KeyguardManager) getApp().getSystemService(Context.KEYGUARD_SERVICE);
+        //noinspection ConstantConditions
+        return km.inKeyguardRestrictedInputMode();
     }
+
+    /**
+     * Set the duration of sleep.
+     * <p>Must hold {@code <uses-permission android:name="android.permission.WRITE_SETTINGS" />}</p>
+     *
+     * @param duration The duration.
+     */
+    @RequiresPermission(WRITE_SETTINGS)
+    public static void setSleepDuration(final int duration) {
+        Settings.System.putInt(
+                getApp().getContentResolver(),
+                Settings.System.SCREEN_OFF_TIMEOUT,
+                duration
+        );
+    }
+
+    /**
+     * Return the duration of sleep.
+     *
+     * @return the duration of sleep.
+     */
+    public static int getSleepDuration() {
+        try {
+            return Settings.System.getInt(
+                    getApp().getContentResolver(),
+                    Settings.System.SCREEN_OFF_TIMEOUT
+            );
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return -123;
+        }
+    }
+
+    /**
+     * Return whether device is tablet.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isTablet() {
+        return (getApp().getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
 }

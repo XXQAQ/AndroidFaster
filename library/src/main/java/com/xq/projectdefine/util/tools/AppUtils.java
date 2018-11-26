@@ -2,8 +2,11 @@ package com.xq.projectdefine.util.tools;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AppOpsManager;
 import android.app.Application;
-import android.content.ComponentName;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -13,36 +16,63 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
-import com.xq.projectdefine.FasterInterface;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
+import java.util.Map;
+import static com.xq.projectdefine.FasterInterface.getApp;
+import static com.xq.projectdefine.util.tools.PermissionUtils.PERMISSION_ACTIVITY_CLASS_NAME;
 
 public final class AppUtils {
+
+    private static final ActivityLifecycleImpl ACTIVITY_LIFECYCLE = new ActivityLifecycleImpl();
 
     private AppUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
-    /**
-     * Monitor App before and after state (after calling this method is not recommended to use app.registerActivityLifecycleCallbacks)
-     * @param listener
-     */
-    private static ForegroundCallbacks callbacks;
-    public static void addForegroundListener(ForegroundCallbacks.Listener listener){
-        if (callbacks == null){
-            callbacks = new ForegroundCallbacks();
-            getApp().registerActivityLifecycleCallbacks(callbacks);
+    //使用当前Utils必须先调用此方法
+    public static void registerActivityLifecycleCallbacks(){
+        if (ACTIVITY_LIFECYCLE.mActivityList.isEmpty()) {
+            getApp().registerActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
         }
-        callbacks.addListener(listener);
+        else {
+            getApp().unregisterActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
+            ACTIVITY_LIFECYCLE.mActivityList.clear();
+            getApp().registerActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
+        }
+    }
+
+    /**
+     * Register the status of application changed listener.
+     *
+     * @param obj      The object.
+     * @param listener The status of application changed listener
+     */
+    public static void registerAppStatusChangedListener(@NonNull final Object obj,
+                                                        @NonNull final OnAppStatusChangedListener listener) {
+        getActivityLifecycle().addListener(obj, listener);
+    }
+
+    /**
+     * Unregister the status of application changed listener.
+     *
+     * @param obj The object.
+     */
+    public static void unregisterAppStatusChangedListener(@NonNull final Object obj) {
+        getActivityLifecycle().removeListener(obj);
     }
 
     /**
@@ -65,7 +95,7 @@ public final class AppUtils {
      */
     public static void installApp(final File file) {
         if (!isFileExists(file)) return;
-        getApp().startActivity(IntentUtils.getInstallAppIntent(file, true));
+        getApp().startActivity(getInstallAppIntent(file, true));
     }
 
     /**
@@ -98,7 +128,7 @@ public final class AppUtils {
                                   final File file,
                                   final int requestCode) {
         if (!isFileExists(file)) return;
-        activity.startActivityForResult(IntentUtils.getInstallAppIntent(file), requestCode);
+        activity.startActivityForResult(getInstallAppIntent(file), requestCode);
     }
 
     /**
@@ -188,7 +218,7 @@ public final class AppUtils {
      */
     public static void uninstallApp(final String packageName) {
         if (isSpace(packageName)) return;
-        getApp().startActivity(IntentUtils.getUninstallAppIntent(packageName, true));
+        getApp().startActivity(getUninstallAppIntent(packageName, true));
     }
 
     /**
@@ -203,10 +233,7 @@ public final class AppUtils {
                                     final String packageName,
                                     final int requestCode) {
         if (isSpace(packageName)) return;
-        activity.startActivityForResult(
-                IntentUtils.getUninstallAppIntent(packageName),
-                requestCode
-        );
+        activity.startActivityForResult(getUninstallAppIntent(packageName), requestCode);
     }
 
     /**
@@ -269,23 +296,13 @@ public final class AppUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isAppInstalled(@NonNull final String packageName) {
-        return !isSpace(packageName) && getApp().getPackageManager().getLaunchIntentForPackage(packageName) != null;
-    }
-
-    /**
-     * Return whether the app is installed.
-     *
-     * @param action   The Intent action, such as ACTION_VIEW.
-     * @param category The desired category.
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public static boolean isAppInstalled(@NonNull final String action,
-                                         @NonNull final String category) {
-        Intent intent = new Intent(action);
-        intent.addCategory(category);
-        PackageManager pm = getApp().getPackageManager();
-        ResolveInfo info = pm.resolveActivity(intent, 0);
-        return info != null;
+        PackageManager packageManager = getApp().getPackageManager();
+        try {
+            return packageManager.getApplicationInfo(packageName, 0) != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -356,6 +373,42 @@ public final class AppUtils {
         }
     }
 
+    public static ActivityLifecycleImpl getActivityLifecycle() {
+        return ACTIVITY_LIFECYCLE;
+    }
+
+    public static LinkedList<Activity> getActivityList() {
+        return ACTIVITY_LIFECYCLE.mActivityList;
+    }
+
+    public static Context getTopActivityOrApp() {
+        if (isAppForeground()) {
+            Activity topActivity = ACTIVITY_LIFECYCLE.getTopActivity();
+            return topActivity == null ? getApp() : topActivity;
+        } else {
+            return getApp();
+        }
+    }
+    
+    /**
+     * Return whether application is foreground.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAppForeground() {
+        ActivityManager am =
+                (ActivityManager) getApp().getSystemService(Context.ACTIVITY_SERVICE);
+        //noinspection ConstantConditions
+        List<ActivityManager.RunningAppProcessInfo> info = am.getRunningAppProcesses();
+        if (info == null || info.size() == 0) return false;
+        for (ActivityManager.RunningAppProcessInfo aInfo : info) {
+            if (aInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                return aInfo.processName.equals(getApp().getPackageName());
+            }
+        }
+        return false;
+    }
+
     /**
      * Return whether application is foreground.
      * <p>Target APIs greater than 21 must hold
@@ -365,7 +418,7 @@ public final class AppUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isAppForeground(@NonNull final String packageName) {
-        return !isSpace(packageName) && packageName.equals(ProcessUtils.getForegroundProcessName());
+        return !isSpace(packageName) && packageName.equals(getForegroundProcessName());
     }
 
     /**
@@ -375,7 +428,7 @@ public final class AppUtils {
      */
     public static void launchApp(final String packageName) {
         if (isSpace(packageName)) return;
-        getApp().startActivity(IntentUtils.getLaunchAppIntent(packageName, true));
+        getApp().startActivity(getLaunchAppIntent(packageName, true));
     }
 
     /**
@@ -390,19 +443,29 @@ public final class AppUtils {
                                  final String packageName,
                                  final int requestCode) {
         if (isSpace(packageName)) return;
-        activity.startActivityForResult(IntentUtils.getLaunchAppIntent(packageName), requestCode);
+        activity.startActivityForResult(getLaunchAppIntent(packageName), requestCode);
     }
 
     /**
      * Relaunch the application.
      */
     public static void relaunchApp() {
+        relaunchApp(false);
+    }
+
+    /**
+     * Relaunch the application.
+     *
+     * @param isKillProcess True to kill the process, false otherwise.
+     */
+    public static void relaunchApp(final boolean isKillProcess) {
         PackageManager packageManager = getApp().getPackageManager();
         Intent intent = packageManager.getLaunchIntentForPackage(getApp().getPackageName());
         if (intent == null) return;
-        ComponentName componentName = intent.getComponent();
-        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
-        getApp().startActivity(mainIntent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        getApp().startActivity(intent);
+        if (!isKillProcess) return;
+        android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
     }
 
@@ -423,6 +486,19 @@ public final class AppUtils {
         Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS");
         intent.setData(Uri.parse("package:" + packageName));
         getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    /**
+     * Exit the application.
+     */
+    public static void exitApp() {
+        List<Activity> activityList = getActivityList();
+        for (int i = activityList.size() - 1; i >= 0; --i) {// remove from top
+            Activity activity = activityList.get(i);
+            // sActivityList remove the index activity at onActivityDestroyed
+            activity.finish();
+        }
+        System.exit(0);
     }
 
     /**
@@ -613,11 +689,53 @@ public final class AppUtils {
      * @return the application's signature for SHA1 value
      */
     public static String getAppSignatureSHA1(final String packageName) {
+        return getAppSignatureHash(packageName, "SHA1");
+    }
+
+    /**
+     * Return the application's signature for SHA256 value.
+     *
+     * @return the application's signature for SHA256 value
+     */
+    public static String getAppSignatureSHA256() {
+        return getAppSignatureSHA256(getApp().getPackageName());
+    }
+
+    /**
+     * Return the application's signature for SHA256 value.
+     *
+     * @param packageName The name of the package.
+     * @return the application's signature for SHA256 value
+     */
+    public static String getAppSignatureSHA256(final String packageName) {
+        return getAppSignatureHash(packageName, "SHA256");
+    }
+
+    /**
+     * Return the application's signature for MD5 value.
+     *
+     * @return the application's signature for MD5 value
+     */
+    public static String getAppSignatureMD5() {
+        return getAppSignatureMD5(getApp().getPackageName());
+    }
+
+    /**
+     * Return the application's signature for MD5 value.
+     *
+     * @param packageName The name of the package.
+     * @return the application's signature for MD5 value
+     */
+    public static String getAppSignatureMD5(final String packageName) {
+        return getAppSignatureHash(packageName, "MD5");
+    }
+
+    private static String getAppSignatureHash(final String packageName, final String algorithm) {
         if (isSpace(packageName)) return "";
         Signature[] signature = getAppSignature(packageName);
         if (signature == null || signature.length <= 0) return "";
-        return encryptSHA1ToString(signature[0].toByteArray()).
-                replaceAll("(?<=[0-9A-F]{2})[0-9A-F]{2}", ":$0");
+        return bytes2HexString(hashTemplate(signature[0].toByteArray(), algorithm))
+                .replaceAll("(?<=[0-9A-F]{2})[0-9A-F]{2}", ":$0");
     }
 
     /**
@@ -692,201 +810,6 @@ public final class AppUtils {
         int versionCode = pi.versionCode;
         boolean isSystem = (ApplicationInfo.FLAG_SYSTEM & ai.flags) != 0;
         return new AppInfo(packageName, name, icon, packagePath, versionName, versionCode, isSystem);
-    }
-
-    private static boolean isFileExists(final File file) {
-        return file != null && file.exists();
-    }
-
-    private static File getFileByPath(final String filePath) {
-        return isSpace(filePath) ? null : new File(filePath);
-    }
-
-    private static boolean isSpace(final String s) {
-        if (s == null) return true;
-        for (int i = 0, len = s.length(); i < len; ++i) {
-            if (!Character.isWhitespace(s.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean isDeviceRooted() {
-        String su = "su";
-        String[] locations = {"/system/bin/", "/system/xbin/", "/sbin/", "/system/sd/xbin/",
-                "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/"};
-        for (String location : locations) {
-            if (new File(location + su).exists()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static final char HEX_DIGITS[] =
-            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
-    private static String encryptSHA1ToString(final byte[] data) {
-        return bytes2HexString(encryptSHA1(data));
-    }
-
-    private static byte[] encryptSHA1(final byte[] data) {
-        if (data == null || data.length <= 0) return null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA1");
-            md.update(data);
-            return md.digest();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private static String bytes2HexString(final byte[] bytes) {
-        if (bytes == null) return "";
-        int len = bytes.length;
-        if (len <= 0) return "";
-        char[] ret = new char[len << 1];
-        for (int i = 0, j = 0; i < len; i++) {
-            ret[j++] = HEX_DIGITS[bytes[i] >> 4 & 0x0f];
-            ret[j++] = HEX_DIGITS[bytes[i] & 0x0f];
-        }
-        return new String(ret);
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
-    }
-
-    /**
-     * 为您的Application注册该监听后可以从中获取当前App的前台状态
-     */
-    public static class ForegroundCallbacks implements Application.ActivityLifecycleCallbacks {
-        public static final long CHECK_DELAY = 500;
-        private static ForegroundCallbacks instance;
-        private boolean foreground = false, paused = true;
-        private Handler handler = new Handler();
-        private List<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-        private Runnable check;
-
-        private ForegroundCallbacks() {
-        }
-
-        public static ForegroundCallbacks init(Application application) {
-            if (instance == null) {
-                instance = new ForegroundCallbacks();
-                application.registerActivityLifecycleCallbacks(instance);
-            }
-            return instance;
-        }
-
-        public static ForegroundCallbacks get(Application application) {
-            if (instance == null) {
-                init(application);
-            }
-            return instance;
-        }
-
-        public static ForegroundCallbacks get(Context ctx) {
-            if (instance == null) {
-                Context appCtx = ctx.getApplicationContext();
-                if (appCtx instanceof Application) {
-                    init((Application) appCtx);
-                }
-                throw new IllegalStateException(
-                        "Foreground is not initialised and " +
-                                "cannot obtain the Application object");
-            }
-            return instance;
-        }
-
-        public static ForegroundCallbacks get() {
-            if (instance == null) {
-                throw new IllegalStateException(
-                        "Foreground is not initialised - invoke " +
-                                "at least once with parameterised init/get");
-            }
-            return instance;
-        }
-
-        public boolean isForeground() {
-            return foreground;
-        }
-
-        public void addListener(Listener listener) {
-            listeners.add(listener);
-        }
-
-        public void removeListener(Listener listener) {
-            listeners.remove(listener);
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-            paused = false;
-            boolean wasBackground = !foreground;
-            foreground = true;
-            if (check != null)
-                handler.removeCallbacks(check);
-            if (wasBackground) {
-                for (Listener l : listeners) {
-                    try {
-                        l.onBecameForeground();
-                    } catch (Exception exc) {
-                        exc.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-            paused = true;
-            if (check != null)
-                handler.removeCallbacks(check);
-            handler.postDelayed(check = new Runnable() {
-                @Override
-                public void run() {
-                    if (foreground && paused) {
-                        foreground = false;
-                        for (Listener l : listeners) {
-                            try {
-                                l.onBecameBackground();
-                            } catch (Exception exc) {
-                                exc.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }, CHECK_DELAY);
-        }
-
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-        }
-
-        public interface Listener {
-            public void onBecameForeground();
-
-            public void onBecameBackground();
-        }
     }
 
     /**
@@ -981,6 +904,317 @@ public final class AppUtils {
         }
     }
 
+    /**
+     * OnAppStatusChangedListener
+     * */
+    public interface OnAppStatusChangedListener {
+        void onForeground();
+        void onBackground();
+    }
 
+    /**
+     * Default ActivityLifecycleCallbacks
+     * */
+    static class ActivityLifecycleImpl implements Application.ActivityLifecycleCallbacks {
 
+        final LinkedList<Activity>                        mActivityList      = new LinkedList<>();
+        final HashMap<Object, OnAppStatusChangedListener> mStatusListenerMap = new HashMap<>();
+
+        private int mForegroundCount = 0;
+        private int mConfigCount     = 0;
+
+        void addListener(final Object object, final OnAppStatusChangedListener listener) {
+            mStatusListenerMap.put(object, listener);
+        }
+
+        void removeListener(final Object object) {
+            mStatusListenerMap.remove(object);
+        }
+
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            setTopActivity(activity);
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+            setTopActivity(activity);
+            if (mForegroundCount <= 0) {
+                postStatus(true);
+            }
+            if (mConfigCount < 0) {
+                ++mConfigCount;
+            } else {
+                ++mForegroundCount;
+            }
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+            setTopActivity(activity);
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {/**/}
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+            if (activity.isChangingConfigurations()) {
+                --mConfigCount;
+            } else {
+                --mForegroundCount;
+                if (mForegroundCount <= 0) {
+                    postStatus(false);
+                }
+            }
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {/**/}
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+            mActivityList.remove(activity);
+        }
+
+        private void postStatus(final boolean isForeground) {
+            if (mStatusListenerMap.isEmpty()) return;
+            for (OnAppStatusChangedListener onAppStatusChangedListener : mStatusListenerMap.values()) {
+                if (onAppStatusChangedListener == null) return;
+                if (isForeground) {
+                    onAppStatusChangedListener.onForeground();
+                } else {
+                    onAppStatusChangedListener.onBackground();
+                }
+            }
+        }
+
+        private void setTopActivity(final Activity activity) {
+            if (PERMISSION_ACTIVITY_CLASS_NAME.equals(activity.getClass().getName())) return;
+            if (mActivityList.contains(activity)) {
+                if (!mActivityList.getLast().equals(activity)) {
+                    mActivityList.remove(activity);
+                    mActivityList.addLast(activity);
+                }
+            } else {
+                mActivityList.addLast(activity);
+            }
+        }
+
+        Activity getTopActivity() {
+            if (!mActivityList.isEmpty()) {
+                final Activity topActivity = mActivityList.getLast();
+                if (topActivity != null) {
+                    return topActivity;
+                }
+            }
+            Activity topActivityByReflect = getTopActivityByReflect();
+            if (topActivityByReflect != null) {
+                setTopActivity(topActivityByReflect);
+            }
+            return topActivityByReflect;
+        }
+
+        private Activity getTopActivityByReflect() {
+            try {
+                @SuppressLint("PrivateApi")
+                Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+                Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
+                Field activitiesField = activityThreadClass.getDeclaredField("mActivityList");
+                activitiesField.setAccessible(true);
+                Map activities = (Map) activitiesField.get(activityThread);
+                if (activities == null) return null;
+                for (Object activityRecord : activities.values()) {
+                    Class activityRecordClass = activityRecord.getClass();
+                    Field pausedField = activityRecordClass.getDeclaredField("paused");
+                    pausedField.setAccessible(true);
+                    if (!pausedField.getBoolean(activityRecord)) {
+                        Field activityField = activityRecordClass.getDeclaredField("activity");
+                        activityField.setAccessible(true);
+                        return (Activity) activityField.get(activityRecord);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
+    ///////////////////////////////////////////////////////////////////////////
+
+    private static boolean isFileExists(final File file) {
+        return file != null && file.exists();
+    }
+
+    private static File getFileByPath(final String filePath) {
+        return isSpace(filePath) ? null : new File(filePath);
+    }
+
+    private static boolean isSpace(final String s) {
+        if (s == null) return true;
+        for (int i = 0, len = s.length(); i < len; ++i) {
+            if (!Character.isWhitespace(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isDeviceRooted() {
+        String su = "su";
+        String[] locations = {"/system/bin/", "/system/xbin/", "/sbin/", "/system/sd/xbin/",
+                "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/"};
+        for (String location : locations) {
+            if (new File(location + su).exists()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static final char HEX_DIGITS[] =
+            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+    private static byte[] hashTemplate(final byte[] data, final String algorithm) {
+        if (data == null || data.length <= 0) return null;
+        try {
+            MessageDigest md = MessageDigest.getInstance(algorithm);
+            md.update(data);
+            return md.digest();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String bytes2HexString(final byte[] bytes) {
+        if (bytes == null) return "";
+        int len = bytes.length;
+        if (len <= 0) return "";
+        char[] ret = new char[len << 1];
+        for (int i = 0, j = 0; i < len; i++) {
+            ret[j++] = HEX_DIGITS[bytes[i] >> 4 & 0x0f];
+            ret[j++] = HEX_DIGITS[bytes[i] & 0x0f];
+        }
+        return new String(ret);
+    }
+
+    private static Intent getInstallAppIntent(final File file) {
+        return getInstallAppIntent(file, false);
+    }
+
+    private static Intent getInstallAppIntent(final File file, final boolean isNewTask) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri data;
+        String type = "application/vnd.android.package-archive";
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            data = Uri.fromFile(file);
+        } else {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            String authority = getApp().getPackageName() + ".utilcode.provider";
+            data = FileProvider.getUriForFile(getApp(), authority, file);
+        }
+        intent.setDataAndType(data, type);
+        return isNewTask ? intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) : intent;
+    }
+
+    private static Intent getUninstallAppIntent(final String packageName) {
+        return getUninstallAppIntent(packageName, false);
+    }
+
+    private static Intent getUninstallAppIntent(final String packageName, final boolean isNewTask) {
+        Intent intent = new Intent(Intent.ACTION_DELETE);
+        intent.setData(Uri.parse("package:" + packageName));
+        return isNewTask ? intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) : intent;
+    }
+
+    private static Intent getLaunchAppIntent(final String packageName) {
+        return getLaunchAppIntent(packageName, false);
+    }
+
+    private static Intent getLaunchAppIntent(final String packageName, final boolean isNewTask) {
+        Intent intent = getApp().getPackageManager().getLaunchIntentForPackage(packageName);
+        if (intent == null) return null;
+        return isNewTask ? intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) : intent;
+    }
+
+    private static String getForegroundProcessName() {
+        ActivityManager am =
+                (ActivityManager) getApp().getSystemService(Context.ACTIVITY_SERVICE);
+        //noinspection ConstantConditions
+        List<ActivityManager.RunningAppProcessInfo> pInfo = am.getRunningAppProcesses();
+        if (pInfo != null && pInfo.size() > 0) {
+            for (ActivityManager.RunningAppProcessInfo aInfo : pInfo) {
+                if (aInfo.importance
+                        == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    return aInfo.processName;
+                }
+            }
+        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            PackageManager pm = getApp().getPackageManager();
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            List<ResolveInfo> list =
+                    pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            Log.i("ProcessUtils", list.toString());
+            if (list.size() <= 0) {
+                Log.i("ProcessUtils",
+                        "getForegroundProcessName: noun of access to usage information.");
+                return "";
+            }
+            try {// Access to usage information.
+                ApplicationInfo info =
+                        pm.getApplicationInfo(getApp().getPackageName(), 0);
+                AppOpsManager aom =
+                        (AppOpsManager) getApp().getSystemService(Context.APP_OPS_SERVICE);
+                //noinspection ConstantConditions
+                if (aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                        info.uid,
+                        info.packageName) != AppOpsManager.MODE_ALLOWED) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getApp().startActivity(intent);
+                }
+                if (aom.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                        info.uid,
+                        info.packageName) != AppOpsManager.MODE_ALLOWED) {
+                    Log.i("ProcessUtils",
+                            "getForegroundProcessName: refuse to device usage stats.");
+                    return "";
+                }
+                UsageStatsManager usageStatsManager = (UsageStatsManager) getApp()
+                        .getSystemService(Context.USAGE_STATS_SERVICE);
+                List<UsageStats> usageStatsList = null;
+                if (usageStatsManager != null) {
+                    long endTime = System.currentTimeMillis();
+                    long beginTime = endTime - 86400000 * 7;
+                    usageStatsList = usageStatsManager
+                            .queryUsageStats(UsageStatsManager.INTERVAL_BEST,
+                                    beginTime, endTime);
+                }
+                if (usageStatsList == null || usageStatsList.isEmpty()) return null;
+                UsageStats recentStats = null;
+                for (UsageStats usageStats : usageStatsList) {
+                    if (recentStats == null
+                            || usageStats.getLastTimeUsed() > recentStats.getLastTimeUsed()) {
+                        recentStats = usageStats;
+                    }
+                }
+                return recentStats == null ? null : recentStats.getPackageName();
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
 }

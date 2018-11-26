@@ -1,10 +1,6 @@
 package com.xq.projectdefine.util.tools;
 
-import android.app.Application;
 import android.support.annotation.RawRes;
-
-import com.xq.projectdefine.FasterInterface;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -17,6 +13,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.xq.projectdefine.FasterInterface.getApp;
 
 public final class ResourceUtils {
 
@@ -192,6 +190,10 @@ public final class ResourceUtils {
         return is2List(getApp().getResources().openRawResource(resId), charsetName);
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
+    ///////////////////////////////////////////////////////////////////////////
+
     private static boolean writeFileFromIS(final String filePath,
                                            final InputStream is,
                                            final boolean append) {
@@ -317,9 +319,5 @@ public final class ResourceUtils {
                 e.printStackTrace();
             }
         }
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 }

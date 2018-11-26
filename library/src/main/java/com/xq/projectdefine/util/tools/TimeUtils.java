@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-
 public final class TimeUtils {
 
     private static final ThreadLocal<SimpleDateFormat> SDF_THREAD_LOCAL = new ThreadLocal<>();

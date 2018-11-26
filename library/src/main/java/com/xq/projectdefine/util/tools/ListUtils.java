@@ -66,5 +66,4 @@ public final class ListUtils {
         }
         return  sum.doubleValue() / list.size();
     }
-
 }

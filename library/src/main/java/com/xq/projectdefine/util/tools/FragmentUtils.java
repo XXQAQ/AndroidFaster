@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.AnimRes;
+import android.support.annotation.AnimatorRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
@@ -14,11 +15,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 
 public final class FragmentUtils {
 
@@ -98,8 +97,8 @@ public final class FragmentUtils {
     public static void add(@NonNull final FragmentManager fm,
                            @NonNull final Fragment add,
                            @IdRes final int containerId,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim) {
         add(fm, add, containerId, null, false, enterAnim, exitAnim, 0, 0);
     }
 
@@ -119,8 +118,8 @@ public final class FragmentUtils {
                            @NonNull final Fragment add,
                            @IdRes final int containerId,
                            final boolean isAddStack,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim) {
         add(fm, add, containerId, null, isAddStack, enterAnim, exitAnim, 0, 0);
     }
 
@@ -144,10 +143,10 @@ public final class FragmentUtils {
     public static void add(@NonNull final FragmentManager fm,
                            @NonNull final Fragment add,
                            @IdRes final int containerId,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim,
-                           @AnimRes final int popEnterAnim,
-                           @AnimRes final int popExitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim,
+                           @AnimatorRes @AnimRes final int popEnterAnim,
+                           @AnimatorRes @AnimRes final int popExitAnim) {
         add(fm, add, containerId, null, false, enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
 
@@ -173,10 +172,10 @@ public final class FragmentUtils {
                            @NonNull final Fragment add,
                            @IdRes final int containerId,
                            final boolean isAddStack,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim,
-                           @AnimRes final int popEnterAnim,
-                           @AnimRes final int popExitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim,
+                           @AnimatorRes @AnimRes final int popEnterAnim,
+                           @AnimatorRes @AnimRes final int popExitAnim) {
         add(fm, add, containerId, null, isAddStack, enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
 
@@ -312,8 +311,8 @@ public final class FragmentUtils {
                            @NonNull final Fragment add,
                            @IdRes final int containerId,
                            final String tag,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim) {
         add(fm, add, containerId, tag, false, enterAnim, exitAnim, 0, 0);
     }
 
@@ -335,8 +334,8 @@ public final class FragmentUtils {
                            @IdRes final int containerId,
                            final String tag,
                            final boolean isAddStack,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim) {
         add(fm, add, containerId, tag, isAddStack, enterAnim, exitAnim, 0, 0);
     }
 
@@ -362,10 +361,10 @@ public final class FragmentUtils {
                            @NonNull final Fragment add,
                            @IdRes final int containerId,
                            final String tag,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim,
-                           @AnimRes final int popEnterAnim,
-                           @AnimRes final int popExitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim,
+                           @AnimatorRes @AnimRes final int popEnterAnim,
+                           @AnimatorRes @AnimRes final int popExitAnim) {
         add(fm, add, containerId, tag, false, enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
 
@@ -393,10 +392,10 @@ public final class FragmentUtils {
                            @IdRes final int containerId,
                            final String tag,
                            final boolean isAddStack,
-                           @AnimRes final int enterAnim,
-                           @AnimRes final int exitAnim,
-                           @AnimRes final int popEnterAnim,
-                           @AnimRes final int popExitAnim) {
+                           @AnimatorRes @AnimRes final int enterAnim,
+                           @AnimatorRes @AnimRes final int exitAnim,
+                           @AnimatorRes @AnimRes final int popEnterAnim,
+                           @AnimatorRes @AnimRes final int popExitAnim) {
         FragmentTransaction ft = fm.beginTransaction();
         putArgs(add, new Args(containerId, tag, false, isAddStack));
         addAnim(ft, enterAnim, exitAnim, popEnterAnim, popExitAnim);
@@ -634,8 +633,8 @@ public final class FragmentUtils {
      */
     public static void replace(@NonNull final Fragment srcFragment,
                                @NonNull final Fragment destFragment,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(srcFragment, destFragment, null, false, enterAnim, exitAnim, 0, 0);
     }
 
@@ -653,8 +652,8 @@ public final class FragmentUtils {
     public static void replace(@NonNull final Fragment srcFragment,
                                @NonNull final Fragment destFragment,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(srcFragment, destFragment, null, isAddStack, enterAnim, exitAnim, 0, 0);
     }
 
@@ -676,10 +675,10 @@ public final class FragmentUtils {
      */
     public static void replace(@NonNull final Fragment srcFragment,
                                @NonNull final Fragment destFragment,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         replace(srcFragment, destFragment, null, false,
                 enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
@@ -704,10 +703,10 @@ public final class FragmentUtils {
     public static void replace(@NonNull final Fragment srcFragment,
                                @NonNull final Fragment destFragment,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         replace(srcFragment, destFragment, null, isAddStack,
                 enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
@@ -784,8 +783,8 @@ public final class FragmentUtils {
     public static void replace(@NonNull final FragmentManager fm,
                                @NonNull final Fragment fragment,
                                @IdRes final int containerId,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(fm, fragment, containerId, null, false, enterAnim, exitAnim, 0, 0);
     }
 
@@ -805,8 +804,8 @@ public final class FragmentUtils {
                                @NonNull final Fragment fragment,
                                @IdRes final int containerId,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(fm, fragment, containerId, null, isAddStack, enterAnim, exitAnim, 0, 0);
     }
 
@@ -830,10 +829,10 @@ public final class FragmentUtils {
     public static void replace(@NonNull final FragmentManager fm,
                                @NonNull final Fragment fragment,
                                @IdRes final int containerId,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         replace(fm, fragment, containerId, null, false,
                 enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
@@ -860,10 +859,10 @@ public final class FragmentUtils {
                                @NonNull final Fragment fragment,
                                @IdRes final int containerId,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         replace(fm, fragment, containerId, null, isAddStack,
                 enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
@@ -947,8 +946,8 @@ public final class FragmentUtils {
     public static void replace(@NonNull final Fragment srcFragment,
                                @NonNull final Fragment destFragment,
                                final String destTag,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(srcFragment, destFragment, destTag, false, enterAnim, exitAnim, 0, 0);
     }
 
@@ -968,8 +967,8 @@ public final class FragmentUtils {
                                @NonNull final Fragment destFragment,
                                final String destTag,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(srcFragment, destFragment, destTag, isAddStack, enterAnim, exitAnim, 0, 0);
     }
 
@@ -993,10 +992,10 @@ public final class FragmentUtils {
     public static void replace(@NonNull final Fragment srcFragment,
                                @NonNull final Fragment destFragment,
                                final String destTag,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         replace(srcFragment, destFragment, destTag, false,
                 enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
@@ -1023,10 +1022,10 @@ public final class FragmentUtils {
                                @NonNull final Fragment destFragment,
                                final String destTag,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         FragmentManager fm = srcFragment.getFragmentManager();
         if (fm == null) return;
         Args args = getArgs(srcFragment);
@@ -1127,8 +1126,8 @@ public final class FragmentUtils {
                                @NonNull final Fragment fragment,
                                @IdRes final int containerId,
                                final String destTag,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(fm, fragment, containerId, destTag, false, enterAnim, exitAnim, 0, 0);
     }
 
@@ -1150,8 +1149,8 @@ public final class FragmentUtils {
                                @IdRes final int containerId,
                                final String destTag,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim) {
         replace(fm, fragment, containerId, destTag, isAddStack, enterAnim, exitAnim, 0, 0);
     }
 
@@ -1177,10 +1176,10 @@ public final class FragmentUtils {
                                @NonNull final Fragment fragment,
                                @IdRes final int containerId,
                                final String destTag,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         replace(fm, fragment, containerId, destTag, false,
                 enterAnim, exitAnim, popEnterAnim, popExitAnim);
     }
@@ -1209,10 +1208,10 @@ public final class FragmentUtils {
                                @IdRes final int containerId,
                                final String destTag,
                                final boolean isAddStack,
-                               @AnimRes final int enterAnim,
-                               @AnimRes final int exitAnim,
-                               @AnimRes final int popEnterAnim,
-                               @AnimRes final int popExitAnim) {
+                               @AnimatorRes @AnimRes final int enterAnim,
+                               @AnimatorRes @AnimRes final int exitAnim,
+                               @AnimatorRes @AnimRes final int popEnterAnim,
+                               @AnimatorRes @AnimRes final int popExitAnim) {
         FragmentTransaction ft = fm.beginTransaction();
         putArgs(fragment, new Args(containerId, destTag, false, isAddStack));
         addAnim(ft, enterAnim, exitAnim, popEnterAnim, popExitAnim);
@@ -1333,11 +1332,12 @@ public final class FragmentUtils {
      * @param fm The manager of fragment.
      */
     public static void popAll(@NonNull final FragmentManager fm, final boolean isImmediate) {
-        while (fm.getBackStackEntryCount() > 0) {
+        if (fm.getBackStackEntryCount() > 0) {
+            FragmentManager.BackStackEntry entry = fm.getBackStackEntryAt(0);
             if (isImmediate) {
-                fm.popBackStackImmediate();
+                fm.popBackStackImmediate(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
             } else {
-                fm.popBackStack();
+                fm.popBackStack(entry.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
         }
     }
@@ -1788,12 +1788,12 @@ public final class FragmentUtils {
         final boolean isAddStack;
         final String  tag;
 
-        private Args(final int id, final boolean isHide, final boolean isAddStack) {
+        Args(final int id, final boolean isHide, final boolean isAddStack) {
             this(id, null, isHide, isAddStack);
         }
 
-        private Args(final int id, final String tag,
-                     final boolean isHide, final boolean isAddStack) {
+        Args(final int id, final String tag,
+             final boolean isHide, final boolean isAddStack) {
             this.id = id;
             this.tag = tag;
             this.isHide = isHide;
@@ -1810,6 +1810,14 @@ public final class FragmentUtils {
             this.next = next;
         }
 
+        public Fragment getFragment() {
+            return fragment;
+        }
+
+        public List<FragmentNode> getNext() {
+            return next;
+        }
+
         @Override
         public String toString() {
             return fragment.getClass().getSimpleName()
@@ -1817,6 +1825,10 @@ public final class FragmentUtils {
                     + ((next == null || next.isEmpty()) ? "no child" : next.toString());
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // interface
+    ///////////////////////////////////////////////////////////////////////////
 
     public interface OnBackClickListener {
         boolean onBackClick();

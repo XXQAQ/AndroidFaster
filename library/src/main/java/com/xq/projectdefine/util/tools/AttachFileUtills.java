@@ -1,19 +1,14 @@
 package com.xq.projectdefine.util.tools;
 
-
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
-import com.xq.projectdefine.FasterInterface;
 import com.xq.projectdefine.R;
-
 import java.io.File;
-import java.util.List;
-
+import static com.xq.projectdefine.FasterInterface.getApp;
+import static com.xq.projectdefine.FasterInterface.getFileProvider;
 
 public final class AttachFileUtills {
 
@@ -249,15 +244,7 @@ public final class AttachFileUtills {
     }
 
     private static boolean isIntentAvaileble(Intent intent){
-        List resolves = getApp().getPackageManager().queryIntentActivities(intent,0);
-        return resolves.size()>0;
+        return IntentUtils.isIntentAvailable(intent);
     }
 
-    private static Application getApp(){
-        return FasterInterface.getApp();
-    }
-
-    private static String getFileProvider(){
-        return FasterInterface.getFileProvider();
-    }
 }

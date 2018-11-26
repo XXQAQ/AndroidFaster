@@ -1,7 +1,6 @@
 package com.xq.projectdefine.util.tools;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Intent;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -11,19 +10,14 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-
-import com.xq.projectdefine.FasterInterface;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-/**
- * NFC 相关的工具类
- * <p>
- * SDK 最低版本为 14
- */
+import static com.xq.projectdefine.FasterInterface.getApp;
+
 @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
 public final class NfcUtil {
+
     /* NFC 适配器 */
     private NfcAdapter mAdapter;
     /* NDEF 标签读取监听 */
@@ -276,10 +270,6 @@ public final class NfcUtil {
         setReadNdefListener(null);
         setWriteNdefListener(null);
         setDeleteNdefListener(null);
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 
     /**

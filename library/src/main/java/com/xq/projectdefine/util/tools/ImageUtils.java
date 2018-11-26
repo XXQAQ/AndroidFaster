@@ -1,7 +1,5 @@
 package com.xq.projectdefine.util.tools;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -37,9 +35,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import com.xq.projectdefine.FasterInterface;
-import com.xq.projectdefine.util.constant.MemoryConstants;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import static com.xq.projectdefine.FasterInterface.getApp;
 
 public final class ImageUtils {
 
@@ -152,10 +148,19 @@ public final class ImageUtils {
      * @return bitmap
      */
     public static Bitmap view2Bitmap(final View view) {
-        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-        view.buildDrawingCache();
-        return view.getDrawingCache();
+        if (view == null) return null;
+        Bitmap ret = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(ret);
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null) {
+            bgDrawable.draw(canvas);
+        } else {
+            canvas.drawColor(Color.WHITE);
+        }
+        view.draw(canvas);
+        return ret;
     }
 
     /**
@@ -1837,6 +1842,30 @@ public final class ImageUtils {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
     }
 
+    /**
+     * Return the sample size.
+     *
+     * @param options   The options.
+     * @param maxWidth  The maximum width.
+     * @param maxHeight The maximum height.
+     * @return the sample size
+     */
+    private static int calculateInSampleSize(final BitmapFactory.Options options,
+                                             final int maxWidth,
+                                             final int maxHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+        while ((width >>= 1) >= maxWidth && (height >>= 1) >= maxHeight) {
+            inSampleSize <<= 1;
+        }
+        return inSampleSize;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
+    ///////////////////////////////////////////////////////////////////////////
+
     private static File getFileByPath(final String filePath) {
         return isSpace(filePath) ? null : new File(filePath);
     }
@@ -1867,33 +1896,13 @@ public final class ImageUtils {
         return true;
     }
 
-    /**
-     * Return the sample size.
-     *
-     * @param options   The options.
-     * @param maxWidth  The maximum width.
-     * @param maxHeight The maximum height.
-     * @return the sample size
-     */
-    private static int calculateInSampleSize(final BitmapFactory.Options options,
-                                             final int maxWidth,
-                                             final int maxHeight) {
-        int height = options.outHeight;
-        int width = options.outWidth;
-        int inSampleSize = 1;
-        while ((width >>= 1) >= maxWidth && (height >>= 1) >= maxHeight) {
-            inSampleSize <<= 1;
-        }
-        return inSampleSize;
-    }
-
     private static byte[] input2Byte(final InputStream is) {
         if (is == null) return null;
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            byte[] b = new byte[MemoryConstants.KB];
+            byte[] b = new byte[1024];
             int len;
-            while ((len = is.read(b, 0, MemoryConstants.KB)) != -1) {
+            while ((len = is.read(b, 0, 1024)) != -1) {
                 os.write(b, 0, len);
             }
             return os.toByteArray();
@@ -1907,9 +1916,5 @@ public final class ImageUtils {
                 e.printStackTrace();
             }
         }
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 }

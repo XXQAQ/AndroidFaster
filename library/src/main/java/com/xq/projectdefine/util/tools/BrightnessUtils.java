@@ -1,6 +1,5 @@
 package com.xq.projectdefine.util.tools;
 
-import android.app.Application;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,8 +9,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.xq.projectdefine.FasterInterface;
+import static com.xq.projectdefine.FasterInterface.getApp;
 
 public final class BrightnessUtils {
 
@@ -48,7 +46,7 @@ public final class BrightnessUtils {
     public static boolean setAutoBrightnessEnabled(final boolean enabled) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && !Settings.System.canWrite(getApp())) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
             intent.setData(Uri.parse("package:" + getApp().getPackageName()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getApp().startActivity(intent);
@@ -89,7 +87,7 @@ public final class BrightnessUtils {
     public static boolean setBrightness(@IntRange(from = 0, to = 255) final int brightness) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && !Settings.System.canWrite(getApp())) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
             intent.setData(Uri.parse("package:" + getApp().getPackageName()));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getApp().startActivity(intent);
@@ -125,9 +123,5 @@ public final class BrightnessUtils {
         float brightness = lp.screenBrightness;
         if (brightness < 0) return getBrightness();
         return (int) (brightness * 255);
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 }

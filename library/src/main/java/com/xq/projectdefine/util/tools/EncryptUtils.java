@@ -220,7 +220,7 @@ public final class EncryptUtils {
      * @return the bytes of SHA1 encryption
      */
     public static byte[] encryptSHA1(final byte[] data) {
-        return hashTemplate(data, "SHA1");
+        return hashTemplate(data, "SHA-1");
     }
 
     /**
@@ -282,7 +282,7 @@ public final class EncryptUtils {
      * @return the bytes of SHA256 encryption
      */
     public static byte[] encryptSHA256(final byte[] data) {
-        return hashTemplate(data, "SHA256");
+        return hashTemplate(data, "SHA-256");
     }
 
     /**
@@ -313,7 +313,7 @@ public final class EncryptUtils {
      * @return the bytes of SHA384 encryption
      */
     public static byte[] encryptSHA384(final byte[] data) {
-        return hashTemplate(data, "SHA384");
+        return hashTemplate(data, "SHA-384");
     }
 
     /**
@@ -344,7 +344,7 @@ public final class EncryptUtils {
      * @return the bytes of SHA512 encryption
      */
     public static byte[] encryptSHA512(final byte[] data) {
-        return hashTemplate(data, "SHA512");
+        return hashTemplate(data, "SHA-512");
     }
 
     /**
@@ -1115,6 +1115,10 @@ public final class EncryptUtils {
         }
         return null;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // other utils methods
+    ///////////////////////////////////////////////////////////////////////////
 
     private static byte[] joins(final byte[] prefix, final byte[] suffix) {
         byte[] ret = new byte[prefix.length + suffix.length];

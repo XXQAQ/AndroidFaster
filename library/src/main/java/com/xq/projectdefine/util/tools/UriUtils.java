@@ -1,6 +1,5 @@
 package com.xq.projectdefine.util.tools;
 
-import android.app.Application;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,11 +9,9 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
-
-import com.xq.projectdefine.FasterInterface;
-
 import java.io.File;
-
+import static com.xq.projectdefine.FasterInterface.getApp;
+import static com.xq.projectdefine.FasterInterface.getFileProvider;
 
 public final class UriUtils {
 
@@ -114,13 +111,5 @@ public final class UriUtils {
 
     private static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-    }
-
-    private static String getFileProvider() {
-        return FasterInterface.getFileProvider();
-    }
-
-    private static Application getApp(){
-        return FasterInterface.getApp();
     }
 }
