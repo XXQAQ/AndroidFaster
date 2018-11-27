@@ -8,7 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 
-public interface AbsView<T extends AbsPresenter> extends AbsCommon {
+public interface IAbsView<T extends IAbsPresenter> extends IAbsCommon {
 
     //注入代理
     public void inject(AbsViewDelegate delegate);

@@ -100,6 +100,11 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
+    public Bitmap getRootViewBitmap(){
+        return ImageUtils.view2Bitmap(getRootView());
+    }
+
+    @Override
     public Fragment getAreFragment() {
         return getPresenter().getAreFragment();
     }
@@ -164,11 +169,6 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public LayoutInflater getLayoutInflater(){
         return (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    @Override
-    public Bitmap getRootViewBitmap(){
-        return ImageUtils.view2Bitmap(getRootView());
     }
 
     @Override
@@ -289,7 +289,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return false;
     }
 
-    //返回false可以取消默认findViewById
+    //返回false可以取消默认FindViewById
     protected boolean isAutoFindView(){
         return true;
     }

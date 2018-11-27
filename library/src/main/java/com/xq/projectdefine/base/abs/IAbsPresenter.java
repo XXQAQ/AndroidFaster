@@ -1,7 +1,7 @@
 package com.xq.projectdefine.base.abs;
 
 
-public interface AbsPresenter<T extends AbsView> extends AbsCommon {
+public interface IAbsPresenter<T extends IAbsView> extends IAbsCommon {
 
     //注入代理
     public void inject(AbsPresenterDelegate delegate);

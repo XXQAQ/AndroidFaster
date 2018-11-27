@@ -12,11 +12,11 @@ import android.view.WindowManager;
 
 import com.xq.projectdefine.base.life.ViewLife;
 
-public abstract class AbsViewDelegate<T extends AbsPresenter> implements AbsView<T>,ViewLife {
+public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsView<T>,ViewLife {
 
-    protected AbsView<T> view;
+    protected IAbsView<T> view;
 
-    public AbsViewDelegate(AbsView view) {
+    public AbsViewDelegate(IAbsView view) {
         this.view = view;
         inject(this);
     }

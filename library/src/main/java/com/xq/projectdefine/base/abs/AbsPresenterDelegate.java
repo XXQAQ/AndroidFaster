@@ -6,13 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.xq.projectdefine.base.life.PresenterLife;
-import java.util.List;
 
-public abstract class AbsPresenterDelegate<T extends AbsView> implements AbsPresenter<T>,PresenterLife {
+public abstract class AbsPresenterDelegate<T extends IAbsView> implements IAbsPresenter<T>,PresenterLife {
 
-    protected AbsPresenter<T> presenter;
+    protected IAbsPresenter<T> presenter;
 
-    public AbsPresenterDelegate(AbsPresenter presenter) {
+    public AbsPresenterDelegate(IAbsPresenter presenter) {
         this.presenter = presenter;
         inject(this);
     }
@@ -91,4 +90,5 @@ public abstract class AbsPresenterDelegate<T extends AbsView> implements AbsPres
     public int getColor(int id) {
         return presenter.getColor(id);
     }
+
 }

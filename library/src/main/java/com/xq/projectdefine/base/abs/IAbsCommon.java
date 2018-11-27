@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
-public interface AbsCommon {
+public interface IAbsCommon {
 
     //获取上下文
     public Context getContext();
