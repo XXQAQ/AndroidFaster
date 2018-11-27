@@ -3,6 +3,7 @@ package com.xq.androidfaster.base.abs;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
@@ -19,6 +20,31 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
     public AbsViewDelegate(IAbsView view) {
         this.view = view;
         inject(this);
+    }
+
+    @Override
+    public void afterOnCreate(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
     }
 
     @Override
