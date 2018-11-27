@@ -2,23 +2,23 @@ package com.xq.projectdefine.base.base;
 
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.xq.projectdefine.base.abs.AbsPresenterDelegate;
 import com.xq.projectdefine.base.life.PresenterLife;
 import com.xq.projectdefine.util.callback.ActivityResultCallback;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -211,8 +211,18 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
+    public boolean onBackClick() {
+        return false;
+    }
+
+    @Override
     public void back() {
-        ((Activity)getContext()).onBackPressed();
+        try{
+            Runtime runtime=Runtime.getRuntime();
+            runtime.exec("adb shell input keyevent " + KeyEvent.KEYCODE_BACK);
+        }catch(IOException e){
+            Log.e("Exception when doBack", e.toString());
+        }
     }
 
     @Override

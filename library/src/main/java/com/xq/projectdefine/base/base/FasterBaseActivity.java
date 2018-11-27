@@ -3,7 +3,6 @@ package com.xq.projectdefine.base.base;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -12,13 +11,14 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
-
 import com.xq.projectdefine.base.abs.AbsPresenterDelegate;
 import com.xq.projectdefine.base.life.PresenterLife;
 import com.xq.projectdefine.util.callback.ActivityResultCallback;
-
+import com.xq.projectdefine.util.tools.FragmentUtils;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -191,8 +191,28 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
+    @Deprecated
+    public void onBackPressed() {
+        if (!FragmentUtils.dispatchBackPress(getBindView().getCPFragmentManager()))
+        {
+            if (!onBackClick())
+                super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onBackClick() {
+        return false;
+    }
+
+    @Override
     public void back() {
-        onBackPressed();
+        try{
+            Runtime runtime=Runtime.getRuntime();
+            runtime.exec("adb shell input keyevent " + KeyEvent.KEYCODE_BACK);
+        }catch(IOException e){
+            Log.e("Exception when doBack", e.toString());
+        }
     }
 
     @Override
@@ -204,6 +224,5 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     public void inject(AbsPresenterDelegate delegate) {
         getDelegates().add(delegate);
     }
-
 
 }

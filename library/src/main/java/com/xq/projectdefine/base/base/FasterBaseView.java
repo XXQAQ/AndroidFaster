@@ -183,9 +183,8 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
 
 
-
     //以下为Fragment快捷管理
-
+    //返回值决定下面所有的方法管理哪个FragmentManager,默认管理自己的子集
     protected FragmentManager whichFragmentManager(){
         return getCPFragmentManager();
     }
