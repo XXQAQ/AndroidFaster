@@ -20,6 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.xq.projectdefine.** { *; }
--keepclassmembers class com.xq.projectdefine.** { *; }
--dontwarn com.xq.projectdefine.**
+-keep class com.xq.androidfaster.** { *; }
+-keepclassmembers class com.xq.androidfaster.** { *; }
+-dontwarn com.xq.androidfaster.**
