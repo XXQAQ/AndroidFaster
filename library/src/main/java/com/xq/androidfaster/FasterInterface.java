@@ -1,7 +1,11 @@
 package com.xq.androidfaster;
 
 import android.app.Application;
+
+import com.xq.androidfaster.util.callback.UniverseCallback;
 import com.xq.androidfaster.util.tools.AppUtils;
+import java.util.LinkedList;
+import java.util.List;
 
 public class FasterInterface {
 
@@ -22,6 +26,16 @@ public class FasterInterface {
         FasterInterface.isAutoPermission = isAutoPermission;
 
         AppUtils.registerActivityLifecycleCallbacks();
+
+        for (UniverseCallback callback : list_callback){
+            callback.onCallback();
+        }
+    }
+
+
+    private static List<UniverseCallback> list_callback = new LinkedList<>();
+    public static void addInitCallback(UniverseCallback callback){
+        list_callback.add(callback);
     }
 
     public static Application getApp() {
