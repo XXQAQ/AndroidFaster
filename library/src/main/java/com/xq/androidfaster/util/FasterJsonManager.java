@@ -14,9 +14,9 @@ public class FasterJsonManager {
 
     protected static abstract class Manager {
 
-        protected abstract <T>T jsonToObject(String json,Class<T> mClass,Object... objects);
+        public abstract <T>T jsonToObject(String json,Class<T> mClass,Object... objects);
 
-        protected abstract String objectToJson(Object object,Object... objects);
+        public abstract String objectToJson(Object object,Object... objects);
 
     }
 

@@ -17,11 +17,11 @@ public class FasterImageLoader {
 
     protected static abstract class Loader{
 
-        protected void loadImage(Context context, ImageView view, String url, Object... objects) {
+        public void loadImage(Context context, ImageView view, String url, Object... objects) {
             loadImage(context,view,url,0,objects);
         }
 
-        protected abstract void loadImage(Context context, ImageView view, String url, int placeHolder, Object... objects);
+        public abstract void loadImage(Context context, ImageView view, String url, int placeHolder, Object... objects);
 
     }
 

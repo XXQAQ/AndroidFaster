@@ -18,11 +18,11 @@ public class FasterEventManager {
 
     protected static abstract class Manager {
 
-        protected abstract void regist(Object object,Object... objects);
+        public abstract void regist(Object object,Object... objects);
 
-        protected abstract void unRegist(Object object,Object... objects);
+        public abstract void unRegist(Object object,Object... objects);
 
-        protected abstract void send(Object message,Object... objects);
+        public abstract void send(Object message,Object... objects);
 
     }
 
