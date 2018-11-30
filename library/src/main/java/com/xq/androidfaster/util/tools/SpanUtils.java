@@ -53,7 +53,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import static android.graphics.BlurMaskFilter.Blur;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class SpanUtils {
 

@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import static android.Manifest.permission.KILL_BACKGROUND_PROCESSES;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ProcessUtils {
 

@@ -7,8 +7,8 @@ import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 import com.xq.androidfaster.R;
 import java.io.File;
-import static com.xq.androidfaster.FasterInterface.getApp;
-import static com.xq.androidfaster.FasterInterface.getFileProvider;
+import static com.xq.androidfaster.AndroidFaster.getApp;
+import static com.xq.androidfaster.AndroidFaster.getFileProvider;
 
 public final class AttachFileUtills {
 

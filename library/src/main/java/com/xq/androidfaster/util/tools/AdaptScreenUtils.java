@@ -2,7 +2,7 @@ package com.xq.androidfaster.util.tools;
 
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class AdaptScreenUtils {
 

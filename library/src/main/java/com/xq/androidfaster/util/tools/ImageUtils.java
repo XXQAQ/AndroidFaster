@@ -44,7 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ImageUtils {
 

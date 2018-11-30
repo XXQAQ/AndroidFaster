@@ -16,7 +16,7 @@ import android.view.Surface;
 import android.view.Window;
 import android.view.WindowManager;
 import static android.Manifest.permission.WRITE_SETTINGS;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ScreenUtils {
 

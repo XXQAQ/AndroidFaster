@@ -2,7 +2,7 @@ package com.xq.androidfaster.util.tools;
 
 import android.os.Build;
 import android.os.Environment;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public class PathUtils {
 

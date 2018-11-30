@@ -8,7 +8,7 @@ import android.content.ServiceConnection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ServiceUtils {
 

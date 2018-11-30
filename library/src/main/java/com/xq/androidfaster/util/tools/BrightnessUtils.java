@@ -9,7 +9,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.view.Window;
 import android.view.WindowManager;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class BrightnessUtils {
 

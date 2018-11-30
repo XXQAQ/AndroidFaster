@@ -26,7 +26,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import java.lang.reflect.Method;
 import static android.Manifest.permission.EXPAND_STATUS_BAR;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class BarUtils {
 

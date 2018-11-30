@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import static android.Manifest.permission.CALL_PHONE;
-import static com.xq.androidfaster.FasterInterface.getApp;
-import static com.xq.androidfaster.FasterInterface.getFileProvider;
+import static com.xq.androidfaster.AndroidFaster.getApp;
+import static com.xq.androidfaster.AndroidFaster.getFileProvider;
 
 public final class IntentUtils {
 

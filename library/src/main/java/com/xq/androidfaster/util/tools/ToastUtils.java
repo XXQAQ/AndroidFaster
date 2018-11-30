@@ -28,7 +28,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.lang.reflect.Field;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ToastUtils {
 
@@ -471,6 +471,16 @@ public final class ToastUtils {
                 }
                 mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
                 mParams.y = mToast.getYOffset() + getNavBarHeight();
+                if (AppUtils.getActivityLifecycle().getOnActivityDestroyedListener() == null) {
+                    AppUtils.getActivityLifecycle().setOnActivityDestroyedListener(
+                            new AppUtils.OnActivityDestroyedListener() {
+                                @Override
+                                public void onActivityDestroyed(Activity activity) {
+                                    cancel();
+                                }
+                            }
+                    );
+                }
             }
 
             final Configuration config = context.getResources().getConfiguration();

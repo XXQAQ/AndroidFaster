@@ -10,8 +10,8 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import java.io.File;
-import static com.xq.androidfaster.FasterInterface.getApp;
-import static com.xq.androidfaster.FasterInterface.getFileProvider;
+import static com.xq.androidfaster.AndroidFaster.getApp;
+import static com.xq.androidfaster.AndroidFaster.getFileProvider;
 
 public final class UriUtils {
 

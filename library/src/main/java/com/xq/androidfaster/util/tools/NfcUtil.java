@@ -13,7 +13,7 @@ import android.support.annotation.RequiresApi;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
 public final class NfcUtil {

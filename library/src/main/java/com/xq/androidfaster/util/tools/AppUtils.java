@@ -32,7 +32,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import static com.xq.androidfaster.FasterInterface.getApp;
+import static com.xq.androidfaster.AndroidFaster.getApp;
+import static com.xq.androidfaster.AndroidFaster.getFileProvider;
 import static com.xq.androidfaster.util.tools.PermissionUtils.PERMISSION_ACTIVITY_CLASS_NAME;
 
 public final class AppUtils {
@@ -905,6 +906,13 @@ public final class AppUtils {
     }
 
     /**
+     * OnActivityDestroyedListener
+     * */
+    public interface OnActivityDestroyedListener {
+        void onActivityDestroyed(Activity activity);
+    }
+
+    /**
      * OnAppStatusChangedListener
      * */
     public interface OnAppStatusChangedListener {
@@ -920,8 +928,18 @@ public final class AppUtils {
         final LinkedList<Activity>                        mActivityList      = new LinkedList<>();
         final HashMap<Object, OnAppStatusChangedListener> mStatusListenerMap = new HashMap<>();
 
+        private OnActivityDestroyedListener mOnActivityDestroyedListener;
+
         private int mForegroundCount = 0;
         private int mConfigCount     = 0;
+
+        OnActivityDestroyedListener getOnActivityDestroyedListener() {
+            return mOnActivityDestroyedListener;
+        }
+
+        void setOnActivityDestroyedListener(OnActivityDestroyedListener onActivityDestroyedListener) {
+            mOnActivityDestroyedListener = onActivityDestroyedListener;
+        }
 
         void addListener(final Object object, final OnAppStatusChangedListener listener) {
             mStatusListenerMap.put(object, listener);
@@ -975,6 +993,9 @@ public final class AppUtils {
         @Override
         public void onActivityDestroyed(Activity activity) {
             mActivityList.remove(activity);
+            if (mOnActivityDestroyedListener != null) {
+                mOnActivityDestroyedListener.onActivityDestroyed(activity);
+            }
         }
 
         private void postStatus(final boolean isForeground) {
@@ -1122,7 +1143,7 @@ public final class AppUtils {
             data = Uri.fromFile(file);
         } else {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            String authority = getApp().getPackageName() + ".utilcode.provider";
+            String authority = getFileProvider();
             data = FileProvider.getUriForFile(getApp(), authority, file);
         }
         intent.setDataAndType(data, type);
