@@ -22,8 +22,10 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
     @Override
     public String toString() {
         return "NumberContentTitleBean{" +
-                "content='" + content + '\'' +
+                "content=" + content +
                 ", number=" + number +
+                ", title=" + title +
+                ", tag=" + tag +
                 '}';
     }
 

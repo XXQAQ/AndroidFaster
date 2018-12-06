@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ListBean implements ListBehavior {
 
-    private List list;
+    protected List list;
 
     public ListBean() {
     }

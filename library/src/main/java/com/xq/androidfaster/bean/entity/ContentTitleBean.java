@@ -20,7 +20,9 @@ public class ContentTitleBean extends TitleBean implements ContentTitleBehavior 
     @Override
     public String toString() {
         return "ContentTitleBean{" +
-                "content='" + content + '\'' +
+                "content=" + content +
+                ", title=" + title +
+                ", tag=" + tag +
                 '}';
     }
 

@@ -4,7 +4,7 @@ import com.xq.androidfaster.bean.behavior.SuccessBehavior;
 
 public class SuccessBean implements SuccessBehavior{
 
-    private boolean isSuccess;
+    protected boolean isSuccess;
 
     public SuccessBean() {
     }

@@ -20,8 +20,9 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
     @Override
     public String toString() {
         return "NumberTitleBean{" +
-                "title='" + title + '\'' +
-                ", number=" + number +
+                "number=" + number +
+                ", title=" + title +
+                ", tag=" + tag +
                 '}';
     }
 

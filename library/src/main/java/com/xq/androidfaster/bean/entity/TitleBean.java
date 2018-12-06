@@ -28,7 +28,8 @@ public class TitleBean implements TitleBehavior ,Serializable{
     @Override
     public String toString() {
         return "TitleBean{" +
-                "title='" + title + '\'' +
+                "title=" + title +
+                ", tag=" + tag +
                 '}';
     }
 
