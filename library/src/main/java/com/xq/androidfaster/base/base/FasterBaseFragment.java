@@ -1,7 +1,7 @@
 package com.xq.androidfaster.base.base;
 
-
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +17,6 @@ import android.view.ViewGroup;
 import com.xq.androidfaster.base.abs.AbsPresenterDelegate;
 import com.xq.androidfaster.base.life.PresenterLife;
 import com.xq.androidfaster.util.callback.ActivityResultCallback;
-
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,7 +36,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     }
 
-    //该方法用于解析从其他页面传来的数据，注意如果传递数据不存在则不会执行该方法
+    //解析从其他页面传来的数据
     protected void resolveBundle(Bundle bundle) {
 
     }
@@ -48,8 +46,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        if (getBindView() == null)
-            return super.onCreateView(inflater,container,savedInstanceState);
+        if (getBindView() == null) return super.onCreateView(inflater,container,savedInstanceState);
 
         View rootView = inflater.inflate(getBindView().getLayoutId(),container,false);
 
@@ -66,6 +63,8 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         Bundle bundle = getArguments();
         if (bundle != null)
             resolveBundle(bundle);
+        else
+            resolveBundle(new Bundle());
 
         if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
 
@@ -217,12 +216,17 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     @Override
     public void back() {
-        try{
-            Runtime runtime=Runtime.getRuntime();
-            runtime.exec("adb shell input keyevent " + KeyEvent.KEYCODE_BACK);
-        }catch(IOException e){
-            Log.e("Exception when doBack", e.toString());
-        }
+        new Thread(){
+            public void run() {
+                try{
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                }
+                catch (Exception e) {
+                    Log.e("Exception when onBack", e.toString());
+                }
+            }
+        }.start();
     }
 
     @Override

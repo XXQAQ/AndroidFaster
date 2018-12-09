@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.xq.androidfaster.base.life.ViewLife;
 
 public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsView<T>,ViewLife {

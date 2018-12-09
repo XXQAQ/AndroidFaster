@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-
 public interface IAbsView<T extends IAbsPresenter> extends IAbsCommon {
 
     //注入代理

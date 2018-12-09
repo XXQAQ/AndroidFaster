@@ -1,6 +1,5 @@
 package com.xq.androidfaster.base.base;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,12 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.xq.androidfaster.base.abs.AbsViewDelegate;
 import com.xq.androidfaster.base.life.ViewLife;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ImageUtils;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.LinkedList;

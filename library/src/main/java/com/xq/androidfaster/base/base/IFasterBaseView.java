@@ -1,12 +1,9 @@
 package com.xq.androidfaster.base.base;
 
-
 import android.support.v4.app.Fragment;
-
 import com.xq.androidfaster.base.abs.IAbsView;
 import com.xq.androidfaster.base.abs.AbsViewDelegate;
 import com.xq.androidfaster.base.life.ViewLife;
-
 import java.util.List;
 
 public interface IFasterBaseView<T extends IFasterBasePresenter> extends IAbsView<T>, ViewLife {

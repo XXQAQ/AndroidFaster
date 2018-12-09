@@ -1,9 +1,6 @@
 package com.xq.androidfaster.bean.entity;
 
-
-
 import com.xq.androidfaster.bean.behavior.NumberContentTitleBehavior;
-
 
 public class NumberContentTitleBean extends TitleBean implements NumberContentTitleBehavior {
 

@@ -1,7 +1,6 @@
 package com.xq.androidfaster.bean.entity;
 
 import com.xq.androidfaster.bean.behavior.ListBehavior;
-
 import java.util.List;
 
 public class ListBean implements ListBehavior {

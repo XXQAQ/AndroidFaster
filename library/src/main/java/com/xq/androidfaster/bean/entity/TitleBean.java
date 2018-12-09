@@ -1,11 +1,7 @@
 package com.xq.androidfaster.bean.entity;
 
-
-
 import com.xq.androidfaster.bean.behavior.TitleBehavior;
-
 import java.io.Serializable;
-
 
 //TitleBehavior的最简单实现类
 public class TitleBean implements TitleBehavior ,Serializable{

@@ -1,8 +1,8 @@
 package com.xq.androidfaster.base.base;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -18,10 +18,8 @@ import com.xq.androidfaster.base.abs.AbsPresenterDelegate;
 import com.xq.androidfaster.base.life.PresenterLife;
 import com.xq.androidfaster.util.callback.ActivityResultCallback;
 import com.xq.androidfaster.util.tools.FragmentUtils;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
 
 public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppCompatActivity implements IFasterBasePresenter<T> {
 
@@ -39,7 +37,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     }
 
-    //该方法用于解析从其他页面传来的数据，注意如果传递数据不存在则不会执行该方法
+    //解析从其他页面传来的数据
     protected void resolveBundle(Bundle bundle) {
 
     }
@@ -49,18 +47,15 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getBindView() != null)
-            setContentView(getBindView().getLayoutId());
+        if (getBindView() != null) setContentView(getBindView().getLayoutId());
 
         initData();
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
-            Bundle bundle = intent.getExtras();
-            if (bundle != null)
-                resolveBundle(bundle);
-        }
+        if (intent != null && intent.getExtras() != null)
+            resolveBundle(intent.getExtras());
+        else
+            resolveBundle(new Bundle());
 
         if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
 
@@ -193,7 +188,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     @Override
     @Deprecated
     public void onBackPressed() {
-        if (!FragmentUtils.dispatchBackPress(getBindView().getCPFragmentManager()))
+        if (!FragmentUtils.dispatchBackPress(getSupportFragmentManager()))
         {
             if (!onBackClick())
                 super.onBackPressed();
@@ -207,12 +202,17 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public void back() {
-        try{
-            Runtime runtime=Runtime.getRuntime();
-            runtime.exec("adb shell input keyevent " + KeyEvent.KEYCODE_BACK);
-        }catch(IOException e){
-            Log.e("Exception when doBack", e.toString());
-        }
+        new Thread(){
+            public void run() {
+                try{
+                    Instrumentation inst = new Instrumentation();
+                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
+                }
+                catch (Exception e) {
+                    Log.e("Exception when onBack", e.toString());
+                }
+            }
+        }.start();
     }
 
     @Override
