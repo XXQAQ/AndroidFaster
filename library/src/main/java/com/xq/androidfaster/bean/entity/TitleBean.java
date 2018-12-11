@@ -1,10 +1,11 @@
 package com.xq.androidfaster.bean.entity;
 
+import android.os.Parcel;
+
 import com.xq.androidfaster.bean.behavior.TitleBehavior;
-import java.io.Serializable;
 
 //TitleBehavior的最简单实现类
-public class TitleBean implements TitleBehavior ,Serializable{
+public class TitleBean implements TitleBehavior{
 
     protected CharSequence title;
     protected Object tag;
@@ -65,4 +66,31 @@ public class TitleBean implements TitleBehavior ,Serializable{
         this.tag = tag;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(this);
+    }
+
+    protected TitleBean(Parcel in) {
+        TitleBehavior behavior = (TitleBehavior) in.readSerializable();
+        this.title = behavior.getTitle();
+        this.tag = behavior.getTag();
+    }
+
+    public static final Creator<TitleBean> CREATOR = new Creator<TitleBean>() {
+        @Override
+        public TitleBean createFromParcel(Parcel source) {
+            return new TitleBean(source);
+        }
+
+        @Override
+        public TitleBean[] newArray(int size) {
+            return new TitleBean[size];
+        }
+    };
 }

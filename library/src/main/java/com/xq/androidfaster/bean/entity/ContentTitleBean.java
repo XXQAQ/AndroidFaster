@@ -1,5 +1,7 @@
 package com.xq.androidfaster.bean.entity;
 
+import android.os.Parcel;
+
 import com.xq.androidfaster.bean.behavior.ContentTitleBehavior;
 
 public class ContentTitleBean extends TitleBean implements ContentTitleBehavior {
@@ -11,6 +13,11 @@ public class ContentTitleBean extends TitleBean implements ContentTitleBehavior 
 
     public ContentTitleBean(CharSequence title, CharSequence content) {
         super(title);
+        this.content = content;
+    }
+
+    public ContentTitleBean(CharSequence title, CharSequence content,Object tag) {
+        super(title,tag);
         this.content = content;
     }
 
@@ -49,4 +56,22 @@ public class ContentTitleBean extends TitleBean implements ContentTitleBehavior 
         this.content = content;
     }
 
+    protected ContentTitleBean(Parcel in) {
+        ContentTitleBean behavior = (ContentTitleBean) in.readSerializable();
+        this.title = behavior.getTitle();
+        this.tag = behavior.getTag();
+        this.content = behavior.getContent();
+    }
+
+    public static final Creator<ContentTitleBean> CREATOR = new Creator<ContentTitleBean>() {
+        @Override
+        public ContentTitleBean createFromParcel(Parcel source) {
+            return new ContentTitleBean(source);
+        }
+
+        @Override
+        public ContentTitleBean[] newArray(int size) {
+            return new ContentTitleBean[size];
+        }
+    };
 }

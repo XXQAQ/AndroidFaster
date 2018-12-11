@@ -1,5 +1,7 @@
 package com.xq.androidfaster.bean.entity;
 
+import android.os.Parcel;
+
 import com.xq.androidfaster.bean.behavior.NumberTitleBehavior;
 
 public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
@@ -11,6 +13,11 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
 
     public NumberTitleBean(CharSequence title, Number number) {
         super(title);
+        this.number = number;
+    }
+
+    public NumberTitleBean(CharSequence title, Number number,Object tag) {
+        super(title,tag);
         this.number = number;
     }
 
@@ -49,4 +56,22 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
         this.number = number;
     }
 
+    protected NumberTitleBean(Parcel in) {
+        NumberTitleBehavior behavior = (NumberTitleBehavior) in.readSerializable();
+        this.title = behavior.getTitle();
+        this.tag = behavior.getTag();
+        this.number = behavior.getNumber();
+    }
+
+    public static final Creator<NumberTitleBean> CREATOR = new Creator<NumberTitleBean>() {
+        @Override
+        public NumberTitleBean createFromParcel(Parcel source) {
+            return new NumberTitleBean(source);
+        }
+
+        @Override
+        public NumberTitleBean[] newArray(int size) {
+            return new NumberTitleBean[size];
+        }
+    };
 }

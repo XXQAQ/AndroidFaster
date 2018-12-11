@@ -5,8 +5,7 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-//该接口专注于标题显示，实现该接口可以让你的对象以一个标题的形式呈现
-public interface TitleBehavior extends Serializable,Parcelable{
+public interface IdBehavior extends Serializable, Parcelable {
 
     @Override
     default int describeContents() {
@@ -18,10 +17,10 @@ public interface TitleBehavior extends Serializable,Parcelable{
 
     }
 
-    //返回标题
-    public CharSequence getTitle();
+    public int getId();
 
-    //附加信息
+    public int getForeignId();
+
     default Object getTag(){
         return null;
     }
