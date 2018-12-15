@@ -80,6 +80,8 @@ public class TitleBean implements TitleBehavior{
             dest.writeParcelable((Parcelable) title, flags);
         else    if (title instanceof Serializable)
             dest.writeSerializable((Serializable) title);
+        else
+            dest.writeString(title == null?null:title.toString());
         if (tag instanceof Parcelable)
             dest.writeParcelable((Parcelable) tag, flags);
         else    if (tag instanceof Serializable)
@@ -91,6 +93,8 @@ public class TitleBean implements TitleBehavior{
             this.title = in.readParcelable(CharSequence.class.getClassLoader());
         else    if (title instanceof Serializable)
             this.title = (CharSequence) in.readSerializable();
+        else
+            this.title = in.readString();
         if (tag instanceof Parcelable)
             this.tag = in.readParcelable(Object.class.getClassLoader());
         else    if (tag instanceof Serializable)

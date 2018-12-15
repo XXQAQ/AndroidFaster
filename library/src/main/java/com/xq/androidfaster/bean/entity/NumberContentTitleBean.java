@@ -85,6 +85,8 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
             dest.writeParcelable((Parcelable) content, flags);
         else    if (content instanceof Serializable)
             dest.writeSerializable((Serializable) content);
+        else
+            dest.writeString(content == null?null:content.toString());
         dest.writeSerializable(this.number);
     }
 
@@ -94,6 +96,8 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
             this.content = in.readParcelable(CharSequence.class.getClassLoader());
         else    if (content instanceof Serializable)
             this.content = (CharSequence) in.readSerializable();
+        else
+            this.content = in.readString();
         this.number = (Number) in.readSerializable();
     }
 
