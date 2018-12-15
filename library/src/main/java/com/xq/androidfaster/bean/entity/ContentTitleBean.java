@@ -1,8 +1,11 @@
 package com.xq.androidfaster.bean.entity;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.xq.androidfaster.bean.behavior.ContentTitleBehavior;
+
+import java.io.Serializable;
 
 public class ContentTitleBean extends TitleBean implements ContentTitleBehavior {
 
@@ -56,11 +59,26 @@ public class ContentTitleBean extends TitleBean implements ContentTitleBehavior 
         this.content = content;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        if (content instanceof Parcelable)
+            dest.writeParcelable((Parcelable) content, flags);
+        else    if (content instanceof Serializable)
+            dest.writeSerializable((Serializable) content);
+    }
+
     protected ContentTitleBean(Parcel in) {
-        ContentTitleBean behavior = (ContentTitleBean) in.readSerializable();
-        this.title = behavior.getTitle();
-        this.tag = behavior.getTag();
-        this.content = behavior.getContent();
+        super(in);
+        if (content instanceof Parcelable)
+            this.content = in.readParcelable(CharSequence.class.getClassLoader());
+        else    if (content instanceof Serializable)
+            this.content = (CharSequence) in.readSerializable();
     }
 
     public static final Creator<ContentTitleBean> CREATOR = new Creator<ContentTitleBean>() {

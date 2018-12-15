@@ -1,8 +1,11 @@
 package com.xq.androidfaster.bean.entity;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.xq.androidfaster.bean.behavior.SuccessBehavior;
+
+import java.io.Serializable;
 
 public class SuccessBean implements SuccessBehavior{
 
@@ -72,13 +75,19 @@ public class SuccessBean implements SuccessBehavior{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable(this);
+        dest.writeByte(this.isSuccess ? (byte) 1 : (byte) 0);
+        if (tag instanceof Parcelable)
+            dest.writeParcelable((Parcelable) tag, flags);
+        else    if (tag instanceof Serializable)
+            dest.writeSerializable((Serializable) tag);
     }
 
     protected SuccessBean(Parcel in) {
-        SuccessBehavior behavior = (SuccessBehavior) in.readSerializable();
-        this.isSuccess = behavior.isSuccess();
-        this.tag = behavior.getTag();
+        this.isSuccess = in.readByte() != 0;
+        if (tag instanceof Parcelable)
+            this.tag = in.readParcelable(Object.class.getClassLoader());
+        else    if (tag instanceof Serializable)
+            this.tag = in.readSerializable();
     }
 
     public static final Creator<SuccessBean> CREATOR = new Creator<SuccessBean>() {

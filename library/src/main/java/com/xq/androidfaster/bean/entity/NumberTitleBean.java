@@ -56,11 +56,20 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
         this.number = number;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeSerializable(this.number);
+    }
+
     protected NumberTitleBean(Parcel in) {
-        NumberTitleBehavior behavior = (NumberTitleBehavior) in.readSerializable();
-        this.title = behavior.getTitle();
-        this.tag = behavior.getTag();
-        this.number = behavior.getNumber();
+        super(in);
+        this.number = (Number) in.readSerializable();
     }
 
     public static final Creator<NumberTitleBean> CREATOR = new Creator<NumberTitleBean>() {

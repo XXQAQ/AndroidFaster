@@ -1,8 +1,11 @@
 package com.xq.androidfaster.bean.entity;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.xq.androidfaster.bean.behavior.TitleBehavior;
+
+import java.io.Serializable;
 
 //TitleBehavior的最简单实现类
 public class TitleBean implements TitleBehavior{
@@ -73,13 +76,25 @@ public class TitleBean implements TitleBehavior{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable(this);
+        if (title instanceof Parcelable)
+            dest.writeParcelable((Parcelable) title, flags);
+        else    if (title instanceof Serializable)
+            dest.writeSerializable((Serializable) title);
+        if (tag instanceof Parcelable)
+            dest.writeParcelable((Parcelable) tag, flags);
+        else    if (tag instanceof Serializable)
+            dest.writeSerializable((Serializable) tag);
     }
 
     protected TitleBean(Parcel in) {
-        TitleBehavior behavior = (TitleBehavior) in.readSerializable();
-        this.title = behavior.getTitle();
-        this.tag = behavior.getTag();
+        if (title instanceof Parcelable)
+            this.title = in.readParcelable(CharSequence.class.getClassLoader());
+        else    if (title instanceof Serializable)
+            this.title = (CharSequence) in.readSerializable();
+        if (tag instanceof Parcelable)
+            this.tag = in.readParcelable(Object.class.getClassLoader());
+        else    if (tag instanceof Serializable)
+            this.tag = in.readSerializable();
     }
 
     public static final Creator<TitleBean> CREATOR = new Creator<TitleBean>() {
