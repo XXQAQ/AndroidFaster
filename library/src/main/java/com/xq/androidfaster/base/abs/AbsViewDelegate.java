@@ -131,9 +131,4 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
         return view.getString(id);
     }
 
-    @Override
-    public int getColor(int id) {
-        return view.getColor(id);
-    }
-
 }

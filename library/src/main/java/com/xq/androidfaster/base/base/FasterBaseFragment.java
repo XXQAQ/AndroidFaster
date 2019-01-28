@@ -230,11 +230,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
-    public int getColor(int id) {
-        return getContext().getResources().getColor(id);
-    }
-
-    @Override
     public List<AbsPresenterDelegate> getDelegates() {
         return list_delegate;
     }

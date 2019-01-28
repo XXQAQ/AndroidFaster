@@ -27,7 +27,4 @@ public interface IAbsCommon {
     //获取String资源
     public String getString(int id);
 
-    //获取color资源
-    public int getColor(int id);
-
 }
