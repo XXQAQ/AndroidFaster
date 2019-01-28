@@ -7,11 +7,11 @@ public class ImageLoader {
 
     private static Loader loader;
 
-    protected static void loadImage(Context context, ImageView view, String url, Object... objects) {
+    public static void loadImage(Context context, ImageView view, String url, Object... objects) {
         loader.loadImage(context,view,url,objects);
     }
 
-    protected static void loadImage(Context context, ImageView view, String url, int placeHolder, Object... objects) {
+    public static void loadImage(Context context, ImageView view, String url, int placeHolder, Object... objects) {
         loader.loadImage(context,view,url,placeHolder,objects);
     }
 
