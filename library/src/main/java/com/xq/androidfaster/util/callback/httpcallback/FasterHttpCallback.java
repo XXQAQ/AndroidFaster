@@ -12,8 +12,14 @@ public interface FasterHttpCallback<T> {
 
     }
 
+    //当前请求进度
+    default void requestProgress(float progress){
+
+    }
+
     //请求成功
     default void requestSuccess(T t, Object... objects) {
+        getCallbackBuilder().data = t;
         if (operating(t,objects))
         {
             getCallbackBuilder().isOperateSuccess = true;
@@ -22,7 +28,7 @@ public interface FasterHttpCallback<T> {
     }
 
     //请求结束
-    default void requestFinish(T t, Object... objects) {
+    default void requestFinish(Object... objects) {
 
     }
 
@@ -35,8 +41,8 @@ public interface FasterHttpCallback<T> {
     public CallbackBuilder getCallbackBuilder();
 
     public class CallbackBuilder{
-        //下变量在requestSuccess方法完成后才具备意义
         public boolean isOperateSuccess = false;
+        public Object data;
     }
 
 }

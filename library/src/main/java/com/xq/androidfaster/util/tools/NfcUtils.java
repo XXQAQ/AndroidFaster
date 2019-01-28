@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 import static com.xq.androidfaster.AndroidFaster.getApp;
 
 @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
-public final class NfcUtil {
+public final class NfcUtils {
 
     /* NFC 适配器 */
     private NfcAdapter mAdapter;
@@ -27,15 +27,15 @@ public final class NfcUtil {
     /* NDEF 标签删除监听 */
     private OnDeleteNdefListener mDeleteNdefListener;
 
-    public static NfcUtil getInstance() {
+    public static NfcUtils getInstance() {
         return NfcUtilHolder.INSTANCE;
     }
 
     private static final class NfcUtilHolder {
-        private static final NfcUtil INSTANCE = new NfcUtil();
+        private static final NfcUtils INSTANCE = new NfcUtils();
     }
 
-    private NfcUtil() {
+    private NfcUtils() {
         mAdapter = NfcAdapter.getDefaultAdapter(getApp());
     }
 
