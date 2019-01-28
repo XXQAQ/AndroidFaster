@@ -19,7 +19,7 @@ public class ImageLoader {
         ImageLoader.loader = loader;
     }
 
-    protected static abstract class Loader{
+    public static abstract class Loader{
 
         public void loadImage(Context context, ImageView view, String url, Object... objects) {
             loadImage(context,view,url,0,objects);

@@ -24,7 +24,7 @@ public class EventManager {
         EventManager.manager = manager;
     }
 
-    protected static abstract class Manager {
+    public static abstract class Manager {
 
         public abstract void regist(Object object,Object... objects);
 

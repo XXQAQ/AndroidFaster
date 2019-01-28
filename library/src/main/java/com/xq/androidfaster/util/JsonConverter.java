@@ -16,7 +16,7 @@ public class JsonConverter {
         JsonConverter.converter = converter;
     }
 
-    protected static abstract class Converter{
+    public static abstract class Converter{
 
         public abstract <T>T jsonToObject(String json,Class<T> mClass,Object... objects);
 
