@@ -1,18 +1,17 @@
 package com.xq.androidfaster.util.tools;
 
-import com.xq.androidfaster.util.callback.httpcallback.FasterHttpCallback;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import java.io.BufferedReader;
+import com.xq.androidfaster.util.JsonConverter;
+import com.xq.androidfaster.util.callback.httpcallback.FasterHttpCallback;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -203,22 +202,11 @@ public class HttpUtils {
 
         static class RealRequest {
 
-            static Handler mainHandler = new Handler(Looper.getMainLooper());
-
-            private static final String BOUNDARY = java.util.UUID.randomUUID().toString();
-            private static final String TWO_HYPHENS = "--";
-            private static final String LINE_END = "\r\n";
-
             /**
              * get请求
              */
             void get(String requestURL, Map<String, String> headerMap, HttpUtilsCallback callback){
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.requestStart();
-                    }
-                });
+                callback.onStart();
                 HttpURLConnection conn = null;
                 try {
                     conn= getHttpURLConnection(requestURL,"GET");
@@ -227,36 +215,14 @@ public class HttpUtils {
                         setHeader(conn,headerMap);
                     }
                     conn.connect();
-                    InputStream dataStream = conn.getInputStream();
-                    InputStream erroStream = conn.getErrorStream();
                     if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
-                        mainHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.requestSuccess(streamToString(dataStream));
-                            }
-                        });
+                        callback.onSuccess(streamToByteArray(conn.getInputStream()));
                     else
-                        mainHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.requestError(new Exception(streamToString(erroStream)));
-                            }
-                        });
+                        callback.onErro(new Exception(new String(streamToByteArray(conn.getErrorStream()),"utf-8")));
                 } catch (Exception e) {
-                    mainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.requestError(e);
-                        }
-                    });
+                    callback.onErro(e);
                 } finally {
-                    mainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.requestFinish();
-                        }
-                    });
+                    callback.onFinish();
                 }
             }
 
@@ -264,12 +230,7 @@ public class HttpUtils {
              * post请求
              */
             void post(String requestURL, String body, String bodyType, Map<String, String> headerMap, HttpUtilsCallback callback) {
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.requestStart();
-                    }
-                });
+                callback.onStart();
                 HttpURLConnection conn = null;
                 try {
                     conn = getHttpURLConnection(requestURL, "POST");
@@ -288,36 +249,14 @@ public class HttpUtils {
                         writer.write(body);
                         writer.close();
                     }
-                    InputStream dataStream = conn.getInputStream();
-                    InputStream erroStream = conn.getErrorStream();
                     if (conn.getResponseCode() == HttpURLConnection.HTTP_OK)
-                        mainHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.requestSuccess(streamToString(dataStream));
-                            }
-                        });
+                        callback.onSuccess(streamToByteArray(conn.getInputStream()));
                     else
-                        mainHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                callback.requestError(new Exception(streamToString(erroStream)));
-                            }
-                        });
+                        callback.onErro(new Exception(new String(streamToByteArray(conn.getErrorStream()),"utf-8")));
                 } catch (Exception e) {
-                    mainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.requestError(e);
-                        }
-                    });
+                    callback.onErro(e);
                 } finally {
-                    mainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.requestFinish();
-                        }
-                    });
+                    callback.onFinish();
                 }
             }
 
@@ -344,43 +283,84 @@ public class HttpUtils {
                 }
             }
 
-            /**
-             * 上传文件时设置Connection参数
-             */
-            private void setConnection(HttpURLConnection conn) throws ProtocolException {
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-                conn.setUseCaches(false);
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("Charset", "UTF-8");
-                conn.setRequestProperty("Content-Type","multipart/form-data; BOUNDARY=" + BOUNDARY);
-            }
-
-            private static String streamToString(InputStream is) {
-                String buf;
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
-                    StringBuilder sb = new StringBuilder();
-                    String line = "";
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    is.close();
-                    buf = sb.toString();
-                    return buf;
-
-                } catch (Exception e) {
-                    return null;
+            public static byte[] streamToByteArray(InputStream input) throws IOException {
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024*4];
+                int n = 0;
+                while (-1 != (n = input.read(buffer))) {
+                    output.write(buffer, 0, n);
                 }
+                return output.toByteArray();
             }
         }
 
     }
 
-    public static abstract class HttpUtilsCallback implements FasterHttpCallback<String>{
+    public static abstract class HttpUtilsCallback<T> implements FasterHttpCallback<T> {
+
+        static Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        private Class<T> entityClass;
+
+        public HttpUtilsCallback(Class<T> entityClass) {
+            this.entityClass = entityClass;
+        }
+
+        @Deprecated
+        public void onStart(){
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    requestStart();
+                }
+            });
+        }
+
+        @Deprecated
+        public void onSuccess(byte[] bytes){
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (entityClass.isAssignableFrom(byte[].class))
+                        requestSuccess((T) bytes);
+                    else
+                    {
+                        try {
+                            String data = new String(bytes,"utf-8");
+                            if (entityClass.isAssignableFrom(String.class))
+                                requestSuccess((T) data);
+                            else
+                                requestSuccess(JsonConverter.jsonToObject(data,entityClass));
+                        } catch (Exception e) {
+                            requestError(e);
+                        }
+                    }
+                }
+            });
+        }
+
+        @Deprecated
+        public void onErro(Exception e){
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    requestError(e);
+                }
+            });
+        }
+
+        @Deprecated
+        public void onFinish(){
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    requestFinish();
+                }
+            });
+        }
 
         @Override
-        public boolean operating(String s, Object... objects) {
+        public boolean operating(T s, Object... objects) {
             return true;
         }
 
