@@ -4,7 +4,7 @@ public class JsonConverter {
 
     private static Converter converter;
 
-    public static <T>T jsonToObject(String json, Class<T> mClass, Object... objects) throws Exception {
+    public static <T>T jsonToObject(String json, Class<T> mClass, Object... objects) throws RuntimeException {
         return converter.jsonToObject(json,mClass,objects);
     }
 
@@ -18,7 +18,7 @@ public class JsonConverter {
 
     public static abstract class Converter{
 
-        public abstract <T>T jsonToObject(String json,Class<T> mClass,Object... objects) throws Exception;
+        public abstract <T>T jsonToObject(String json,Class<T> mClass,Object... objects) throws RuntimeException;
 
         public abstract String objectToJson(Object object,Object... objects);
 
