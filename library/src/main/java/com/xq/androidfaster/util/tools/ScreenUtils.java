@@ -1,6 +1,7 @@
 package com.xq.androidfaster.util.tools;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -15,10 +16,64 @@ import android.util.TypedValue;
 import android.view.Surface;
 import android.view.Window;
 import android.view.WindowManager;
+import com.xq.androidfaster.AndroidFaster;
 import static android.Manifest.permission.WRITE_SETTINGS;
-import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ScreenUtils {
+
+    /**
+     * dp to px
+     * @param dpValue
+     * @return
+     */
+    public static int dip2px(float dpValue) {
+        return dip2px(getApp(),dpValue);
+    }
+
+    /**
+     * dp to sp
+     * @param dpValue
+     * @return
+     */
+    public static int dip2sp(float dpValue) {
+        return dip2sp(getApp(),dpValue);
+    }
+
+    /**
+     * px to dp
+     * @param pxValue
+     * @return
+     */
+    public static int px2dip(float pxValue) {
+        return px2dip(getApp(),pxValue);
+    }
+
+    /**
+     * px to sp
+     * @param pxValue
+     * @return
+     */
+    public static int px2sp(float pxValue) {
+        return px2sp(getApp(),pxValue);
+    }
+
+    /**
+     * sp tp px
+     * @param spValue
+     * @return
+     */
+    public static int sp2px(float spValue) {
+        return sp2px(getApp(),spValue);
+    }
+
+    /**
+     * sp to dp
+     * @param spValue
+     * @return
+     */
+    public static int sp2dip(float spValue) {
+        return sp2dip(getApp(),spValue);
+    }
 
     /**
      * dp to px
@@ -296,6 +351,10 @@ public final class ScreenUtils {
         return (getApp().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    private static Application getApp(){
+        return AndroidFaster.getApp();
     }
 
 }
