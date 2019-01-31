@@ -1,7 +1,6 @@
 package com.xq.androidfaster.util.tools;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -16,8 +15,8 @@ import android.util.TypedValue;
 import android.view.Surface;
 import android.view.Window;
 import android.view.WindowManager;
-import com.xq.androidfaster.AndroidFaster;
 import static android.Manifest.permission.WRITE_SETTINGS;
+import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ScreenUtils {
 
@@ -351,10 +350,6 @@ public final class ScreenUtils {
         return (getApp().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-    private static Application getApp(){
-        return AndroidFaster.getApp();
     }
 
 }
