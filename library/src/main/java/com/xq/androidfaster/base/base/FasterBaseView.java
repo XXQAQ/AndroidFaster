@@ -36,13 +36,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
 
-        if (getPresenter().getAreActivity() != null)
+        if (getBindPresenter().getAreActivity() != null)
         {
-            rootView = getPresenter().getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+            rootView = getBindPresenter().getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
         }
-        else    if (getPresenter().getAreFragment() != null)
+        else    if (getBindPresenter().getAreFragment() != null)
         {
-            rootView = getPresenter().getAreFragment().getView();
+            rootView = getBindPresenter().getAreFragment().getView();
         }
 
         if (isAutoFindView())
@@ -82,13 +82,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
-    public T getPresenter() {
+    public T getBindPresenter() {
         return presenter;
     }
 
     @Override
     public Context getContext() {
-        return getPresenter().getContext();
+        return getBindPresenter().getContext();
     }
 
     @Override
@@ -103,27 +103,27 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
     @Override
     public Fragment getAreFragment() {
-        return getPresenter().getAreFragment();
+        return getBindPresenter().getAreFragment();
     }
 
     @Override
     public Activity getAreActivity() {
-        return getPresenter().getAreActivity();
+        return getBindPresenter().getAreActivity();
     }
 
     @Override
     public void finishSelf() {
-        getPresenter().finishSelf();
+        getBindPresenter().finishSelf();
     }
 
     @Override
     public void finish() {
-        getPresenter().finish();
+        getBindPresenter().finish();
     }
 
     @Override
     public void back() {
-        getPresenter().back();
+        getBindPresenter().back();
     }
 
     @Override

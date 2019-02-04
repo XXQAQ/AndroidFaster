@@ -47,8 +47,8 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
     }
 
     @Override
-    public T getPresenter() {
-        return view.getPresenter();
+    public T getBindPresenter() {
+        return view.getBindPresenter();
     }
 
     @Override

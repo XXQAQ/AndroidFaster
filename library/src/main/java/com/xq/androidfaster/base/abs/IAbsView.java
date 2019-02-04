@@ -13,7 +13,7 @@ public interface IAbsView<T extends IAbsPresenter> extends IAbsCommon {
     public void inject(AbsViewDelegate delegate);
 
     //获取当前View层对应P层
-    public T getPresenter();
+    public T getBindPresenter();
 
     //获取根布局View
     public View getRootView();
