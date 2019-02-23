@@ -45,8 +45,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
             rootView = getBindPresenter().getAreFragment().getView();
         }
 
-        if (isAutoFindView())
-            autoFindView();
+        autoFindView();
 
         for (ViewLife life : list_delegate)     life.afterOnCreate(savedInstanceState);
     }
@@ -281,13 +280,8 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return false;
     }
 
-    //返回false可以取消默认FindViewById
-    protected boolean isAutoFindView(){
-        return true;
-    }
-
     //自动findViewById
-    private void autoFindView() {
+    protected void autoFindView() {
         Class mClass = this.getClass();
         while (true)
         {

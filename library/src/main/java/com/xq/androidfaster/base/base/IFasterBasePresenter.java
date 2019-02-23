@@ -11,7 +11,7 @@ public interface IFasterBasePresenter<T extends IFasterBaseView> extends IAbsPre
     //获取当前P层所有delegate
     public List<AbsPresenterDelegate> getDelegates();
 
-    //指定Class跳转页面
+    //指定Activity Class 跳转页面
     public void startActivity(Class mClass);
 
 }
