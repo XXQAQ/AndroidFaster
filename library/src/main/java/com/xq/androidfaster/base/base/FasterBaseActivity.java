@@ -57,13 +57,14 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         else
             resolveBundle(new Bundle());
 
-        if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
-
         afterOnCreate(savedInstanceState);
     }
 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
+
+        if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
+
         for (PresenterLife life: list_delegate)  life.afterOnCreate(savedInstanceState);
     }
 
