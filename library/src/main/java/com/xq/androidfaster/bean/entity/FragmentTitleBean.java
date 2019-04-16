@@ -2,7 +2,9 @@ package com.xq.androidfaster.bean.entity;
 
 import android.support.v4.app.Fragment;
 
-public class FragmentTitleBean extends TitleBean {
+import com.xq.androidfaster.bean.behavior.FragmentTitleBehavior;
+
+public class FragmentTitleBean extends TitleBean implements FragmentTitleBehavior {
 
     protected Fragment fragment;
 
