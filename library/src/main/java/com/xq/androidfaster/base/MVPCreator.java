@@ -4,16 +4,26 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 //一键生成MVP标准模板的工具。如需调整请自行修改，以下为示例代码
 //	new MVP(name).create();
 public class MVPCreator {
 	
-	public static final String BASE ="CustomBase";
+	public static final String BASE ="Base";
 	
 	private String parents;
 	private String name;
+
+	public static void main(String[] args){
+		try {
+			String name = "Init";
+			new MVPCreator(name).create();
+			System.out.print(name + "创建成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.print(e.getMessage());
+		}
+	}
 
 	public MVPCreator(String name) {
 		this(name, BASE);
@@ -24,15 +34,15 @@ public class MVPCreator {
 		this.name = name;
 	}
 	
-	public void create() throws IOException{
+	public void create() throws Exception {
 		
 		String parent = "MVP" + File.separator + String.format("%s", name).toLowerCase();
 		
-		FileUtil.writeData(createInterfacePresenter().getBytes(), parent+File.separator+String.format("I%sPresenter.java", name));
-		FileUtil.writeData(createActivity().getBytes(), parent+File.separator+String.format("%sActivity.java", name));
-		FileUtil.writeData(createFragment().getBytes(), parent+File.separator+String.format("%sFragment.java", name));
-		FileUtil.writeData(createInterfaceView().getBytes(), parent+File.separator+String.format("I%sView.java", name));
-		FileUtil.writeData(createView().getBytes(), parent+File.separator+String.format("%sView.java", name));
+		FileUtil.writeData(createInterfacePresenter().getBytes(), parent+ File.separator+ String.format("I%sPresenter.java", name));
+		FileUtil.writeData(createActivity().getBytes(), parent+ File.separator+ String.format("%sActivity.java", name));
+		FileUtil.writeData(createFragment().getBytes(), parent+ File.separator+ String.format("%sFragment.java", name));
+		FileUtil.writeData(createInterfaceView().getBytes(), parent+ File.separator+ String.format("I%sView.java", name));
+		FileUtil.writeData(createView().getBytes(), parent+ File.separator+ String.format("%sView.java", name));
 	}
 	
 	private String createInterfacePresenter(){
@@ -61,9 +71,14 @@ public class MVPCreator {
 	}
 	
 	static class FileUtil{
-		public static void writeData(byte []data,String path) throws IOException{
+		public static void writeData(byte []data, String path) throws Exception {
 			
 			File file = new File(path);
+
+			if (file.exists())
+			{
+				 throw new Exception("File is exists!");
+			}
 
 			if(!file.getParentFile().exists())
 			{
