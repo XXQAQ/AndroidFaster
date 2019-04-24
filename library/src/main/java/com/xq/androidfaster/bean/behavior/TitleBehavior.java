@@ -21,8 +21,8 @@ public interface TitleBehavior extends Serializable,Parcelable{
     //返回标题
     public CharSequence getTitle();
 
-    //附加信息
-    default Object getTag(){
+    //上述内容在属性值中扮演的角色，不需要处理判断逻辑可直接返回null
+    default String getTitleRole(){
         return null;
     }
 

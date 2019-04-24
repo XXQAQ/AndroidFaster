@@ -2,16 +2,13 @@ package com.xq.androidfaster.bean.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.xq.androidfaster.bean.behavior.TitleBehavior;
-
 import java.io.Serializable;
 
-//TitleBehavior的最简单实现类
-public class TitleBean implements TitleBehavior{
+public class TitleBean extends ParentBean implements TitleBehavior {
 
     protected CharSequence title;
-    protected Object tag;
+    protected String titleRole;
 
     public TitleBean() {
     }
@@ -25,10 +22,17 @@ public class TitleBean implements TitleBehavior{
         this.tag = tag;
     }
 
+    public TitleBean(CharSequence title, Object tag,String titleRole) {
+        this.title = title;
+        this.tag = tag;
+        this.titleRole = titleRole;
+    }
+
     @Override
     public String toString() {
         return "TitleBean{" +
                 "title=" + title +
+                ", titleRole='" + titleRole + '\'' +
                 ", tag=" + tag +
                 '}';
     }
@@ -37,17 +41,19 @@ public class TitleBean implements TitleBehavior{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         TitleBean titleBean = (TitleBean) o;
 
         if (title != null ? !title.equals(titleBean.title) : titleBean.title != null) return false;
-        return tag != null ? tag.equals(titleBean.tag) : titleBean.tag == null;
+        return titleRole != null ? titleRole.equals(titleBean.titleRole) : titleBean.titleRole == null;
     }
 
     @Override
     public int hashCode() {
-        int result = title != null ? title.hashCode() : 0;
-        result = 31 * result + (tag != null ? tag.hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (titleRole != null ? titleRole.hashCode() : 0);
         return result;
     }
 
@@ -56,17 +62,17 @@ public class TitleBean implements TitleBehavior{
         return title;
     }
 
-    @Override
-    public Object getTag() {
-        return tag;
-    }
-
     public void setTitle(CharSequence title) {
         this.title = title;
     }
 
-    public void setTag(Object tag) {
-        this.tag = tag;
+    @Override
+    public String getTitleRole() {
+        return titleRole;
+    }
+
+    public void setTitleRole(String titleRole) {
+        this.titleRole = titleRole;
     }
 
     @Override
@@ -76,29 +82,25 @@ public class TitleBean implements TitleBehavior{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         if (title instanceof Parcelable)
             dest.writeParcelable((Parcelable) title, flags);
         else    if (title instanceof Serializable)
             dest.writeSerializable((Serializable) title);
         else
             dest.writeString(title == null?null:title.toString());
-        if (tag instanceof Parcelable)
-            dest.writeParcelable((Parcelable) tag, flags);
-        else    if (tag instanceof Serializable)
-            dest.writeSerializable((Serializable) tag);
+        dest.writeString(titleRole);
     }
 
     protected TitleBean(Parcel in) {
+        super(in);
         if (title instanceof Parcelable)
             this.title = in.readParcelable(CharSequence.class.getClassLoader());
         else    if (title instanceof Serializable)
             this.title = (CharSequence) in.readSerializable();
         else
             this.title = in.readString();
-        if (tag instanceof Parcelable)
-            this.tag = in.readParcelable(Object.class.getClassLoader());
-        else    if (tag instanceof Serializable)
-            this.tag = in.readSerializable();
+        this.titleRole = in.readString();
     }
 
     public static final Creator<TitleBean> CREATOR = new Creator<TitleBean>() {
