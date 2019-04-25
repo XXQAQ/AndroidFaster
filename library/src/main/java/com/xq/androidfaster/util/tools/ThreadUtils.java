@@ -47,7 +47,7 @@ public final class ThreadUtils {
      * @param runnable The Runnable
      */
     public static void runOnChildThread(Runnable runnable){
-        runnable.run();
+        new Thread(runnable).run();
     }
 
     /**
