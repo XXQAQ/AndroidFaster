@@ -14,6 +14,10 @@ public class ContentTitleBean extends TitleBean implements ContentTitleBehavior 
     public ContentTitleBean() {
     }
 
+    public ContentTitleBean(CharSequence title) {
+        super(title);
+    }
+
     public ContentTitleBean(CharSequence title, CharSequence content) {
         super(title);
         this.content = content;
@@ -24,11 +28,17 @@ public class ContentTitleBean extends TitleBean implements ContentTitleBehavior 
         this.content = content;
     }
 
+    public ContentTitleBean(CharSequence title, CharSequence content,Object tag,String titleRole) {
+        super(title,tag,titleRole);
+        this.content = content;
+    }
+
     @Override
     public String toString() {
         return "ContentTitleBean{" +
                 "content=" + content +
                 ", title=" + title +
+                ", titleRole='" + titleRole + '\'' +
                 ", tag=" + tag +
                 '}';
     }

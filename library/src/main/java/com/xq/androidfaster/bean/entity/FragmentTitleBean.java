@@ -15,12 +15,18 @@ public class FragmentTitleBean extends TitleBean implements FragmentTitleBehavio
         super(title);
     }
 
-    public FragmentTitleBean(CharSequence title, Object tag) {
-        super(title, tag);
+    public FragmentTitleBean(CharSequence title,Fragment fragment) {
+        super(title);
+        this.fragment = fragment;
     }
 
-    public FragmentTitleBean(CharSequence title, Object tag, Fragment fragment) {
-        super(title, tag);
+    public FragmentTitleBean(CharSequence title,Fragment fragment,Object tag) {
+        super(title,tag);
+        this.fragment = fragment;
+    }
+
+    public FragmentTitleBean(CharSequence title,Fragment fragment,Object tag,String titleRole) {
+        super(title,tag,titleRole);
         this.fragment = fragment;
     }
 
@@ -29,6 +35,7 @@ public class FragmentTitleBean extends TitleBean implements FragmentTitleBehavio
         return "FragmentTitleBean{" +
                 "fragment=" + fragment +
                 ", title=" + title +
+                ", titleRole='" + titleRole + '\'' +
                 ", tag=" + tag +
                 '}';
     }

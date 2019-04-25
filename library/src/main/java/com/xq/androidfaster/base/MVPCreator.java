@@ -16,7 +16,7 @@ public class MVPCreator {
 
 	public static void main(String[] args){
 		try {
-			String name = "Init";
+			String name = "Test";
 			new MVPCreator(name).create();
 			System.out.print(name + "创建成功");
 		} catch (Exception e) {
@@ -36,7 +36,7 @@ public class MVPCreator {
 	
 	public void create() throws Exception {
 		
-		String parent = "MVP" + File.separator + String.format("%s", name).toLowerCase();
+		String parent = String.format("%s", name).toLowerCase();
 		
 		FileUtil.writeData(createInterfacePresenter().getBytes(), parent+ File.separator+ String.format("I%sPresenter.java", name));
 		FileUtil.writeData(createActivity().getBytes(), parent+ File.separator+ String.format("%sActivity.java", name));

@@ -11,6 +11,10 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
     public NumberTitleBean() {
     }
 
+    public NumberTitleBean(CharSequence title) {
+        super(title);
+    }
+
     public NumberTitleBean(CharSequence title, Number number) {
         super(title);
         this.number = number;
@@ -21,11 +25,17 @@ public class NumberTitleBean extends TitleBean implements NumberTitleBehavior{
         this.number = number;
     }
 
+    public NumberTitleBean(CharSequence title, Number number,Object tag,String titleRole) {
+        super(title,tag,titleRole);
+        this.number = number;
+    }
+
     @Override
     public String toString() {
         return "NumberTitleBean{" +
                 "number=" + number +
                 ", title=" + title +
+                ", titleRole='" + titleRole + '\'' +
                 ", tag=" + tag +
                 '}';
     }
