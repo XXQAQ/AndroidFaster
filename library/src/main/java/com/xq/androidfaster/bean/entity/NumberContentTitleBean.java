@@ -31,8 +31,8 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
         this.number = number;
     }
 
-    public NumberContentTitleBean(CharSequence title, CharSequence content, Number number,Object tag,String titleRole) {
-        super(title,tag,titleRole);
+    public NumberContentTitleBean(CharSequence title, CharSequence content, Number number,Object tag,int id) {
+        super(title,tag,id);
         this.content = content;
         this.number = number;
     }
@@ -45,6 +45,8 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
                 ", title=" + title +
                 ", titleRole='" + titleRole + '\'' +
                 ", tag=" + tag +
+                ", id=" + id +
+                ", idRole='" + idRole + '\'' +
                 '}';
     }
 

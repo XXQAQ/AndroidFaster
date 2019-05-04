@@ -2,7 +2,7 @@ package com.xq.androidfaster.bean.behavior;
 
 import android.os.Parcel;
 
-public interface BaseUIBehavior extends ResBehavior,NumberContentTitleBehavior{
+public interface BaseUIBehavior extends ImageBehavior,NumberContentTitleBehavior{
 
     @Override
     default int describeContents() {

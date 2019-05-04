@@ -17,14 +17,13 @@ public class SuccessBean extends ParentBean implements SuccessBehavior{
     }
 
     public SuccessBean(boolean isSuccess, Object tag) {
+        super(tag);
         this.isSuccess = isSuccess;
-        this.tag = tag;
     }
 
-    public SuccessBean(boolean isSuccess, Object tag,String successRole) {
+    public SuccessBean(boolean isSuccess, Object tag,int id) {
+        super(tag,id);
         this.isSuccess = isSuccess;
-        this.tag = tag;
-        this.successRole = successRole;
     }
 
     @Override
@@ -33,6 +32,8 @@ public class SuccessBean extends ParentBean implements SuccessBehavior{
                 "isSuccess=" + isSuccess +
                 ", successRole='" + successRole + '\'' +
                 ", tag=" + tag +
+                ", id=" + id +
+                ", idRole='" + idRole + '\'' +
                 '}';
     }
 

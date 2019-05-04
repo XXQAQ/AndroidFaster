@@ -18,14 +18,13 @@ public class TitleBean extends ParentBean implements TitleBehavior {
     }
 
     public TitleBean(CharSequence title, Object tag) {
+        super(tag);
         this.title = title;
-        this.tag = tag;
     }
 
-    public TitleBean(CharSequence title, Object tag,String titleRole) {
+    public TitleBean(CharSequence title, Object tag,int id) {
+        super(tag,id);
         this.title = title;
-        this.tag = tag;
-        this.titleRole = titleRole;
     }
 
     @Override
@@ -34,6 +33,8 @@ public class TitleBean extends ParentBean implements TitleBehavior {
                 "title=" + title +
                 ", titleRole='" + titleRole + '\'' +
                 ", tag=" + tag +
+                ", id=" + id +
+                ", idRole='" + idRole + '\'' +
                 '}';
     }
 

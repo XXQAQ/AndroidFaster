@@ -13,10 +13,6 @@ public class FragmentTitleBean extends TitleBean implements FragmentTitleBehavio
     public FragmentTitleBean() {
     }
 
-    public FragmentTitleBean(CharSequence title) {
-        super(title);
-    }
-
     public FragmentTitleBean(CharSequence title,Fragment fragment) {
         super(title);
         this.fragment = fragment;
@@ -27,8 +23,8 @@ public class FragmentTitleBean extends TitleBean implements FragmentTitleBehavio
         this.fragment = fragment;
     }
 
-    public FragmentTitleBean(CharSequence title,Fragment fragment,Object tag,String titleRole) {
-        super(title,tag,titleRole);
+    public FragmentTitleBean(CharSequence title,Fragment fragment,Object tag,int id) {
+        super(title,tag,id);
         this.fragment = fragment;
     }
 
@@ -39,7 +35,27 @@ public class FragmentTitleBean extends TitleBean implements FragmentTitleBehavio
                 ", title=" + title +
                 ", titleRole='" + titleRole + '\'' +
                 ", tag=" + tag +
+                ", id=" + id +
+                ", idRole='" + idRole + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        FragmentTitleBean that = (FragmentTitleBean) o;
+
+        return fragment != null ? fragment.equals(that.fragment) : that.fragment == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (fragment != null ? fragment.hashCode() : 0);
+        return result;
     }
 
     public Fragment getFragment() {
