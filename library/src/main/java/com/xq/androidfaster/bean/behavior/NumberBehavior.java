@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 
-public interface IdBehavior extends Serializable, Parcelable {
+public interface NumberBehavior extends Serializable, Parcelable {
 
     @Override
     default int describeContents() {
@@ -17,15 +17,11 @@ public interface IdBehavior extends Serializable, Parcelable {
 
     }
 
-    public int getId();
+    public Number getNumber();
 
     //上述内容在属性值中扮演的角色，不需要处理判断逻辑可直接返回null
-    default String getIdRole(){
+    default String getNumberRole(){
         return null;
-    }
-
-    default int getForeignId(){
-        return 0;
     }
 
 }

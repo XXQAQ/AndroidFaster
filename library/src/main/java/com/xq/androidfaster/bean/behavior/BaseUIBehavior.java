@@ -2,7 +2,7 @@ package com.xq.androidfaster.bean.behavior;
 
 import android.os.Parcel;
 
-public interface NumberContentTitleBehavior extends TitleBehavior,ContentBehavior,NumberBehavior{
+public interface BaseUIBehavior extends ResBehavior,NumberContentTitleBehavior{
 
     @Override
     default int describeContents() {

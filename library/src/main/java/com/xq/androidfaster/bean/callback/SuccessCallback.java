@@ -1,4 +1,4 @@
-package com.xq.androidfaster.util.callback;
+package com.xq.androidfaster.bean.callback;
 
 import com.xq.androidfaster.bean.behavior.SuccessBehavior;
 

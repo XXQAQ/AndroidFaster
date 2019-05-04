@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import java.io.Serializable;
 import java.util.List;
 
-//实现该对象可以使您的对象提供描述列表的能力
 public interface ListBehavior<T> extends Serializable,Parcelable {
 
     @Override
@@ -19,7 +18,6 @@ public interface ListBehavior<T> extends Serializable,Parcelable {
 
     }
 
-    //返回列表
     public List<T> getList();
 
     //上述内容在属性值中扮演的角色，不需要处理判断逻辑可直接返回null
