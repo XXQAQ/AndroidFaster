@@ -1,11 +1,7 @@
 package com.xq.androidfaster;
 
 import android.app.Application;
-
-import com.xq.androidfaster.util.callback.UniverseCallback;
 import com.xq.androidfaster.util.tools.AppUtils;
-import java.util.LinkedList;
-import java.util.List;
 
 public class AndroidFaster {
 
