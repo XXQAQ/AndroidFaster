@@ -1,8 +1,10 @@
 package com.xq.androidfaster.bean.behavior;
 
 import android.os.Parcel;
+import android.os.Parcelable;
+import java.io.Serializable;
 
-public interface BaseUIBehavior extends ImageBehavior,NumberContentTitleBehavior{
+public interface ParentBehavior extends IdBehavior,TagBehavior,Serializable,Parcelable {
 
     @Override
     default int describeContents() {
@@ -12,16 +14,6 @@ public interface BaseUIBehavior extends ImageBehavior,NumberContentTitleBehavior
     @Override
     default void writeToParcel(Parcel dest, int flags) {
 
-    }
-
-    @Override
-    default int getId() {
-        return 0;
-    }
-
-    @Override
-    default Object getTag() {
-        return null;
     }
 
 }

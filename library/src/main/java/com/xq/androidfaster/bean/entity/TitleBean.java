@@ -17,13 +17,13 @@ public class TitleBean extends ParentBean implements TitleBehavior {
         this.title = title;
     }
 
-    public TitleBean(CharSequence title, Object tag) {
-        super(tag);
+    public TitleBean(int id,CharSequence title) {
+        super(id);
         this.title = title;
     }
 
-    public TitleBean(CharSequence title, Object tag,int id) {
-        super(tag,id);
+    public TitleBean(int id,CharSequence title, Object tag) {
+        super(id,tag);
         this.title = title;
     }
 

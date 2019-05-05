@@ -2,12 +2,10 @@ package com.xq.androidfaster.bean.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.xq.androidfaster.bean.behavior.IdBehavior;
-import com.xq.androidfaster.bean.behavior.TagBehavior;
+import com.xq.androidfaster.bean.behavior.ParentBehavior;
 import java.io.Serializable;
 
-public class ParentBean implements Serializable, Parcelable, TagBehavior , IdBehavior {
+public class ParentBean implements ParentBehavior {
 
     protected Object tag;
     protected int id;
@@ -16,11 +14,11 @@ public class ParentBean implements Serializable, Parcelable, TagBehavior , IdBeh
     public ParentBean() {
     }
 
-    public ParentBean(Object tag) {
-        this.tag = tag;
+    public ParentBean(int id) {
+        this.id = id;
     }
 
-    public ParentBean(Object tag, int id) {
+    public ParentBean(int id,Object tag) {
         this.tag = tag;
         this.id = id;
     }

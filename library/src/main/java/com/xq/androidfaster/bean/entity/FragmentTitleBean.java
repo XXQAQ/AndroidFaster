@@ -13,18 +13,22 @@ public class FragmentTitleBean extends TitleBean implements FragmentTitleBehavio
     public FragmentTitleBean() {
     }
 
+    public FragmentTitleBean(Fragment fragment) {
+        this.fragment = fragment;
+    }
+
     public FragmentTitleBean(CharSequence title,Fragment fragment) {
         super(title);
         this.fragment = fragment;
     }
 
-    public FragmentTitleBean(CharSequence title,Fragment fragment,Object tag) {
-        super(title,tag);
+    public FragmentTitleBean(int id,CharSequence title,Fragment fragment) {
+        super(id,title);
         this.fragment = fragment;
     }
 
-    public FragmentTitleBean(CharSequence title,Fragment fragment,Object tag,int id) {
-        super(title,tag,id);
+    public FragmentTitleBean(int id,CharSequence title,Fragment fragment,Object tag) {
+        super(id,title,tag);
         this.fragment = fragment;
     }
 

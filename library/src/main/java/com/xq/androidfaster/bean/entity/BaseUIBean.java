@@ -21,19 +21,35 @@ public class BaseUIBean extends NumberContentTitleBean implements BaseUIBehavior
         super(title, content, number);
     }
 
-    public BaseUIBean(int imageRes, CharSequence title) {
+    public BaseUIBean(int id, CharSequence title, CharSequence content, Number number) {
+        super(id, title, content, number);
+    }
+
+    public BaseUIBean(int id, CharSequence title, CharSequence content, Number number, Object tag) {
+        super(id, title, content, number, tag);
+    }
+
+    public BaseUIBean(int imageRes) {
+        this.imageRes = imageRes;
+    }
+
+    public BaseUIBean(int imageRes,CharSequence title) {
         super(title);
         this.imageRes = imageRes;
     }
 
-    public BaseUIBean(int imageRes, CharSequence title, CharSequence content, Number number) {
-        super(title, content, number);
+    public BaseUIBean(int id, int imageRes,CharSequence title, CharSequence content, Number number) {
+        super(id, title, content, number);
         this.imageRes = imageRes;
     }
 
-    public BaseUIBean(int imageRes,CharSequence title, CharSequence content, Number number, Object tag, int id) {
-        super(title, content, number, tag, id);
+    public BaseUIBean(int id, int imageRes,CharSequence title, CharSequence content, Number number, Object tag) {
+        super(id, title, content, number, tag);
         this.imageRes = imageRes;
+    }
+
+    public BaseUIBean(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public BaseUIBean(String imageUrl,CharSequence title) {
@@ -41,13 +57,13 @@ public class BaseUIBean extends NumberContentTitleBean implements BaseUIBehavior
         this.imageUrl = imageUrl;
     }
 
-    public BaseUIBean(String imageUrl,CharSequence title, CharSequence content, Number number) {
-        super(title, content, number);
+    public BaseUIBean(int id, String imageUrl,CharSequence title, CharSequence content, Number number) {
+        super(id, title, content, number);
         this.imageUrl = imageUrl;
     }
 
-    public BaseUIBean(String imageUrl,CharSequence title, CharSequence content, Number number, Object tag, int id) {
-        super(title, content, number, tag, id);
+    public BaseUIBean(int id, String imageUrl,CharSequence title, CharSequence content, Number number, Object tag) {
+        super(id, title, content, number, tag);
         this.imageUrl = imageUrl;
     }
 

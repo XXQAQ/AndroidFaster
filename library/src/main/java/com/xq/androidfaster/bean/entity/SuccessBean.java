@@ -16,13 +16,13 @@ public class SuccessBean extends ParentBean implements SuccessBehavior{
         this.isSuccess = isSuccess;
     }
 
-    public SuccessBean(boolean isSuccess, Object tag) {
-        super(tag);
+    public SuccessBean(int id,boolean isSuccess) {
+        super(id);
         this.isSuccess = isSuccess;
     }
 
-    public SuccessBean(boolean isSuccess, Object tag,int id) {
-        super(tag,id);
+    public SuccessBean(int id,boolean isSuccess, Object tag) {
+        super(id,tag);
         this.isSuccess = isSuccess;
     }
 

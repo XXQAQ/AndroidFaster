@@ -25,14 +25,14 @@ public class NumberContentTitleBean extends TitleBean implements NumberContentTi
         this.number = number;
     }
 
-    public NumberContentTitleBean(CharSequence title, CharSequence content, Number number,Object tag) {
-        super(title,tag);
+    public NumberContentTitleBean(int id,CharSequence title, CharSequence content, Number number) {
+        super(id,title);
         this.content = content;
         this.number = number;
     }
 
-    public NumberContentTitleBean(CharSequence title, CharSequence content, Number number,Object tag,int id) {
-        super(title,tag,id);
+    public NumberContentTitleBean(int id,CharSequence title, CharSequence content, Number number,Object tag) {
+        super(id,title,tag);
         this.content = content;
         this.number = number;
     }

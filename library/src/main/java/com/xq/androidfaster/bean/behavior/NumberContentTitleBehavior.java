@@ -14,4 +14,14 @@ public interface NumberContentTitleBehavior extends TitleBehavior,ContentBehavio
 
     }
 
+    @Override
+    default int getId() {
+        return 0;
+    }
+
+    @Override
+    default Object getTag() {
+        return null;
+    }
+
 }
