@@ -3,9 +3,12 @@ package com.xq.androidfaster.util.tools;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Debug;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
@@ -279,7 +282,8 @@ public final class DeviceUtils {
     public static boolean isDeviceRooted() {
         String su = "su";
         String[] locations = {"/system/bin/", "/system/xbin/", "/sbin/", "/system/sd/xbin/",
-                "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/"};
+                "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/",
+                "/system/sbin/", "/usr/bin/", "/vendor/bin/"};
         for (String location : locations) {
             if (new File(location + su).exists()) {
                 return true;
@@ -335,8 +339,7 @@ public final class DeviceUtils {
 
     /**
      * Return the MAC address.
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />},
+     * <p>Must hold {@code <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />},
      * {@code <uses-permission android:name="android.permission.INTERNET" />}</p>
      *
      * @return the MAC address
@@ -348,23 +351,22 @@ public final class DeviceUtils {
 
     /**
      * Return the MAC address.
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />},
+     * <p>Must hold {@code <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />},
      * {@code <uses-permission android:name="android.permission.INTERNET" />}</p>
      *
      * @return the MAC address
      */
     @RequiresPermission(allOf = {ACCESS_WIFI_STATE, INTERNET})
     public static String getMacAddress(final String... excepts) {
-        String macAddress = getMacAddressByWifiInfo();
-        if (isAddressNotInExcepts(macAddress, excepts)) {
-            return macAddress;
-        }
-        macAddress = getMacAddressByNetworkInterface();
+        String macAddress = getMacAddressByNetworkInterface();
         if (isAddressNotInExcepts(macAddress, excepts)) {
             return macAddress;
         }
         macAddress = getMacAddressByInetAddress();
+        if (isAddressNotInExcepts(macAddress, excepts)) {
+            return macAddress;
+        }
+        macAddress = getMacAddressByWifiInfo();
         if (isAddressNotInExcepts(macAddress, excepts)) {
             return macAddress;
         }
@@ -387,12 +389,13 @@ public final class DeviceUtils {
         return true;
     }
 
-    @SuppressLint({"HardwareIds", "MissingPermission", "WifiManagerLeak"})
+    @SuppressLint({"MissingPermission", "HardwareIds"})
     private static String getMacAddressByWifiInfo() {
         try {
-            WifiManager wifi = (WifiManager) getApp().getSystemService(Context.WIFI_SERVICE);
+            final WifiManager wifi = (WifiManager) getApp()
+                    .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             if (wifi != null) {
-                WifiInfo info = wifi.getConnectionInfo();
+                final WifiInfo info = wifi.getConnectionInfo();
                 if (info != null) return info.getMacAddress();
             }
         } catch (Exception e) {
@@ -584,4 +587,59 @@ public final class DeviceUtils {
     public static void reboot2Bootloader() {
         ShellUtils.execCmd("reboot bootloader", true);
     }
+
+    /**
+     * Return whether device is tablet.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isTablet() {
+        return (getApp().getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    /**
+     * Return whether device is emulator.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isEmulator() {
+        boolean checkProperty = Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.toLowerCase().contains("vbox")
+                || Build.FINGERPRINT.toLowerCase().contains("test-keys")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.SERIAL.equalsIgnoreCase("unknown")
+                || Build.SERIAL.equalsIgnoreCase("android")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(Build.PRODUCT);
+        if (checkProperty) return true;
+
+        boolean checkDebuggerConnected = Debug.isDebuggerConnected();
+        if (checkDebuggerConnected) return true;
+
+        String operatorName = "";
+        TelephonyManager tm = (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm != null) {
+            String name = tm.getNetworkOperatorName();
+            if (name != null) {
+                operatorName = name;
+            }
+        }
+        boolean checkOperatorName = operatorName.toLowerCase().equals("android");
+        if (checkOperatorName) return true;
+
+        String url = "tel:" + "123456";
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(url));
+        intent.setAction(Intent.ACTION_DIAL);
+        boolean checkDial = intent.resolveActivity(getApp().getPackageManager()) != null;
+        if (checkDial) return true;
+
+        return false;
+    }
+
 }

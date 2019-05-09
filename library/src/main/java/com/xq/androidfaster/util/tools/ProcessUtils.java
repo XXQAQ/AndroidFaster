@@ -9,11 +9,13 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.Process;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.util.Log;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -88,7 +90,7 @@ public final class ProcessUtils {
                             .queryUsageStats(UsageStatsManager.INTERVAL_BEST,
                                     beginTime, endTime);
                 }
-                if (usageStatsList == null || usageStatsList.isEmpty()) return null;
+                if (usageStatsList == null || usageStatsList.isEmpty()) return "";
                 UsageStats recentStats = null;
                 for (UsageStats usageStats : usageStatsList) {
                     if (recentStats == null
@@ -106,8 +108,7 @@ public final class ProcessUtils {
 
     /**
      * Return all background processes.
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />}</p>
+     * <p>Must hold {@code <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />}</p>
      *
      * @return all background processes
      */
@@ -128,8 +129,7 @@ public final class ProcessUtils {
 
     /**
      * Kill all background processes.
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />}</p>
+     * <p>Must hold {@code <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />}</p>
      *
      * @return background processes were killed
      */
@@ -140,6 +140,7 @@ public final class ProcessUtils {
         //noinspection ConstantConditions
         List<ActivityManager.RunningAppProcessInfo> info = am.getRunningAppProcesses();
         Set<String> set = new HashSet<>();
+        if (info == null) return set;
         for (ActivityManager.RunningAppProcessInfo aInfo : info) {
             for (String pkg : aInfo.pkgList) {
                 am.killBackgroundProcesses(pkg);
@@ -157,8 +158,7 @@ public final class ProcessUtils {
 
     /**
      * Kill background processes.
-     * <p>Must hold
-     * {@code <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />}</p>
+     * <p>Must hold {@code <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />}</p>
      *
      * @param packageName The name of the package.
      * @return {@code true}: success<br>{@code false}: fail
@@ -196,22 +196,36 @@ public final class ProcessUtils {
 
     /**
      * Return the name of current process.
+     * <p>It's faster than ActivityManager.</p>
      *
      * @return the name of current process
      */
     public static String getCurrentProcessName() {
-        ActivityManager am = (ActivityManager) getApp().getSystemService(Context.ACTIVITY_SERVICE);
-        //noinspection ConstantConditions
-        List<ActivityManager.RunningAppProcessInfo> info = am.getRunningAppProcesses();
-        if (info == null || info.size() == 0) return null;
-        int pid = Process.myPid();
-        for (ActivityManager.RunningAppProcessInfo aInfo : info) {
-            if (aInfo.pid == pid) {
-                if (aInfo.processName != null) {
-                    return aInfo.processName;
-                }
-            }
+        try {
+            File file = new File("/proc/" + android.os.Process.myPid() + "/" + "cmdline");
+            BufferedReader mBufferedReader = new BufferedReader(new FileReader(file));
+            String processName = mBufferedReader.readLine().trim();
+            mBufferedReader.close();
+            return processName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
-        return "";
     }
+
+//    public static String getCurrentProcessName() {
+//        ActivityManager am = (ActivityManager) getApp().getSystemService(Context.ACTIVITY_SERVICE);
+//        if (am == null) return "";
+//        List<ActivityManager.RunningAppProcessInfo> info = am.getRunningAppProcesses();
+//        if (info == null || info.size() == 0) return "";
+//        int pid = Process.myPid();
+//        for (ActivityManager.RunningAppProcessInfo aInfo : info) {
+//            if (aInfo.pid == pid) {
+//                if (aInfo.processName != null) {
+//                    return aInfo.processName;
+//                }
+//            }
+//        }
+//        return "";
+//    }
 }

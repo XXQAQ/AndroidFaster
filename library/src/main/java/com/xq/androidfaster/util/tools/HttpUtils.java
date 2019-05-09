@@ -16,10 +16,14 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
-public class HttpUtils {
+public final class HttpUtils {
 
     private static final String METHOD_GET = "GET";
     private static final String METHOD_POST = "POST";
+
+    private HttpUtils() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
 
     /**
      * get请求

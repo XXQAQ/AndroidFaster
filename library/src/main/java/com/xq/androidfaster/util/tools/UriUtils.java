@@ -15,6 +15,10 @@ import static com.xq.androidfaster.AndroidFaster.getFileProvider;
 
 public final class UriUtils {
 
+    private UriUtils() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
     /**
      * File转Uri
      * @param file
@@ -31,7 +35,7 @@ public final class UriUtils {
     }
 
     /**
-     * Uri转File(兼容了安卓4.4，7.0上下的各种版本)
+     * Uri转FilePath(兼容了安卓4.4，7.0上下的各种版本)
      * @param uri
      * @return
      */

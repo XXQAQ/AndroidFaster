@@ -12,6 +12,10 @@ import static com.xq.androidfaster.AndroidFaster.getFileProvider;
 
 public final class AttachFileUtills {
 
+    private AttachFileUtills() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
     /**
      *指明路径可一键调用相关应用打开该文件
      * @param path 路径

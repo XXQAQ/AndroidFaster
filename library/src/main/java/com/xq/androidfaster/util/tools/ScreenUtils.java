@@ -6,19 +6,26 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Surface;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import static android.Manifest.permission.WRITE_SETTINGS;
 import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ScreenUtils {
+
+    private ScreenUtils() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
 
     /**
      * dp to px
@@ -145,12 +152,11 @@ public final class ScreenUtils {
      */
     public static int getScreenWidth() {
         WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        if (wm == null) return -1;
         Point point = new Point();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            //noinspection ConstantConditions
             wm.getDefaultDisplay().getRealSize(point);
         } else {
-            //noinspection ConstantConditions
             wm.getDefaultDisplay().getSize(point);
         }
         return point.x;
@@ -163,14 +169,39 @@ public final class ScreenUtils {
      */
     public static int getScreenHeight() {
         WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        if (wm == null) return -1;
         Point point = new Point();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            //noinspection ConstantConditions
             wm.getDefaultDisplay().getRealSize(point);
         } else {
-            //noinspection ConstantConditions
             wm.getDefaultDisplay().getSize(point);
         }
+        return point.y;
+    }
+
+    /**
+     * Return the application's width of screen, in pixel.
+     *
+     * @return the application's width of screen, in pixel
+     */
+    public static int getAppScreenWidth() {
+        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        if (wm == null) return -1;
+        Point point = new Point();
+        wm.getDefaultDisplay().getSize(point);
+        return point.x;
+    }
+
+    /**
+     * Return the application's height of screen, in pixel.
+     *
+     * @return the application's height of screen, in pixel
+     */
+    public static int getAppScreenHeight() {
+        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        if (wm == null) return -1;
+        Point point = new Point();
+        wm.getDefaultDisplay().getSize(point);
         return point.y;
     }
 
@@ -216,14 +247,12 @@ public final class ScreenUtils {
      * @param activity The activity.
      */
     public static void toggleFullScreen(@NonNull final Activity activity) {
-        int fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        boolean isFullScreen = isFullScreen(activity);
         Window window = activity.getWindow();
-        if ((window.getAttributes().flags & fullScreenFlag) == fullScreenFlag) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        if (isFullScreen) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
@@ -298,6 +327,50 @@ public final class ScreenUtils {
     }
 
     /**
+     * Return the bitmap of screen.
+     *
+     * @param activity The activity.
+     * @return the bitmap of screen
+     */
+    public static Bitmap screenShot(@NonNull final Activity activity) {
+        return screenShot(activity, false);
+    }
+
+    /**
+     * Return the bitmap of screen.
+     *
+     * @param activity          The activity.
+     * @param isDeleteStatusBar True to delete status bar, false otherwise.
+     * @return the bitmap of screen
+     */
+    public static Bitmap screenShot(@NonNull final Activity activity, boolean isDeleteStatusBar) {
+        View decorView = activity.getWindow().getDecorView();
+        decorView.setDrawingCacheEnabled(true);
+        decorView.setWillNotCacheDrawing(false);
+        Bitmap bmp = decorView.getDrawingCache();
+        if (bmp == null) return null;
+        DisplayMetrics dm = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Bitmap ret;
+        if (isDeleteStatusBar) {
+            Resources resources = activity.getResources();
+            int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+            int statusBarHeight = resources.getDimensionPixelSize(resourceId);
+            ret = Bitmap.createBitmap(
+                    bmp,
+                    0,
+                    statusBarHeight,
+                    dm.widthPixels,
+                    dm.heightPixels - statusBarHeight
+            );
+        } else {
+            ret = Bitmap.createBitmap(bmp, 0, 0, dm.widthPixels, dm.heightPixels);
+        }
+        decorView.destroyDrawingCache();
+        return ret;
+    }
+
+    /**
      * Return whether screen is locked.
      *
      * @return {@code true}: yes<br>{@code false}: no
@@ -305,7 +378,7 @@ public final class ScreenUtils {
     public static boolean isScreenLock() {
         KeyguardManager km =
                 (KeyguardManager) getApp().getSystemService(Context.KEYGUARD_SERVICE);
-        //noinspection ConstantConditions
+        if (km == null) return false;
         return km.inKeyguardRestrictedInputMode();
     }
 
@@ -339,17 +412,6 @@ public final class ScreenUtils {
             e.printStackTrace();
             return -123;
         }
-    }
-
-    /**
-     * Return whether device is tablet.
-     *
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public static boolean isTablet() {
-        return (getApp().getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
 }

@@ -25,6 +25,16 @@ public final class ResourceUtils {
     }
 
     /**
+     * Return the drawable identifier by name.
+     *
+     * @param name The name of drawable.
+     * @return the drawable identifier by name
+     */
+    public static int getDrawableIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "drawable", getApp().getPackageName());
+    }
+
+    /**
      * Copy the file from assets.
      *
      * @param assetsFilePath The path of file in assets.

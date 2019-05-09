@@ -66,6 +66,9 @@ public final class ObjectUtils {
                 return true;
             }
         }
+        if (obj instanceof Number && ((Number) obj).doubleValue() == 0){
+            return true;
+        }
         return false;
     }
 

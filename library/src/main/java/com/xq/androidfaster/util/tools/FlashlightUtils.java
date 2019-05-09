@@ -11,99 +11,11 @@ import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class FlashlightUtils {
 
-    private static final String TAG = "FlashlightUtils";
-
-    private Camera mCamera;
+    private static Camera         mCamera;
+    private static SurfaceTexture mSurfaceTexture;
 
     private FlashlightUtils() {
-    }
-
-    /**
-     * Return the single {@link FlashlightUtils} instance.
-     *
-     * @return the single {@link FlashlightUtils} instance
-     */
-    public static FlashlightUtils getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    /**
-     * Register the utils of flashlight.
-     *
-     * @return {@code true}: success<br>{@code false}: fail
-     */
-    public boolean register() {
-        try {
-            mCamera = Camera.open(0);
-        } catch (Throwable t) {
-            Log.e(TAG, "register: ", t);
-            return false;
-        }
-        if (mCamera == null) {
-            Log.e(TAG, "register: open camera failed!");
-            return false;
-        }
-        try {
-            mCamera.setPreviewTexture(new SurfaceTexture(0));
-            mCamera.startPreview();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Unregister the utils of flashlight.
-     */
-    public void unregister() {
-        if (mCamera == null) return;
-        mCamera.stopPreview();
-        mCamera.release();
-    }
-
-    /**
-     * Turn on the flashlight.
-     */
-    public void setFlashlightOn() {
-        if (mCamera == null) {
-            Log.e(TAG, "setFlashlightOn: the utils of flashlight register failed!");
-            return;
-        }
-        Camera.Parameters parameters = mCamera.getParameters();
-        if (!FLASH_MODE_TORCH.equals(parameters.getFlashMode())) {
-            parameters.setFlashMode(FLASH_MODE_TORCH);
-            mCamera.setParameters(parameters);
-        }
-    }
-
-    /**
-     * Turn off the flashlight.
-     */
-    public void setFlashlightOff() {
-        if (mCamera == null) {
-            Log.e(TAG, "setFlashlightOn: the utils of flashlight register failed!");
-            return;
-        }
-        Camera.Parameters parameters = mCamera.getParameters();
-        if (FLASH_MODE_TORCH.equals(parameters.getFlashMode())) {
-            parameters.setFlashMode(FLASH_MODE_OFF);
-            mCamera.setParameters(parameters);
-        }
-    }
-
-    /**
-     * Return whether the flashlight is working.
-     *
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public boolean isFlashlightOn() {
-        if (mCamera == null) {
-            Log.e(TAG, "setFlashlightOn: the utils of flashlight register failed!");
-            return false;
-        }
-        Camera.Parameters parameters = mCamera.getParameters();
-        return FLASH_MODE_TORCH.equals(parameters.getFlashMode());
+        throw new UnsupportedOperationException("u can't instantiate me...");
     }
 
     /**
@@ -117,8 +29,69 @@ public final class FlashlightUtils {
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
 
-    private static final class LazyHolder {
-        private static final FlashlightUtils INSTANCE = new FlashlightUtils();
+    /**
+     * Return whether the flashlight is working.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isFlashlightOn() {
+        if (!init()) return false;
+        Camera.Parameters parameters = mCamera.getParameters();
+        return FLASH_MODE_TORCH.equals(parameters.getFlashMode());
+    }
+
+    /**
+     * Turn on or turn off the flashlight.
+     *
+     * @param isOn True to turn on the flashlight, false otherwise.
+     */
+    public static void setFlashlightStatus(final boolean isOn) {
+        if (!init()) return;
+        final Camera.Parameters parameters = mCamera.getParameters();
+        if (isOn) {
+            if (!FLASH_MODE_TORCH.equals(parameters.getFlashMode())) {
+                try {
+                    mCamera.setPreviewTexture(mSurfaceTexture);
+                    mCamera.startPreview();
+                    parameters.setFlashMode(FLASH_MODE_TORCH);
+                    mCamera.setParameters(parameters);
+                } catch (IOException e) {
+                    Log.e("FlashlightUtils", "setFlashlightStatusOn: ", e);
+                }
+            }
+        } else {
+            if (!FLASH_MODE_OFF.equals(parameters.getFlashMode())) {
+                parameters.setFlashMode(FLASH_MODE_OFF);
+                mCamera.setParameters(parameters);
+            }
+        }
+    }
+
+    /**
+     * Destroy the flashlight.
+     */
+    public static void destroy() {
+        if (mCamera == null) return;
+        mCamera.release();
+        mSurfaceTexture = null;
+        mCamera = null;
+    }
+
+    private static boolean init() {
+        if (mCamera == null) {
+            try {
+                mCamera = Camera.open(0);
+                mSurfaceTexture = new SurfaceTexture(0);
+            } catch (Throwable t) {
+                Log.e("FlashlightUtils", "init failed: ", t);
+                return false;
+            }
+        }
+        if (mCamera == null) {
+            Log.e("FlashlightUtils", "init failed.");
+            return false;
+        }
+        return true;
     }
 
 }

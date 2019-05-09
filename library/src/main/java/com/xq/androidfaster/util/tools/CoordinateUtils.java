@@ -4,6 +4,10 @@ import static java.lang.Math.PI;
 
 public final class CoordinateUtils {
 
+    private CoordinateUtils() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
     private final static double X_PI = 3.14159265358979324 * 3000.0 / 180.0;
     private final static double A    = 6378245.0;
     private final static double EE   = 0.00669342162296594323;

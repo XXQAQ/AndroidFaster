@@ -12,8 +12,13 @@ public interface FasterHttpCallback<T> {
 
     }
 
-    //当前请求进度
-    default void requestProgress(float progress){
+    //当前请求进度(0-1.0)
+    default void upLoadProgress(float progress){
+
+    }
+
+    //当前下载进度(0-1.0)
+    default void downLoadProgress(float progress){
 
     }
 
@@ -24,6 +29,10 @@ public interface FasterHttpCallback<T> {
         {
             getCallbackBuilder().isOperateSuccess = true;
             operateSuccess(t);
+        }
+        else
+        {
+            operateErro(t);
         }
     }
 
@@ -37,6 +46,9 @@ public interface FasterHttpCallback<T> {
 
     //业务操作成功之后调用的方法
     public void operateSuccess(T t);
+
+    //业务操作失败之后调用的方法
+    public void operateErro(T t);
 
     public CallbackBuilder getCallbackBuilder();
 

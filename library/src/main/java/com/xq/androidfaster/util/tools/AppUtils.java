@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AppOpsManager;
-import android.app.Application;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
@@ -17,43 +16,22 @@ import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import static com.xq.androidfaster.AndroidFaster.getApp;
 import static com.xq.androidfaster.AndroidFaster.getFileProvider;
-import static com.xq.androidfaster.util.tools.PermissionUtils.PERMISSION_ACTIVITY_CLASS_NAME;
 
 public final class AppUtils {
 
-    private static final ActivityLifecycleImpl ACTIVITY_LIFECYCLE = new ActivityLifecycleImpl();
-
     private AppUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
-    }
-
-    //使用当前Utils必须先调用此方法
-    public static void registerActivityLifecycleCallbacks(){
-        if (ACTIVITY_LIFECYCLE.mActivityList.isEmpty()) {
-            getApp().registerActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
-        }
-        else {
-            getApp().unregisterActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
-            ACTIVITY_LIFECYCLE.mActivityList.clear();
-            getApp().registerActivityLifecycleCallbacks(ACTIVITY_LIFECYCLE);
-        }
     }
 
     /**
@@ -63,8 +41,8 @@ public final class AppUtils {
      * @param listener The status of application changed listener
      */
     public static void registerAppStatusChangedListener(@NonNull final Object obj,
-                                                        @NonNull final OnAppStatusChangedListener listener) {
-        getActivityLifecycle().addListener(obj, listener);
+                                                        @NonNull final Utils.OnAppStatusChangedListener listener) {
+        Utils.getActivityLifecycle().addOnAppStatusChangedListener(obj, listener);
     }
 
     /**
@@ -73,7 +51,7 @@ public final class AppUtils {
      * @param obj The object.
      */
     public static void unregisterAppStatusChangedListener(@NonNull final Object obj) {
-        getActivityLifecycle().removeListener(obj);
+        Utils.getActivityLifecycle().removeOnAppStatusChangedListener(obj);
     }
 
     /**
@@ -135,6 +113,7 @@ public final class AppUtils {
     /**
      * Install the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.INSTALL_PACKAGES" />}</p>
      *
      * @param filePath The path of file.
@@ -147,6 +126,7 @@ public final class AppUtils {
     /**
      * Install the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.INSTALL_PACKAGES" />}</p>
      *
      * @param file The file.
@@ -160,6 +140,7 @@ public final class AppUtils {
     /**
      * Install the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.INSTALL_PACKAGES" />}</p>
      *
      * @param filePath The path of file.
@@ -173,6 +154,7 @@ public final class AppUtils {
     /**
      * Install the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.INSTALL_PACKAGES" />}</p>
      *
      * @param file   The file.
@@ -186,6 +168,7 @@ public final class AppUtils {
     /**
      * Install the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.INSTALL_PACKAGES" />}</p>
      *
      * @param file     The file.
@@ -240,6 +223,7 @@ public final class AppUtils {
     /**
      * Uninstall the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.DELETE_PACKAGES" />}</p>
      *
      * @param packageName The name of the package.
@@ -252,6 +236,7 @@ public final class AppUtils {
     /**
      * Uninstall the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.DELETE_PACKAGES" />}</p>
      *
      * @param packageName The name of the package.
@@ -265,6 +250,7 @@ public final class AppUtils {
     /**
      * Uninstall the app silently.
      * <p>Without root permission must hold
+     * {@code android:sharedUserId="android.uid.shell"} and
      * {@code <uses-permission android:name="android.permission.DELETE_PACKAGES" />}</p>
      *
      * @param packageName The name of the package.
@@ -293,13 +279,13 @@ public final class AppUtils {
     /**
      * Return whether the app is installed.
      *
-     * @param packageName The name of the package.
+     * @param pkgName The name of the package.
      * @return {@code true}: yes<br>{@code false}: no
      */
-    public static boolean isAppInstalled(@NonNull final String packageName) {
+    public static boolean isAppInstalled(@NonNull final String pkgName) {
         PackageManager packageManager = getApp().getPackageManager();
         try {
-            return packageManager.getApplicationInfo(packageName, 0) != null;
+            return packageManager.getApplicationInfo(pkgName, 0) != null;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return false;
@@ -374,40 +360,13 @@ public final class AppUtils {
         }
     }
 
-    public static ActivityLifecycleImpl getActivityLifecycle() {
-        return ACTIVITY_LIFECYCLE;
-    }
-
-    public static LinkedList<Activity> getActivityList() {
-        return ACTIVITY_LIFECYCLE.mActivityList;
-    }
-
-    public static Context getTopActivityOrApp() {
-        if (isAppForeground()) {
-            Activity topActivity = ACTIVITY_LIFECYCLE.getTopActivity();
-            return topActivity == null ? getApp() : topActivity;
-        } else {
-            return getApp();
-        }
-    }
-    
     /**
      * Return whether application is foreground.
      *
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isAppForeground() {
-        ActivityManager am =
-                (ActivityManager) getApp().getSystemService(Context.ACTIVITY_SERVICE);
-        //noinspection ConstantConditions
-        List<ActivityManager.RunningAppProcessInfo> info = am.getRunningAppProcesses();
-        if (info == null || info.size() == 0) return false;
-        for (ActivityManager.RunningAppProcessInfo aInfo : info) {
-            if (aInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                return aInfo.processName.equals(getApp().getPackageName());
-            }
-        }
-        return false;
+        return Utils.isAppForeground();
     }
 
     /**
@@ -420,6 +379,46 @@ public final class AppUtils {
      */
     public static boolean isAppForeground(@NonNull final String packageName) {
         return !isSpace(packageName) && packageName.equals(getForegroundProcessName());
+    }
+
+
+    /**
+     * Return whether application is running.
+     *
+     * @param pkgName The name of the package.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAppRunning(@NonNull final String pkgName) {
+        int uid;
+        PackageManager packageManager = getApp().getPackageManager();
+        try {
+            ApplicationInfo ai = packageManager.getApplicationInfo(pkgName, 0);
+            if (ai == null) return false;
+            uid = ai.uid;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+        ActivityManager am = (ActivityManager) getApp().getSystemService(Context.ACTIVITY_SERVICE);
+        if (am != null) {
+            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(Integer.MAX_VALUE);
+            if (taskInfo != null && taskInfo.size() > 0) {
+                for (ActivityManager.RunningTaskInfo aInfo : taskInfo) {
+                    if (pkgName.equals(aInfo.baseActivity.getPackageName())) {
+                        return true;
+                    }
+                }
+            }
+            List<ActivityManager.RunningServiceInfo> serviceInfo = am.getRunningServices(Integer.MAX_VALUE);
+            if (serviceInfo != null && serviceInfo.size() > 0) {
+                for (ActivityManager.RunningServiceInfo aInfo : serviceInfo) {
+                    if (uid == aInfo.uid) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -484,7 +483,7 @@ public final class AppUtils {
      */
     public static void launchAppDetailsSettings(final String packageName) {
         if (isSpace(packageName)) return;
-        Intent intent = new Intent("android.settings.APPLICATION_DETAILS_SETTINGS");
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.parse("package:" + packageName));
         getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
@@ -493,7 +492,7 @@ public final class AppUtils {
      * Exit the application.
      */
     public static void exitApp() {
-        List<Activity> activityList = getActivityList();
+        List<Activity> activityList = Utils.getActivityList();
         for (int i = activityList.size() - 1; i >= 0; --i) {// remove from top
             Activity activity = activityList.get(i);
             // sActivityList remove the index activity at onActivityDestroyed
@@ -731,6 +730,34 @@ public final class AppUtils {
         return getAppSignatureHash(packageName, "MD5");
     }
 
+
+    /**
+     * Return the application's user-ID.
+     *
+     * @return the application's signature for MD5 value
+     */
+    public static int getAppUid() {
+        return getAppUid(getApp().getPackageName());
+    }
+
+    /**
+     * Return the application's user-ID.
+     *
+     * @param pkgName The name of the package.
+     * @return the application's signature for MD5 value
+     */
+    public static int getAppUid(String pkgName) {
+        try {
+            ApplicationInfo ai = getApp().getPackageManager().getApplicationInfo(pkgName, 0);
+            if (ai != null) {
+                return ai.uid;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     private static String getAppSignatureHash(final String packageName, final String algorithm) {
         if (isSpace(packageName)) return "";
         Signature[] signature = getAppSignature(packageName);
@@ -770,13 +797,13 @@ public final class AppUtils {
      * </ul>
      *
      * @param packageName The name of the package.
-     * @return 当前应用的 AppInfo
+     * @return the application's information
      */
     public static AppInfo getAppInfo(final String packageName) {
         try {
             PackageManager pm = getApp().getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(packageName, 0);
-            return getBean(pm, pi);
+            if (pm == null) return null;
+            return getBean(pm, pm.getPackageInfo(packageName, 0));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return null;
@@ -791,6 +818,7 @@ public final class AppUtils {
     public static List<AppInfo> getAppsInfo() {
         List<AppInfo> list = new ArrayList<>();
         PackageManager pm = getApp().getPackageManager();
+        if (pm == null) return list;
         List<PackageInfo> installedPackages = pm.getInstalledPackages(0);
         for (PackageInfo pi : installedPackages) {
             AppInfo ai = getBean(pm, pi);
@@ -800,8 +828,35 @@ public final class AppUtils {
         return list;
     }
 
+    /**
+     * Return the application's package information.
+     *
+     * @return the application's package information
+     */
+    public static AppUtils.AppInfo getApkInfo(final File apkFile) {
+        if (apkFile == null || !apkFile.isFile() || !apkFile.exists()) return null;
+        return getApkInfo(apkFile.getAbsolutePath());
+    }
+
+    /**
+     * Return the application's package information.
+     *
+     * @return the application's package information
+     */
+    public static AppUtils.AppInfo getApkInfo(final String apkFilePath) {
+        if (isSpace(apkFilePath)) return null;
+        PackageManager pm = getApp().getPackageManager();
+        if (pm == null) return null;
+        PackageInfo pi = pm.getPackageArchiveInfo(apkFilePath, 0);
+        if (pi == null) return null;
+        ApplicationInfo appInfo = pi.applicationInfo;
+        appInfo.sourceDir = apkFilePath;
+        appInfo.publicSourceDir = apkFilePath;
+        return getBean(pm, pi);
+    }
+
     private static AppInfo getBean(final PackageManager pm, final PackageInfo pi) {
-        if (pm == null || pi == null) return null;
+        if (pi == null) return null;
         ApplicationInfo ai = pi.applicationInfo;
         String packageName = pi.packageName;
         String name = ai.loadLabel(pm).toString();
@@ -895,178 +950,15 @@ public final class AppUtils {
 
         @Override
         public String toString() {
-            return "pkg name: " + getPackageName() +
-                    "\napp icon: " + getIcon() +
-                    "\napp name: " + getName() +
-                    "\napp path: " + getPackagePath() +
-                    "\napp v name: " + getVersionName() +
-                    "\napp v code: " + getVersionCode() +
-                    "\nis system: " + isSystem();
-        }
-    }
-
-    /**
-     * OnActivityDestroyedListener
-     * */
-    public interface OnActivityDestroyedListener {
-        void onActivityDestroyed(Activity activity);
-    }
-
-    /**
-     * OnAppStatusChangedListener
-     * */
-    public interface OnAppStatusChangedListener {
-        void onForeground();
-        void onBackground();
-    }
-
-    /**
-     * Default ActivityLifecycleCallbacks
-     * */
-    static class ActivityLifecycleImpl implements Application.ActivityLifecycleCallbacks {
-
-        final LinkedList<Activity>                        mActivityList      = new LinkedList<>();
-        final HashMap<Object, OnAppStatusChangedListener> mStatusListenerMap = new HashMap<>();
-
-        private OnActivityDestroyedListener mOnActivityDestroyedListener;
-
-        private int mForegroundCount = 0;
-        private int mConfigCount     = 0;
-
-        OnActivityDestroyedListener getOnActivityDestroyedListener() {
-            return mOnActivityDestroyedListener;
-        }
-
-        void setOnActivityDestroyedListener(OnActivityDestroyedListener onActivityDestroyedListener) {
-            mOnActivityDestroyedListener = onActivityDestroyedListener;
-        }
-
-        void addListener(final Object object, final OnAppStatusChangedListener listener) {
-            mStatusListenerMap.put(object, listener);
-        }
-
-        void removeListener(final Object object) {
-            mStatusListenerMap.remove(object);
-        }
-
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            setTopActivity(activity);
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-            setTopActivity(activity);
-            if (mForegroundCount <= 0) {
-                postStatus(true);
-            }
-            if (mConfigCount < 0) {
-                ++mConfigCount;
-            } else {
-                ++mForegroundCount;
-            }
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-            setTopActivity(activity);
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {/**/}
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-            if (activity.isChangingConfigurations()) {
-                --mConfigCount;
-            } else {
-                --mForegroundCount;
-                if (mForegroundCount <= 0) {
-                    postStatus(false);
-                }
-            }
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {/**/}
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            mActivityList.remove(activity);
-            if (mOnActivityDestroyedListener != null) {
-                mOnActivityDestroyedListener.onActivityDestroyed(activity);
-            }
-        }
-
-        private void postStatus(final boolean isForeground) {
-            if (mStatusListenerMap.isEmpty()) return;
-            for (OnAppStatusChangedListener onAppStatusChangedListener : mStatusListenerMap.values()) {
-                if (onAppStatusChangedListener == null) return;
-                if (isForeground) {
-                    onAppStatusChangedListener.onForeground();
-                } else {
-                    onAppStatusChangedListener.onBackground();
-                }
-            }
-        }
-
-        private void setTopActivity(final Activity activity) {
-            if (PERMISSION_ACTIVITY_CLASS_NAME.equals(activity.getClass().getName())) return;
-            if (mActivityList.contains(activity)) {
-                if (!mActivityList.getLast().equals(activity)) {
-                    mActivityList.remove(activity);
-                    mActivityList.addLast(activity);
-                }
-            } else {
-                mActivityList.addLast(activity);
-            }
-        }
-
-        Activity getTopActivity() {
-            if (!mActivityList.isEmpty()) {
-                final Activity topActivity = mActivityList.getLast();
-                if (topActivity != null) {
-                    return topActivity;
-                }
-            }
-            Activity topActivityByReflect = getTopActivityByReflect();
-            if (topActivityByReflect != null) {
-                setTopActivity(topActivityByReflect);
-            }
-            return topActivityByReflect;
-        }
-
-        private Activity getTopActivityByReflect() {
-            try {
-                @SuppressLint("PrivateApi")
-                Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
-                Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
-                Field activitiesField = activityThreadClass.getDeclaredField("mActivityList");
-                activitiesField.setAccessible(true);
-                Map activities = (Map) activitiesField.get(activityThread);
-                if (activities == null) return null;
-                for (Object activityRecord : activities.values()) {
-                    Class activityRecordClass = activityRecord.getClass();
-                    Field pausedField = activityRecordClass.getDeclaredField("paused");
-                    pausedField.setAccessible(true);
-                    if (!pausedField.getBoolean(activityRecord)) {
-                        Field activityField = activityRecordClass.getDeclaredField("activity");
-                        activityField.setAccessible(true);
-                        return (Activity) activityField.get(activityRecord);
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-            return null;
+            return "{" +
+                    "\n  pkg name: " + getPackageName() +
+                    "\n  app icon: " + getIcon() +
+                    "\n  app name: " + getName() +
+                    "\n  app path: " + getPackagePath() +
+                    "\n  app v name: " + getVersionName() +
+                    "\n  app v code: " + getVersionCode() +
+                    "\n  is system: " + isSystem() +
+                    "}";
         }
     }
 
@@ -1095,7 +987,8 @@ public final class AppUtils {
     private static boolean isDeviceRooted() {
         String su = "su";
         String[] locations = {"/system/bin/", "/system/xbin/", "/sbin/", "/system/sd/xbin/",
-                "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/"};
+                "/system/bin/failsafe/", "/data/local/xbin/", "/data/local/bin/", "/data/local/",
+                "/system/sbin/", "/usr/bin/", "/vendor/bin/"};
         for (String location : locations) {
             if (new File(location + su).exists()) {
                 return true;
@@ -1142,10 +1035,11 @@ public final class AppUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             data = Uri.fromFile(file);
         } else {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             String authority = getFileProvider();
             data = FileProvider.getUriForFile(getApp(), authority, file);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
+        getApp().grantUriPermission(getApp().getPackageName(), data, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setDataAndType(data, type);
         return isNewTask ? intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) : intent;
     }
@@ -1183,7 +1077,7 @@ public final class AppUtils {
                 }
             }
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP) {
             PackageManager pm = getApp().getPackageManager();
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             List<ResolveInfo> list =

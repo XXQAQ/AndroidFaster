@@ -27,6 +27,7 @@ import android.text.Layout.Alignment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
 import android.text.style.BackgroundColorSpan;
@@ -48,6 +49,7 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.text.style.UpdateAppearance;
 import android.util.Log;
+import android.widget.TextView;
 import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -71,6 +73,7 @@ public final class SpanUtils {
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
+    private TextView      mTextView;
     private CharSequence  mText;
     private int           flag;
     private int           foregroundColor;
@@ -126,6 +129,11 @@ public final class SpanUtils {
     private final int mTypeCharSequence = 0;
     private final int mTypeImage        = 1;
     private final int mTypeSpace        = 2;
+
+    private SpanUtils(TextView textView) {
+        this();
+        mTextView = textView;
+    }
 
     public SpanUtils() {
         mBuilder = new SpannableStringBuilder();
@@ -490,6 +498,9 @@ public final class SpanUtils {
      * @return the single {@link SpanUtils} instance
      */
     public SpanUtils setClickSpan(@NonNull final ClickableSpan clickSpan) {
+        if (mTextView != null && mTextView.getMovementMethod() == null) {
+            mTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        }
         this.clickSpan = clickSpan;
         return this;
     }
@@ -502,6 +513,9 @@ public final class SpanUtils {
      * @return the single {@link SpanUtils} instance
      */
     public SpanUtils setUrl(@NonNull final String url) {
+        if (mTextView != null && mTextView.getMovementMethod() == null) {
+            mTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        }
         this.url = url;
         return this;
     }
@@ -761,6 +775,9 @@ public final class SpanUtils {
      */
     public SpannableStringBuilder create() {
         applyLast();
+        if (mTextView != null) {
+            mTextView.setText(mBuilder);
+        }
         return mBuilder;
     }
 
@@ -1385,4 +1402,13 @@ public final class SpanUtils {
             tp.setShadowLayer(radius, dx, dy, shadowColor);
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // static
+    ///////////////////////////////////////////////////////////////////////////
+
+    public static SpanUtils with(final TextView textView) {
+        return new SpanUtils(textView);
+    }
+
 }

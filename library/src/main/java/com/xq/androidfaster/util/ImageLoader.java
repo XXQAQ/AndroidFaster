@@ -1,6 +1,7 @@
 package com.xq.androidfaster.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 public class ImageLoader {
@@ -15,6 +16,10 @@ public class ImageLoader {
         loader.loadImage(context,view,url,placeHolder,objects);
     }
 
+    public static void loadImage(Context context, String url, BitmapTarget target, Object... objects){
+        loader.loadImage(context,url,target,objects);
+    }
+
     public static void setLoader(Loader loader){
         ImageLoader.loader = loader;
     }
@@ -26,6 +31,14 @@ public class ImageLoader {
         }
 
         public abstract void loadImage(Context context, ImageView view, String url, int placeHolder, Object... objects);
+
+        public abstract void loadImage(Context context, String url, BitmapTarget target, Object... objects);
+
+    }
+
+    public static interface BitmapTarget{
+
+        public void onReceiveBitmap(Bitmap bitmap);
 
     }
 

@@ -10,7 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
+import javax.net.ssl.HttpsURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -985,7 +985,7 @@ public final class FileUtils {
         boolean isURL = filePath.matches("[a-zA-z]+://[^\\s]*");
         if (isURL) {
             try {
-                HttpURLConnection conn = (HttpURLConnection) new URL(filePath).openConnection();
+                HttpsURLConnection conn = (HttpsURLConnection) new URL(filePath).openConnection();
                 conn.setRequestProperty("Accept-Encoding", "identity");
                 conn.connect();
                 if (conn.getResponseCode() == 200) {

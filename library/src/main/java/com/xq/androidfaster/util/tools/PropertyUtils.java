@@ -8,6 +8,10 @@ import java.util.List;
 
 public final class PropertyUtils {
 
+    private PropertyUtils() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
     /**
      * 利用反射实现数据擦除
      * @param object

@@ -6,8 +6,9 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -20,15 +21,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public final class ThreadUtils {
 
-    private static final Map<Integer, Map<Integer, ExecutorService>> TYPE_PRIORITY_POOLS =
-            new ConcurrentHashMap<>();
-    private static final Map<Task, ScheduledExecutorService>         TASK_SCHEDULED      =
-            new ConcurrentHashMap<>();
+    private static final HashMap<Integer, Map<Integer, ExecutorService>> TYPE_PRIORITY_POOLS = new HashMap<>();
+    private static final Map<Task, ScheduledExecutorService>             TASK_SCHEDULED      = new HashMap<>();
 
     private static final byte TYPE_SINGLE = -1;
     private static final byte TYPE_CACHED = -2;
     private static final byte TYPE_IO     = -4;
     private static final byte TYPE_CPU    = -8;
+
+    private static Executor sDeliver;
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
 
@@ -55,8 +56,26 @@ public final class ThreadUtils {
      *
      * @param runnable The Runnable
      */
-    public static void runOnUiThread(Runnable runnable){
-        Deliver.post(runnable);
+    public static void runOnUiThread(final Runnable runnable) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run();
+        } else {
+            Utils.UTIL_HANDLER.post(runnable);
+        }
+    }
+
+    /**
+     * Run on the main thread delayed.
+     *
+     * @param runnable The Runnable
+     * @param delayMillis The delay time
+     */
+    static void runOnUiThreadDelayed(final Runnable runnable, long delayMillis) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            runnable.run();
+        } else {
+            Utils.UTIL_HANDLER.postDelayed(runnable, delayMillis);
+        }
     }
 
     /**
@@ -138,7 +157,7 @@ public final class ThreadUtils {
      * @return a IO thread pool
      */
     public static ExecutorService getIoPool() {
-        return getPoolByTypeAndPriority(TYPE_CACHED);
+        return getPoolByTypeAndPriority(TYPE_IO);
     }
 
     /**
@@ -149,7 +168,7 @@ public final class ThreadUtils {
      * @return a IO thread pool
      */
     public static ExecutorService getIoPool(@IntRange(from = 1, to = 10) final int priority) {
-        return getPoolByTypeAndPriority(TYPE_CACHED, priority);
+        return getPoolByTypeAndPriority(TYPE_IO, priority);
     }
 
     /**
@@ -848,6 +867,15 @@ public final class ThreadUtils {
         task.cancel();
     }
 
+    /**
+     * Set the deliver.
+     *
+     * @param deliver The deliver.
+     */
+    public static void setDeliver(final Executor deliver) {
+        sDeliver = deliver;
+    }
+
     private static <T> void execute(final ExecutorService pool, final Task<T> task) {
         executeWithDelay(pool, task, 0, TimeUnit.MILLISECONDS);
     }
@@ -887,7 +915,7 @@ public final class ThreadUtils {
         }, initialDelay, period, unit);
     }
 
-    private static ScheduledExecutorService getScheduledByTask(final Task task) {
+    private synchronized static ScheduledExecutorService getScheduledByTask(final Task task) {
         ScheduledExecutorService scheduled = TASK_SCHEDULED.get(task);
         if (scheduled == null) {
             UtilsThreadFactory factory = new UtilsThreadFactory("scheduled", Thread.MAX_PRIORITY);
@@ -897,7 +925,7 @@ public final class ThreadUtils {
         return scheduled;
     }
 
-    private static void removeScheduleByTask(final Task task) {
+    private synchronized static void removeScheduleByTask(final Task task) {
         ScheduledExecutorService scheduled = TASK_SCHEDULED.get(task);
         if (scheduled != null) {
             TASK_SCHEDULED.remove(task);
@@ -909,11 +937,11 @@ public final class ThreadUtils {
         return getPoolByTypeAndPriority(type, Thread.NORM_PRIORITY);
     }
 
-    private static ExecutorService getPoolByTypeAndPriority(final int type, final int priority) {
+    private synchronized static ExecutorService getPoolByTypeAndPriority(final int type, final int priority) {
         ExecutorService pool;
         Map<Integer, ExecutorService> priorityPools = TYPE_PRIORITY_POOLS.get(type);
         if (priorityPools == null) {
-            priorityPools = new ConcurrentHashMap<>();
+            priorityPools = new HashMap<>();
             pool = createPoolByTypeAndPriority(type, priority);
             priorityPools.put(priority, pool);
             TYPE_PRIORITY_POOLS.put(type, priorityPools);
@@ -959,6 +987,20 @@ public final class ThreadUtils {
         }
     }
 
+    private static Executor getDeliver() {
+        if (sDeliver == null) {
+            sDeliver = new Executor() {
+                private final Handler mHandler = new Handler(Looper.getMainLooper());
+
+                @Override
+                public void execute(@NonNull Runnable command) {
+                    mHandler.post(command);
+                }
+            };
+        }
+        return sDeliver;
+    }
+
     public abstract static class SimpleTask<T> extends Task<T> {
 
         @Override
@@ -975,17 +1017,13 @@ public final class ThreadUtils {
 
     public abstract static class Task<T> implements Runnable {
 
-        private boolean isSchedule;
-
-        private volatile     int state;
         private static final int NEW         = 0;
         private static final int COMPLETING  = 1;
         private static final int CANCELLED   = 2;
         private static final int EXCEPTIONAL = 3;
 
-        public Task() {
-            state = NEW;
-        }
+        private volatile int     state = NEW;
+        private          boolean isSchedule;
 
         @Nullable
         public abstract T doInBackground() throws Throwable;
@@ -996,15 +1034,15 @@ public final class ThreadUtils {
 
         public abstract void onFail(Throwable t);
 
-
         @Override
         public void run() {
             try {
                 final T result = doInBackground();
+
                 if (state != NEW) return;
 
                 if (isSchedule) {
-                    Deliver.post(new Runnable() {
+                    getDeliver().execute(new Runnable() {
                         @Override
                         public void run() {
                             onSuccess(result);
@@ -1012,7 +1050,7 @@ public final class ThreadUtils {
                     });
                 } else {
                     state = COMPLETING;
-                    Deliver.post(new Runnable() {
+                    getDeliver().execute(new Runnable() {
                         @Override
                         public void run() {
                             onSuccess(result);
@@ -1024,7 +1062,7 @@ public final class ThreadUtils {
                 if (state != NEW) return;
 
                 state = EXCEPTIONAL;
-                Deliver.post(new Runnable() {
+                getDeliver().execute(new Runnable() {
                     @Override
                     public void run() {
                         onFail(throwable);
@@ -1038,7 +1076,7 @@ public final class ThreadUtils {
             if (state != NEW) return;
 
             state = CANCELLED;
-            Deliver.post(new Runnable() {
+            getDeliver().execute(new Runnable() {
                 @Override
                 public void run() {
                     onCancel();
@@ -1046,26 +1084,33 @@ public final class ThreadUtils {
                 }
             });
         }
+
+        public boolean isCanceled() {
+            return state == CANCELLED;
+        }
+
+        public boolean isDone() {
+            return state != NEW;
+        }
     }
 
     private static final class UtilsThreadFactory extends AtomicLong
             implements ThreadFactory {
-        private static final AtomicInteger POOL_NUMBER = new AtomicInteger(1);
-        private final        ThreadGroup   group;
+        private static final AtomicInteger POOL_NUMBER      = new AtomicInteger(1);
+        private static final long          serialVersionUID = -9209200509960368598L;
         private final        String        namePrefix;
         private final        int           priority;
 
         UtilsThreadFactory(String prefix, int priority) {
-            SecurityManager s = System.getSecurityManager();
-            group = s != null ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
             namePrefix = prefix + "-pool-" +
                     POOL_NUMBER.getAndIncrement() +
                     "-thread-";
             this.priority = priority;
         }
 
+        @Override
         public Thread newThread(@NonNull Runnable r) {
-            Thread t = new Thread(group, r, namePrefix + getAndIncrement(), 0) {
+            Thread t = new Thread(r, namePrefix + getAndIncrement()) {
                 @Override
                 public void run() {
                     try {
@@ -1083,30 +1128,4 @@ public final class ThreadUtils {
         }
     }
 
-    private static class Deliver {
-
-        private static final Handler MAIN_HANDLER;
-
-        static {
-            Looper looper;
-            try {
-                looper = Looper.getMainLooper();
-            } catch (Exception e) {
-                looper = null;
-            }
-            if (looper != null) {
-                MAIN_HANDLER = new Handler(looper);
-            } else {
-                MAIN_HANDLER = null;
-            }
-        }
-
-        static void post(final Runnable runnable) {
-            if (MAIN_HANDLER != null) {
-                MAIN_HANDLER.post(runnable);
-            } else {
-                runnable.run();
-            }
-        }
-    }
 }
