@@ -155,6 +155,22 @@ public final class BarUtils {
     }
 
     /**
+     * Add the top padding size equals status bar's height for view.
+     *
+     * @param view The view.
+     */
+    public static void addPaddingTopEqualStatusBarHeight(@NonNull View view) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return;
+        Object haveSetOffset = view.getTag(KEY_OFFSET);
+        if (haveSetOffset != null && (Boolean) haveSetOffset) return;
+        ViewGroup.LayoutParams lp = view.getLayoutParams();
+        lp.height += getStatusBarHeight();
+        view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + getStatusBarHeight(),
+                view.getPaddingRight(), view.getPaddingBottom());
+        view.setTag(KEY_OFFSET, true);
+    }
+
+    /**
      * Add the top margin size equals status bar's height for view.
      *
      * @param view The view.
