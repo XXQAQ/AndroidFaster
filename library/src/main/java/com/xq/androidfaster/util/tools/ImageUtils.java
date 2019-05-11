@@ -1,6 +1,5 @@
 package com.xq.androidfaster.util.tools;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -28,12 +27,10 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -269,44 +266,6 @@ public final class ImageUtils {
         options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(data, offset, data.length, options);
-    }
-
-    /**
-     * Return bitmap.
-     *
-     * @param resId The resource id.
-     * @return bitmap
-     */
-    public static Bitmap getBitmap(@DrawableRes final int resId) {
-        Drawable drawable = ContextCompat.getDrawable(getApp(), resId);
-        Canvas canvas = new Canvas();
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    /**
-     * Return bitmap.
-     *
-     * @param resId     The resource id.
-     * @param maxWidth  The maximum width.
-     * @param maxHeight The maximum height.
-     * @return bitmap
-     */
-    public static Bitmap getBitmap(@DrawableRes final int resId,
-                                   final int maxWidth,
-                                   final int maxHeight) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        final Resources resources = getApp().getResources();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(resources, resId, options);
-        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(resources, resId, options);
     }
 
     /**

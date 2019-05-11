@@ -1,6 +1,19 @@
 package com.xq.androidfaster.util.tools;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.ArrayRes;
+import android.support.annotation.BoolRes;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.FractionRes;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.RawRes;
+import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -25,14 +38,184 @@ public final class ResourceUtils {
     }
 
     /**
-     * Return the drawable identifier by name.
+     * Return boolean.
      *
-     * @param name The name of drawable.
-     * @return the drawable identifier by name
+     * @param id The resource id.
+     * @return boolean
      */
+    public static boolean getBoolean(@BoolRes int id) {
+        return getApp().getResources().getBoolean(id);
+    }
+
+    /**
+     * Return Fractio.
+     *
+     * @param id The resource id.
+     * @return Fractio
+     */
+    public static float getFraction(@FractionRes int id) {
+        return getApp().getResources().getFraction(id,1,1);
+    }
+
+    /**
+     * Return Integer.
+     *
+     * @param id The resource id.
+     * @return Integer
+     */
+    public static int getInteger(@IntegerRes int id) {
+        return getApp().getResources().getInteger(id);
+    }
+
+    /**
+     * Return IntArray.
+     *
+     * @param id The resource id.
+     * @return IntArray
+     */
+    public static int[] getIntArray(@ArrayRes int id) {
+        return getApp().getResources().getIntArray(id);
+    }
+
+    /**
+     * Return Dimension.
+     *
+     * @param id The resource id.
+     * @return Dimension
+     */
+    public static float getDimension(@DimenRes int id) {
+        return getApp().getResources().getDimension(id);
+    }
+
+    /**
+     * Return Color.
+     *
+     * @param id The resource id.
+     * @return Color
+     */
+    public static int getColor(@ColorRes int id) {
+        return ContextCompat.getColor(getApp(), id);
+    }
+
+    /**
+     * Return String.
+     *
+     * @param id The resource id.
+     * @return String
+     */
+    public static String getString(@StringRes int id) {
+        try {
+            return getApp().getResources().getString(id);
+        } catch (Resources.NotFoundException ignore) {
+            return "";
+        }
+    }
+
+    /**
+     * Return String.
+     *
+     * @param id The resource id.
+     * @param formatArgs The format.
+     * @return String
+     */
+    public static String getString(@StringRes int id, Object... formatArgs) {
+        try {
+            return getApp().getString(id, formatArgs);
+        } catch (Resources.NotFoundException ignore) {
+            return "";
+        }
+    }
+
+    /**
+     * Return StringArray.
+     *
+     * @param id The resource id.
+     * @return StringArray
+     */
+    public static String[] getStringArray(@ArrayRes int id) {
+        try {
+            return getApp().getResources().getStringArray(id);
+        } catch (Resources.NotFoundException ignore) {
+            return new String[0];
+        }
+    }
+
+    /**
+     * Return Drawable.
+     *
+     * @param resId The resource id.
+     * @return Drawable
+     */
+    public static Drawable getDrawable(@DrawableRes final int resId) {
+        return ContextCompat.getDrawable(getApp(), resId);
+    }
+
+    /**
+     * Return Bitmap.
+     *
+     * @param resId The resource id.
+     * @return Bitmap
+     */
+    public static Bitmap getBitmap(@DrawableRes final int resId) {
+        Drawable drawable = ContextCompat.getDrawable(getApp(), resId);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    /**
+     * 以下均为通过资源name获取资源id的方法
+     *
+     */
+    public static int getIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "id", getApp().getPackageName());
+    }
+
+    public static int getStringIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "string", getApp().getPackageName());
+    }
+
+    public static int getColorIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "color", getApp().getPackageName());
+    }
+
+    public static int getDimenIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "dimen", getApp().getPackageName());
+    }
+
     public static int getDrawableIdByName(String name) {
         return getApp().getResources().getIdentifier(name, "drawable", getApp().getPackageName());
     }
+
+    public static int getMipmapIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "mipmap", getApp().getPackageName());
+    }
+
+    public static int getLayoutIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "layout", getApp().getPackageName());
+    }
+
+    public static int getStyleIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "style", getApp().getPackageName());
+    }
+
+    public static int getAnimIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "anim", getApp().getPackageName());
+    }
+
+    public static int getAnimatorIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "animator", getApp().getPackageName());
+    }
+
+    public static int getMenuIdByName(String name) {
+        return getApp().getResources().getIdentifier(name, "menu", getApp().getPackageName());
+    }
+
 
     /**
      * Copy the file from assets.

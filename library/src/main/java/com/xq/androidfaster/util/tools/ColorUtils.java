@@ -2,27 +2,14 @@ package com.xq.androidfaster.util.tools;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import static com.xq.androidfaster.AndroidFaster.getApp;
 
 public final class ColorUtils {
 
     private ColorUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
-    }
-
-    /**
-     * Returns a color associated with a particular resource ID.
-     *
-     * @param id The desired resource identifier.
-     * @return a color associated with a particular resource ID
-     */
-    public static int getColor(@ColorRes int id) {
-        return ContextCompat.getColor(getApp(), id);
     }
 
     /**

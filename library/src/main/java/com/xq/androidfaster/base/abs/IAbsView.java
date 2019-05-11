@@ -18,6 +18,9 @@ public interface IAbsView<T extends IAbsPresenter> extends IAbsCommon {
     //获取根布局View
     public View getRootView();
 
+    //根布局截图
+    public Bitmap getRootViewBitmap();
+
     //获取Window
     public Window getWindow();
 
@@ -32,9 +35,6 @@ public interface IAbsView<T extends IAbsPresenter> extends IAbsCommon {
 
     //获取布局构造器
     public LayoutInflater getLayoutInflater();
-
-    //根布局截图
-    public Bitmap getRootViewBitmap();
 
     //findViewById
     public View findViewById(int id);

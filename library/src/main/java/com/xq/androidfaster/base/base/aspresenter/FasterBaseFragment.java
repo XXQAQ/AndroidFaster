@@ -1,20 +1,19 @@
-package com.xq.androidfaster.base.base;
+package com.xq.androidfaster.base.base.aspresenter;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.SparseArray;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.xq.androidfaster.base.abs.AbsPresenterDelegate;
+import com.xq.androidfaster.base.base.IFasterBasePresenter;
+import com.xq.androidfaster.base.base.IFasterBaseView;
 import com.xq.androidfaster.base.life.PresenterLife;
 import com.xq.androidfaster.util.callback.ActivityResultCallback;
 import java.util.LinkedList;
@@ -144,16 +143,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         for (PresenterLife life: list_delegate)  life.onActivityResult(requestCode,resultCode,data);
     }
 
-    @Override
-    public void startActivity(Class mClass) {
-        startActivity(new Intent(getContext(),mClass));
-    }
-
-    //为了与Activity保持同步创建此方法
-    public void startActivities(Intent[] intents) {
-        getContext().startActivities(intents);
-    }
-
     //封装startActivityForResult为回调的形式
     private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
     public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
@@ -178,6 +167,16 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void startActivity(Class mClass) {
+        startActivity(new Intent(getContext(),mClass));
+    }
+
+    //为了与Activity保持同步创建此方法
+    public void startActivities(Intent[] intents) {
+        getContext().startActivities(intents);
     }
 
     @Override
@@ -217,17 +216,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     @Override
     public void back() {
-        new Thread(){
-            public void run() {
-                try{
-                    Instrumentation inst = new Instrumentation();
-                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-                }
-                catch (Exception e) {
-                    Log.e("Exception when onBack", e.toString());
-                }
-            }
-        }.start();
+        ((Activity)getContext()).onBackPressed();
     }
 
     @Override

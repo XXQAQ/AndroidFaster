@@ -1,11 +1,6 @@
 package com.xq.androidfaster.util.tools;
 
 
-import android.content.res.Resources;
-import android.support.annotation.ArrayRes;
-import android.support.annotation.StringRes;
-import static com.xq.androidfaster.AndroidFaster.getApp;
-
 public final class StringUtils {
 
     private StringUtils() {
@@ -189,46 +184,4 @@ public final class StringUtils {
         return new String(chars);
     }
 
-    /**
-     * Return the string value associated with a particular resource ID.
-     *
-     * @param id The desired resource identifier.
-     * @return the string value associated with a particular resource ID.
-     */
-    public static String getString(@StringRes int id) {
-        try {
-            return getApp().getResources().getString(id);
-        } catch (Resources.NotFoundException ignore) {
-            return "";
-        }
-    }
-
-    /**
-     * Return the string value associated with a particular resource ID.
-     *
-     * @param id         The desired resource identifier.
-     * @param formatArgs The format arguments that will be used for substitution.
-     * @return the string value associated with a particular resource ID.
-     */
-    public static String getString(@StringRes int id, Object... formatArgs) {
-        try {
-            return getApp().getString(id, formatArgs);
-        } catch (Resources.NotFoundException ignore) {
-            return "";
-        }
-    }
-
-    /**
-     * Return the string array associated with a particular resource ID.
-     *
-     * @param id The desired resource identifier.
-     * @return The string array associated with the resource.
-     */
-    public static String[] getStringArray(@ArrayRes int id) {
-        try {
-            return getApp().getResources().getStringArray(id);
-        } catch (Resources.NotFoundException ignore) {
-            return new String[0];
-        }
-    }
 }

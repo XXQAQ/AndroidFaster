@@ -86,4 +86,8 @@ public abstract class AbsPresenterDelegate<T extends IAbsView> implements IAbsPr
         return presenter.getString(id);
     }
 
+    @Override
+    public void startActivity(Class mClass) {
+        presenter.startActivity(mClass);
+    }
 }

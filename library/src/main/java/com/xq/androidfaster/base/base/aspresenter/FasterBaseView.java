@@ -1,4 +1,4 @@
-package com.xq.androidfaster.base.base;
+package com.xq.androidfaster.base.base.aspresenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import com.xq.androidfaster.base.abs.AbsViewDelegate;
+import com.xq.androidfaster.base.base.IFasterBasePresenter;
+import com.xq.androidfaster.base.base.IFasterBaseView;
+import com.xq.androidfaster.base.base.TopContainer;
 import com.xq.androidfaster.base.life.ViewLife;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ImageUtils;

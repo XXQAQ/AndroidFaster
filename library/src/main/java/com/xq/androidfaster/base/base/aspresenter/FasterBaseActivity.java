@@ -1,8 +1,7 @@
-package com.xq.androidfaster.base.base;
+package com.xq.androidfaster.base.base.aspresenter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -11,10 +10,10 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.SparseArray;
-import android.view.KeyEvent;
 import com.xq.androidfaster.base.abs.AbsPresenterDelegate;
+import com.xq.androidfaster.base.base.IFasterBasePresenter;
+import com.xq.androidfaster.base.base.IFasterBaseView;
 import com.xq.androidfaster.base.life.PresenterLife;
 import com.xq.androidfaster.util.callback.ActivityResultCallback;
 import com.xq.androidfaster.util.tools.FragmentUtils;
@@ -123,11 +122,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         for (PresenterLife life: list_delegate)  life.onActivityResult(requestCode,resultCode,data);
     }
 
-    @Override
-    public void startActivity(Class mClass) {
-        startActivity(new Intent(getContext(),mClass));
-    }
-
     //封装startActivityForResult成回调的形式
     private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
     public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
@@ -154,6 +148,11 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void startActivity(Class mClass) {
+        startActivity(new Intent(getContext(),mClass));
     }
 
     @Override
@@ -191,8 +190,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     public void onBackPressed() {
         if (!FragmentUtils.dispatchBackPress(getSupportFragmentManager()))
         {
-            if (!onBackClick())
-                super.onBackPressed();
+            if (!onBackClick()) super.onBackPressed();
         }
     }
 
@@ -203,17 +201,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public void back() {
-        new Thread(){
-            public void run() {
-                try{
-                    Instrumentation inst = new Instrumentation();
-                    inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-                }
-                catch (Exception e) {
-                    Log.e("Exception when onBack", e.toString());
-                }
-            }
-        }.start();
+        onBackPressed();
     }
 
     @Override
