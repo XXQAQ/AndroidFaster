@@ -40,6 +40,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
     }
 
+    View rootView;
     @Deprecated
     @Nullable
     @Override
@@ -47,7 +48,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
         if (getBindView() == null) return super.onCreateView(inflater,container,savedInstanceState);
 
-        View rootView = inflater.inflate(getBindView().getLayoutId(),container,false);
+        rootView = inflater.inflate(getBindView().getLayoutId(),container,false);
 
         Bundle bundle = getArguments();
         if (bundle != null)
