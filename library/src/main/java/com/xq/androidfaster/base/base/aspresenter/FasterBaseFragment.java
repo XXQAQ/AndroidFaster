@@ -49,23 +49,17 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
 
         View rootView = inflater.inflate(getBindView().getLayoutId(),container,false);
 
-        return rootView;
-    }
-
-    @Deprecated
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initData();
-
         Bundle bundle = getArguments();
         if (bundle != null)
             resolveBundle(bundle);
         else
             resolveBundle(new Bundle());
 
+        initData();
+
         afterOnCreate(savedInstanceState);
+
+        return rootView;
     }
 
     @Deprecated

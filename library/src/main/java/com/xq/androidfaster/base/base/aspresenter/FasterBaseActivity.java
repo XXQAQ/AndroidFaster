@@ -48,13 +48,13 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         if (getBindView() != null) setContentView(getBindView().getLayoutId());
 
-        initData();
-
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null)
             resolveBundle(intent.getExtras());
         else
             resolveBundle(new Bundle());
+
+        initData();
 
         afterOnCreate(savedInstanceState);
     }
