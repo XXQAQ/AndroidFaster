@@ -98,6 +98,9 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        //处理Fragment保存状态
+        if (!getBindView().isSaveFragmentState()) outState.putParcelable("android:support:fragments", null);
+
         if (getBindView() != null) getBindView().onSaveInstanceState(outState);
     }
 

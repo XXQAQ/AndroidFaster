@@ -174,6 +174,11 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
+    public boolean isSaveFragmentState() {
+        return false;
+    }
+
+    @Override
     public void initFragment(Fragment fragment) {
 
     }

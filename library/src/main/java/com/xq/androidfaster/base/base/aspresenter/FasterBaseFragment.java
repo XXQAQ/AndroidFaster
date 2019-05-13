@@ -114,6 +114,10 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+//    TODO:以下方法在Fragments宿主环境下不起作用，待后期维护
+//        处理Fragment保存状态
+//        if (!getBindView().isSaveFragmentState()) outState.putParcelable("android:support:fragments", null);
+
         if (getBindView() != null) getBindView().onSaveInstanceState(outState);
     }
 
