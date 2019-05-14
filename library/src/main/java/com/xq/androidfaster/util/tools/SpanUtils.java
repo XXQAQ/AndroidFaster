@@ -51,6 +51,7 @@ import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.widget.TextView;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
@@ -136,7 +137,7 @@ public final class SpanUtils {
     }
 
     public SpanUtils() {
-        mBuilder = new SpannableStringBuilder();
+        mBuilder = new CustomSpannableStringBuilder();
         mText = "";
         mType = -1;
         setDefault();
@@ -1409,6 +1410,10 @@ public final class SpanUtils {
 
     public static SpanUtils with(final TextView textView) {
         return new SpanUtils(textView);
+    }
+
+    public static class CustomSpannableStringBuilder extends SpannableStringBuilder implements Serializable {
+
     }
 
 }
