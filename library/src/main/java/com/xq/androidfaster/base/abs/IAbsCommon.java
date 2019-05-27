@@ -15,9 +15,6 @@ public interface IAbsCommon {
     //如果当前P/V层服务于Activity，则返回对应Activity，否则返回null
     public Activity getAreActivity();
 
-    //结束自身，如果是Activity则等同于调用finish,如果是Fragment则移除Fragment自身而不会关闭Activity
-    public void finishSelf();
-
     //关闭当前页面
     public void finish();
 

@@ -27,12 +27,22 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
 
     }
 
     @Override
     public void onPause() {
+
+    }
+
+    @Override
+    public void onStop() {
 
     }
 
@@ -74,11 +84,6 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
     @Override
     public Activity getAreActivity() {
         return view.getAreActivity();
-    }
-
-    @Override
-    public void finishSelf() {
-        view.finishSelf();
     }
 
     @Override

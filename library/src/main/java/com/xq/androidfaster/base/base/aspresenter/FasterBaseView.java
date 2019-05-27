@@ -54,6 +54,11 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
+    public void onStart() {
+        for (ViewLife life : list_delegate)     life.onStart();
+    }
+
+    @Override
     public void onResume() {
         for (ViewLife life : list_delegate)     life.onResume();
     }
@@ -61,6 +66,11 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public void onPause() {
         for (ViewLife life : list_delegate)     life.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        for (ViewLife life : list_delegate)     life.onStop();
     }
 
     @Override
@@ -111,11 +121,6 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public Activity getAreActivity() {
         return getBindPresenter().getAreActivity();
-    }
-
-    @Override
-    public void finishSelf() {
-        getBindPresenter().finishSelf();
     }
 
     @Override

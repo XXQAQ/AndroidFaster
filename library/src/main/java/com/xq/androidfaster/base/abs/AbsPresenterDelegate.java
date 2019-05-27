@@ -22,12 +22,22 @@ public abstract class AbsPresenterDelegate<T extends IAbsView> implements IAbsPr
     }
 
     @Override
+    public void onStart() {
+
+    }
+
+    @Override
     public void onResume() {
 
     }
 
     @Override
     public void onPause() {
+
+    }
+
+    @Override
+    public void onStop() {
 
     }
 
@@ -64,11 +74,6 @@ public abstract class AbsPresenterDelegate<T extends IAbsView> implements IAbsPr
     @Override
     public Activity getAreActivity() {
         return presenter.getAreActivity();
-    }
-
-    @Override
-    public void finishSelf() {
-        presenter.finishSelf();
     }
 
     @Override

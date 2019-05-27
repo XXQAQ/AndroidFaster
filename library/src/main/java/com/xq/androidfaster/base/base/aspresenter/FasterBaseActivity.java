@@ -68,6 +68,15 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        if (getBindView() != null)  getBindView().onStart();
+
+        for (PresenterLife life: list_delegate)  life.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -83,6 +92,15 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         if (getBindView() != null) getBindView().onPause();
 
         for (PresenterLife life: list_delegate)  life.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (getBindView() != null) getBindView().onStop();
+
+        for (PresenterLife life: list_delegate)  life.onStop();
     }
 
     @Override
@@ -176,11 +194,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     @Override
     public Activity getAreActivity() {
         return this;
-    }
-
-    @Override
-    public void finishSelf() {
-        finish();
     }
 
     @Override

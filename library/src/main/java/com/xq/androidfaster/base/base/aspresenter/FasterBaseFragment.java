@@ -89,6 +89,15 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        if (getBindView() != null)  getBindView().onStart();
+
+        for (PresenterLife life: list_delegate)  life.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -104,6 +113,15 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         if (getBindView() != null) getBindView().onPause();
 
         for (PresenterLife life: list_delegate)  life.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (getBindView() != null) getBindView().onStop();
+
+        for (PresenterLife life: list_delegate)  life.onStop();
     }
 
     @Override
@@ -201,11 +219,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     @Override
     public Activity getAreActivity() {
         return null;
-    }
-
-    @Override
-    public void finishSelf() {
-        getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
     }
 
     @Override
