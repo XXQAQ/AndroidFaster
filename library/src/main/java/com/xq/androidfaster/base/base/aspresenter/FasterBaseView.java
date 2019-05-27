@@ -45,10 +45,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         }
         else    if (getBindPresenter().getAreFragment() != null)
         {
-            if (getBindPresenter().getAreFragment() instanceof FasterBaseFragment)
-                rootView = ((FasterBaseFragment)getBindPresenter().getAreFragment()).rootView;
-            else
-                rootView = getBindPresenter().getAreFragment().getView();
+            rootView = getBindPresenter().getAreFragment().getView();
         }
 
         autoFindView();
