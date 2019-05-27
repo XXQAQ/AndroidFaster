@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import static com.xq.androidfaster.AndroidFaster.getApp;
+import static com.xq.androidfaster.util.tools.PathUtils.getInternalAppDataPath;
 
 public final class CacheDiskUtils implements CacheConstants {
 
@@ -97,7 +98,7 @@ public final class CacheDiskUtils implements CacheConstants {
      */
     public static CacheDiskUtils getInstance(String cacheName, final long maxSize, final int maxCount) {
         if (isSpace(cacheName)) cacheName = "cacheUtils";
-        File file = new File(getApp().getCacheDir(), cacheName);
+        File file = new File(getInternalAppDataPath(), cacheName);
         return getInstance(file, maxSize, maxCount);
     }
 
