@@ -131,13 +131,4 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
         return view.findViewById(id);
     }
 
-    @Override
-    public String getString(int id) {
-        return view.getString(id);
-    }
-
-    @Override
-    public boolean isSaveFragmentState() {
-        return view.isSaveFragmentState();
-    }
 }

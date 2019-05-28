@@ -39,7 +39,4 @@ public interface IAbsView<T extends IAbsPresenter> extends IAbsCommon {
     //findViewById
     public View findViewById(int id);
 
-    //当父Activity|Fragment销毁后是否保存子Fragmnet的状态
-    public boolean isSaveFragmentState();
-
 }

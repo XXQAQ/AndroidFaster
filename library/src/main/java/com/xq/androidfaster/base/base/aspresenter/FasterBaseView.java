@@ -39,6 +39,8 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     @Override
     public void afterOnCreate(Bundle savedInstanceState) {
 
+        if (savedInstanceState != null) hasRestoreState = true;
+
         if (getBindPresenter().getAreActivity() != null)
         {
             rootView = getBindPresenter().getAreActivity().getWindow().getDecorView().findViewById(android.R.id.content);
@@ -133,11 +135,6 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         getBindPresenter().back();
     }
 
-    @Override
-    public String getString(int id) {
-        return getContext().getResources().getString(id);
-    }
-
     public Window getWindow() {
         return ((Activity)getContext()).getWindow();
     }
@@ -175,9 +172,10 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         return getRootView().findViewById(id);
     }
 
+    private boolean hasRestoreState = false;
     @Override
-    public boolean isSaveFragmentState() {
-        return false;
+    public boolean hasRestoreState() {
+        return hasRestoreState;
     }
 
     @Override
@@ -187,7 +185,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
 
 
-    //以下为Fragment快捷管理
+    //以下为Fragment快捷管理方法
     //返回值决定下面所有的方法管理哪个FragmentManager,默认管理自己的子集
     protected FragmentManager whichFragmentManager(){
         return getCPFragmentManager();
@@ -198,7 +196,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
         whichFragmentManager().beginTransaction().add(fragment,fragment.getClass().getName()).commitAllowingStateLoss();
     }
     protected void addFragment(Fragment fragment,int containerId){
-        addFragment(fragment,containerId,false);
+        FragmentUtils.add(whichFragmentManager(),fragment,containerId);
     }
     protected void addFragment(Fragment fragment,int containerId,boolean isHide){
         FragmentUtils.add(whichFragmentManager(),fragment,containerId,isHide);

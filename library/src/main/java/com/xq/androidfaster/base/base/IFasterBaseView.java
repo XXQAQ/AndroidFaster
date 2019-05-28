@@ -14,6 +14,9 @@ public interface IFasterBaseView<T extends IFasterBasePresenter> extends IAbsVie
     //返回布局ID
     public int getLayoutId();
 
+    //在当前页面是否重建并保存
+    public boolean hasRestoreState();
+
     //为P层提供快速初始化Fragment的方法(可以传入多种Fragment,并在实现类判断具体的Fragment类型)
     public void initFragment(Fragment fragment);
 
