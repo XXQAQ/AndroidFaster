@@ -20,7 +20,7 @@ public class AndroidFaster {
     }
 
     public static Application getApp() {
-        if (app == null) return getApplicationByReflect();
+        if (app == null) app = getApplicationByReflect();
         return app;
     }
 

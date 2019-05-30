@@ -22,8 +22,6 @@ import java.util.List;
 
 public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppCompatActivity implements IFasterBasePresenter<T> {
 
-    protected Context context = this;
-
     protected T view = createBindView();
 
     private List<AbsPresenterDelegate> list_delegate = new LinkedList<>();
@@ -68,15 +66,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        if (getBindView() != null)  getBindView().onStart();
-
-        for (PresenterLife life: list_delegate)  life.onStart();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
 
@@ -92,15 +81,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         if (getBindView() != null) getBindView().onPause();
 
         for (PresenterLife life: list_delegate)  life.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        if (getBindView() != null) getBindView().onStop();
-
-        for (PresenterLife life: list_delegate)  life.onStop();
     }
 
     @Override
@@ -180,7 +160,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Override
     public Context getContext() {
-        return context;
+        return this;
     }
 
     @Override

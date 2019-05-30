@@ -21,7 +21,7 @@ import java.util.List;
 
 public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Fragment implements IFasterBasePresenter<T> {
 
-    protected Context context;
+    private Context context;
 
     protected T view = createBindView();
 
@@ -89,15 +89,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        if (getBindView() != null)  getBindView().onStart();
-
-        for (PresenterLife life: list_delegate)  life.onStart();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
 
@@ -113,15 +104,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
         if (getBindView() != null) getBindView().onPause();
 
         for (PresenterLife life: list_delegate)  life.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        if (getBindView() != null) getBindView().onStop();
-
-        for (PresenterLife life: list_delegate)  life.onStop();
     }
 
     @Override
