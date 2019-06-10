@@ -15,7 +15,7 @@ import com.xq.androidfaster.base.abs.AbsPresenterDelegate;
 import com.xq.androidfaster.base.base.IFasterBasePresenter;
 import com.xq.androidfaster.base.base.IFasterBaseView;
 import com.xq.androidfaster.base.life.PresenterLife;
-import com.xq.androidfaster.util.callback.ActivityResultCallback;
+import com.xq.androidfaster.base.base.ActivityResultCallback;
 import java.util.LinkedList;
 import java.util.List;
 

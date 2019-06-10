@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import com.xq.androidfaster.util.JsonConverter;
-import com.xq.androidfaster.util.callback.httpcallback.FasterHttpCallback;
+import com.xq.androidfaster.util.FasterHttpCallback;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
