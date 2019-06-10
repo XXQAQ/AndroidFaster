@@ -16,8 +16,8 @@ public class EventManager {
         manager.send(message,objects);
     }
 
-    public static void cancle(Object message,Object... objects) {
-        manager.cancle(message,objects);
+    public static void cancel(Object message,Object... objects) {
+        manager.cancel(message,objects);
     }
 
     public static void setManager(Manager manager){
@@ -32,7 +32,7 @@ public class EventManager {
 
         public abstract void send(Object message,Object... objects);
 
-        public abstract void cancle(Object message,Object... objects);
+        public abstract void cancel(Object message,Object... objects);
 
     }
 
