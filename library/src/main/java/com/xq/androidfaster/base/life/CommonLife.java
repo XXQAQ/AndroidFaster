@@ -4,12 +4,12 @@ import android.os.Bundle;
 
 public interface CommonLife {
 
-    public void afterOnCreate(Bundle savedInstanceState);
+    public void create(Bundle savedInstanceState);
 
-    public void onResume();
+    public void visible();
 
-    public void onPause();
+    public void invisible();
 
-    public void onDestroy();
+    public void destroy();
 
 }

@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.xq.androidfaster.base.life.PresenterLife;
 
-public abstract class AbsPresenterDelegate<T extends IAbsView> implements IAbsPresenter<T>,PresenterLife {
+public class AbsPresenterDelegate<T extends IAbsView> implements IAbsPresenter<T>,PresenterLife {
 
-    protected IAbsPresenter<T> presenter;
+    private IAbsPresenter<T> presenter;
 
     public AbsPresenterDelegate(IAbsPresenter presenter) {
         this.presenter = presenter;
@@ -17,22 +17,22 @@ public abstract class AbsPresenterDelegate<T extends IAbsView> implements IAbsPr
     }
 
     @Override
-    public void afterOnCreate(Bundle savedInstanceState) {
+    public void create(Bundle savedInstanceState) {
 
     }
 
     @Override
-    public void onResume() {
+    public void visible() {
 
     }
 
     @Override
-    public void onPause() {
+    public void invisible() {
 
     }
 
     @Override
-    public void onDestroy() {
+    public void destroy() {
 
     }
 
@@ -43,41 +43,41 @@ public abstract class AbsPresenterDelegate<T extends IAbsView> implements IAbsPr
 
     @Override
     public T getBindView() {
-        return presenter.getBindView();
+        return getBeDelegatedPresenter().getBindView();
     }
 
     @Override
     public Context getContext() {
-        return presenter.getContext();
+        return getBeDelegatedPresenter().getContext();
     }
 
     @Override
     public void inject(AbsPresenterDelegate delegate) {
-        presenter.inject(delegate);
+        getBeDelegatedPresenter().inject(delegate);
     }
 
     @Override
     public Fragment getAreFragment() {
-        return presenter.getAreFragment();
+        return getBeDelegatedPresenter().getAreFragment();
     }
 
     @Override
     public Activity getAreActivity() {
-        return presenter.getAreActivity();
+        return getBeDelegatedPresenter().getAreActivity();
     }
 
     @Override
-    public void finish() {
-        presenter.finish();
+    public boolean isFirstVisible() {
+        return getBeDelegatedPresenter().isFirstVisible();
     }
 
     @Override
-    public void back() {
-        presenter.back();
+    public boolean isRestoreState() {
+        return getBeDelegatedPresenter().isRestoreState();
     }
 
-    @Override
-    public void startActivity(Class mClass) {
-        presenter.startActivity(mClass);
+    protected IAbsPresenter<T> getBeDelegatedPresenter(){
+        return presenter;
     }
+
 }

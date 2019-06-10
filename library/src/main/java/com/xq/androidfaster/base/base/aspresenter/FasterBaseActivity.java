@@ -22,7 +22,7 @@ import java.util.List;
 
 public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppCompatActivity implements IFasterBasePresenter<T> {
 
-    protected T view = createBindView();
+    private T view = createBindView();
 
     private List<AbsPresenterDelegate> list_delegate = new LinkedList<>();
 
@@ -44,6 +44,8 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState != null) isRestoreState = true;
+
         if (getBindView() != null) setContentView(getBindView().getLayoutId());
 
         Intent intent = getIntent();
@@ -54,42 +56,76 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         initData();
 
-        afterOnCreate(savedInstanceState);
+        create(savedInstanceState);
     }
 
+    @Deprecated
     @Override
-    public void afterOnCreate(Bundle savedInstanceState) {
-
-        if (getBindView() != null) getBindView().afterOnCreate(savedInstanceState);
-
-        for (PresenterLife life: list_delegate)  life.afterOnCreate(savedInstanceState);
+    protected void onRestart() {
+        super.onRestart();
     }
 
+    @Deprecated
     @Override
-    public void onResume() {
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Deprecated
+    @Override
+    protected void onResume() {
         super.onResume();
-
-        if (getBindView() != null) getBindView().onResume();
-
-        for (PresenterLife life: list_delegate)  life.onResume();
+        visible();
     }
 
+    @Deprecated
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
+        invisible();
+        if (isFinishing())  destroy();
+    }
 
-        if (getBindView() != null) getBindView().onPause();
+    @Deprecated
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
-        for (PresenterLife life: list_delegate)  life.onPause();
+    @Deprecated
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void create(Bundle savedInstanceState) {
+        if (getBindView() != null) getBindView().create(savedInstanceState);
 
-        if (getBindView() != null) getBindView().onDestroy();
+        for (PresenterLife life: list_delegate)  life.create(savedInstanceState);
+    }
 
-        for (PresenterLife life: list_delegate)  life.onDestroy();  list_delegate.clear();
+    @Override
+    public void visible() {
+        if (getBindView() != null) getBindView().visible();
+
+        for (PresenterLife life: list_delegate)  life.visible();
+    }
+
+    @Override
+    public void invisible() {
+        isFirstVisible = false;
+
+        if (getBindView() != null) getBindView().invisible();
+
+        for (PresenterLife life: list_delegate)  life.invisible();
+    }
+
+    @Override
+    public void destroy() {
+        if (getBindView() != null) getBindView().destroy();
+
+        for (PresenterLife life: list_delegate)  life.destroy();  list_delegate.clear();
     }
 
     @Override
@@ -149,11 +185,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public void startActivity(Class mClass) {
-        startActivity(new Intent(getContext(),mClass));
-    }
-
-    @Override
     public T getBindView() {
         return view;
     }
@@ -173,13 +204,20 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         return this;
     }
 
+    private boolean isFirstVisible = true;
     @Override
-    public void finish() {
-        super.finish();
+    public boolean isFirstVisible() {
+        return isFirstVisible;
     }
 
+    private boolean isRestoreState = false;
     @Override
+    public boolean isRestoreState() {
+        return isRestoreState;
+    }
+
     @Deprecated
+    @Override
     public void onBackPressed() {
         if (!FragmentUtils.dispatchBackPress(getSupportFragmentManager()))
         {
@@ -193,18 +231,12 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public void back() {
-        onBackPressed();
-    }
-
-    @Override
-    public List<AbsPresenterDelegate> getDelegates() {
-        return list_delegate;
-    }
-
-    @Override
     public void inject(AbsPresenterDelegate delegate) {
         getDelegates().add(delegate);
+    }
+
+    protected List<AbsPresenterDelegate> getDelegates() {
+        return list_delegate;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.xq.androidfaster.base.abs;
 
+import android.content.Intent;
 
 public interface IAbsPresenter<T extends IAbsView> extends IAbsCommon {
 
@@ -10,6 +11,8 @@ public interface IAbsPresenter<T extends IAbsView> extends IAbsCommon {
     public T getBindView();
 
     //指定Activity Class 跳转页面
-    public void startActivity(Class mClass);
+    default void startActivity(Class mClass) {
+        getContext().startActivity(new Intent(getContext(),mClass));
+    }
 
 }

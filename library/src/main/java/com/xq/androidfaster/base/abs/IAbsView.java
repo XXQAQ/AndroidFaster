@@ -1,6 +1,8 @@
 package com.xq.androidfaster.base.abs;
 
-import android.graphics.Bitmap;
+import android.app.Activity;
+import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,25 +20,42 @@ public interface IAbsView<T extends IAbsPresenter> extends IAbsCommon {
     //获取根布局View
     public View getRootView();
 
-    //根布局截图
-    public Bitmap getRootViewBitmap();
-
     //获取Window
-    public Window getWindow();
+    default Window getWindow() {
+        return ((Activity)getContext()).getWindow();
+    }
 
     //获取WindowManager
-    public WindowManager getWindowManager();
+    default WindowManager getWindowManager() {
+        return getWindow().getWindowManager();
+    }
 
     //获取子FragmentManager，无需判断Activity或者Fragment的使用情景
-    public FragmentManager getCPFragmentManager();
+    default FragmentManager getCPFragmentManager() {
+        if (getAreActivity() != null)
+            return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
+        else     if (getAreFragment() != null)
+            return (getAreFragment()).getChildFragmentManager();
+        return null;
+    }
 
     //获取管理当前页面的FragmentManager
-    public FragmentManager getParentFragmentManager();
+    default FragmentManager getParentFragmentManager() {
+        if (getAreActivity() != null)
+            return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
+        else     if (getAreFragment() != null)
+            return (getAreFragment()).getFragmentManager();
+        return null;
+    }
 
     //获取布局构造器
-    public LayoutInflater getLayoutInflater();
+    default LayoutInflater getLayoutInflater() {
+        return (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
     //findViewById
-    public View findViewById(int id);
+    default View findViewById(int id) {
+        return getRootView().findViewById(id);
+    }
 
 }

@@ -2,19 +2,14 @@ package com.xq.androidfaster.base.abs;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import com.xq.androidfaster.base.life.ViewLife;
 
-public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsView<T>,ViewLife {
+public class AbsViewDelegate<T extends IAbsPresenter> implements IAbsView<T>,ViewLife {
 
-    protected IAbsView<T> view;
+    private IAbsView<T> view;
 
     public AbsViewDelegate(IAbsView view) {
         this.view = view;
@@ -22,22 +17,22 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
     }
 
     @Override
-    public void afterOnCreate(Bundle savedInstanceState) {
+    public void create(Bundle savedInstanceState) {
 
     }
 
     @Override
-    public void onResume() {
+    public void visible() {
 
     }
 
     @Override
-    public void onPause() {
+    public void invisible() {
 
     }
 
     @Override
-    public void onDestroy() {
+    public void destroy() {
 
     }
 
@@ -48,77 +43,46 @@ public abstract class AbsViewDelegate<T extends IAbsPresenter> implements IAbsVi
 
     @Override
     public T getBindPresenter() {
-        return view.getBindPresenter();
+        return getBeDelegatedView().getBindPresenter();
     }
 
     @Override
     public Context getContext() {
-        return view.getContext();
+        return getBeDelegatedView().getContext();
     }
 
     @Override
     public void inject(AbsViewDelegate delegate) {
-        view.inject(delegate);
+        getBeDelegatedView().inject(delegate);
     }
 
     @Override
     public View getRootView() {
-        return view.getRootView();
+        return getBeDelegatedView().getRootView();
     }
 
     @Override
     public Fragment getAreFragment() {
-        return view.getAreFragment();
+        return getBeDelegatedView().getAreFragment();
     }
 
     @Override
     public Activity getAreActivity() {
-        return view.getAreActivity();
+        return getBeDelegatedView().getAreActivity();
     }
 
     @Override
-    public void finish() {
-        view.finish();
+    public boolean isFirstVisible() {
+        return getBeDelegatedView().isFirstVisible();
     }
 
     @Override
-    public void back() {
-        view.back();
+    public boolean isRestoreState() {
+        return getBeDelegatedView().isRestoreState();
     }
 
-    @Override
-    public Window getWindow() {
-        return view.getWindow();
-    }
-
-    @Override
-    public WindowManager getWindowManager() {
-        return view.getWindowManager();
-    }
-
-    @Override
-    public FragmentManager getCPFragmentManager() {
-        return view.getCPFragmentManager();
-    }
-
-    @Override
-    public FragmentManager getParentFragmentManager() {
-        return view.getParentFragmentManager();
-    }
-
-    @Override
-    public LayoutInflater getLayoutInflater() {
-        return view.getLayoutInflater();
-    }
-
-    @Override
-    public Bitmap getRootViewBitmap() {
-        return view.getRootViewBitmap();
-    }
-
-    @Override
-    public View findViewById(int id) {
-        return view.findViewById(id);
+    protected IAbsView<T> getBeDelegatedView(){
+        return view;
     }
 
 }

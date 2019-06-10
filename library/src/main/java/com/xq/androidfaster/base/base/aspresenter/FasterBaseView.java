@@ -2,23 +2,16 @@ package com.xq.androidfaster.base.base.aspresenter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import com.xq.androidfaster.base.abs.AbsViewDelegate;
 import com.xq.androidfaster.base.base.IFasterBasePresenter;
 import com.xq.androidfaster.base.base.IFasterBaseView;
 import com.xq.androidfaster.base.base.TopContainer;
 import com.xq.androidfaster.base.life.ViewLife;
 import com.xq.androidfaster.util.tools.FragmentUtils;
-import com.xq.androidfaster.util.tools.ImageUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -26,9 +19,9 @@ import java.util.List;
 
 public abstract class FasterBaseView<T extends IFasterBasePresenter> implements IFasterBaseView<T> {
 
-    protected T presenter;
+    private T presenter;
 
-    protected View rootView;
+    private View rootView;
 
     private List<AbsViewDelegate> list_delegate = new LinkedList<>();
 
@@ -37,9 +30,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
-    public void afterOnCreate(Bundle savedInstanceState) {
-
-        if (savedInstanceState != null) hasRestoreState = true;
+    public void create(Bundle savedInstanceState) {
 
         if (getBindPresenter().getAreActivity() != null)
         {
@@ -52,22 +43,22 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
 
         autoFindView();
 
-        for (ViewLife life : list_delegate)     life.afterOnCreate(savedInstanceState);
+        for (ViewLife life : list_delegate)     life.create(savedInstanceState);
     }
 
     @Override
-    public void onResume() {
-        for (ViewLife life : list_delegate)     life.onResume();
+    public void visible() {
+        for (ViewLife life : list_delegate)     life.visible();
     }
 
     @Override
-    public void onPause() {
-        for (ViewLife life : list_delegate)     life.onPause();
+    public void invisible() {
+        for (ViewLife life : list_delegate)     life.invisible();
     }
 
     @Override
-    public void onDestroy() {
-        for (ViewLife life : list_delegate)     life.onDestroy();   list_delegate.clear();
+    public void destroy() {
+        for (ViewLife life : list_delegate)     life.destroy();   list_delegate.clear();
     }
 
     @Override
@@ -76,13 +67,12 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
-    public List<AbsViewDelegate> getDelegates() {
-        return list_delegate;
-    }
-
-    @Override
     public void inject(AbsViewDelegate delegate) {
         getDelegates().add(delegate);
+    }
+
+    protected List<AbsViewDelegate> getDelegates() {
+        return list_delegate;
     }
 
     @Override
@@ -91,18 +81,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
-    public Context getContext() {
-        return getBindPresenter().getContext();
-    }
-
-    @Override
     public View getRootView() {
         return rootView;
     }
 
     @Override
-    public Bitmap getRootViewBitmap(){
-        return ImageUtils.view2Bitmap(getRootView());
+    public Context getContext() {
+        return getBindPresenter().getContext();
     }
 
     @Override
@@ -116,56 +101,13 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     }
 
     @Override
-    public void finish() {
-        getBindPresenter().finish();
+    public boolean isFirstVisible() {
+        return getBindPresenter().isFirstVisible();
     }
 
     @Override
-    public void back() {
-        getBindPresenter().back();
-    }
-
-    public Window getWindow() {
-        return ((Activity)getContext()).getWindow();
-    }
-
-    @Override
-    public WindowManager getWindowManager(){
-        return getWindow().getWindowManager();
-    }
-
-    @Override
-    public FragmentManager getCPFragmentManager() {
-        if (getAreActivity() != null)
-            return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
-        else     if (getAreFragment() != null)
-            return (getAreFragment()).getChildFragmentManager();
-        return null;
-    }
-
-    @Override
-    public FragmentManager getParentFragmentManager() {
-        if (getAreActivity() != null)
-            return ((AppCompatActivity)getAreActivity()).getSupportFragmentManager();
-        else     if (getAreFragment() != null)
-            return (getAreFragment()).getFragmentManager();
-        return null;
-    }
-
-    @Override
-    public LayoutInflater getLayoutInflater(){
-        return (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    @Override
-    public View findViewById(int id){
-        return getRootView().findViewById(id);
-    }
-
-    private boolean hasRestoreState = false;
-    @Override
-    public boolean hasRestoreState() {
-        return hasRestoreState;
+    public boolean isRestoreState() {
+        return getBindPresenter().isRestoreState();
     }
 
     @Override
@@ -185,12 +127,15 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     protected void addFragment(Fragment fragment){
         whichFragmentManager().beginTransaction().add(fragment,fragment.getClass().getName()).commitAllowingStateLoss();
     }
+
     protected void addFragment(Fragment fragment,int containerId){
         FragmentUtils.add(whichFragmentManager(),fragment,containerId);
     }
+
     protected void addFragment(Fragment fragment,int containerId,boolean isHide){
         FragmentUtils.add(whichFragmentManager(),fragment,containerId,isHide);
     }
+
     protected void addFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
         FragmentUtils.add(whichFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);;
     }
@@ -199,6 +144,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     protected void replaceFragment(Fragment fragment,int containerId){
         FragmentUtils.replace(whichFragmentManager(),fragment,containerId);
     }
+
     protected void replaceFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
         FragmentUtils.replace(whichFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);
     }
@@ -207,6 +153,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     protected void hideFragment(String fragmentName){
         hideFragment(whichFragmentManager().findFragmentByTag(fragmentName));
     }
+
     protected void hideFragment(Fragment fragment){
         FragmentUtils.hide(fragment);
     }
@@ -221,6 +168,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     protected void showFragment(String fragmentName){
         showFragment(whichFragmentManager().findFragmentByTag(fragmentName));
     }
+
     protected void showFragment(Fragment fragment){
         FragmentUtils.show(fragment);
     }
@@ -235,6 +183,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     protected void removeFragment(String fragmentName){
         removeFragment(whichFragmentManager().findFragmentByTag(fragmentName));
     }
+
     protected void removeFragment(Fragment fragment){
         FragmentUtils.remove(fragment);
     }
@@ -249,6 +198,7 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     protected void popFragment(){
         FragmentUtils.pop(whichFragmentManager());
     }
+
     protected void popFragmentImmediate(){
         FragmentUtils.pop(whichFragmentManager(),true);
     }
@@ -267,8 +217,6 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
     protected void removeAllFragment(){
         FragmentUtils.removeAll(whichFragmentManager());
     }
-
-
 
     //判断是否顶部容器
     protected boolean isTopContainer(){
@@ -309,4 +257,5 @@ public abstract class FasterBaseView<T extends IFasterBasePresenter> implements 
                 break;
         }
     }
+
 }
