@@ -1,5 +1,7 @@
 package com.xq.androidfaster.base.base;
 
-public interface IFasterBaseCommon {
+import com.xq.androidfaster.base.abs.IAbsCommon;
+
+public interface IFasterBaseCommon extends IAbsCommon {
 
 }
