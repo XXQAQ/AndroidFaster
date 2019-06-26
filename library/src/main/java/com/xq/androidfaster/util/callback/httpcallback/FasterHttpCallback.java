@@ -1,4 +1,4 @@
-package com.xq.androidfaster.util;
+package com.xq.androidfaster.util.callback.httpcallback;
 
 public interface FasterHttpCallback<T> {
 
@@ -50,11 +50,11 @@ public interface FasterHttpCallback<T> {
     //业务操作失败之后调用的方法
     public void operateErro(T t);
 
-    public CallbackBuilder getCallbackBuilder();
+    public CallbackBuilder<T> getCallbackBuilder();
 
-    public class CallbackBuilder{
+    public class CallbackBuilder<T>{
         public boolean isOperateSuccess = false;
-        public Object data;
+        public T data;
     }
 
 }

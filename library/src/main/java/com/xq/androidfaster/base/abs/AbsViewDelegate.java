@@ -71,16 +71,6 @@ public class AbsViewDelegate<T extends IAbsPresenter> implements IAbsView<T>,Vie
         return getBeDelegatedView().getAreActivity();
     }
 
-    @Override
-    public boolean isFirstVisible() {
-        return getBeDelegatedView().isFirstVisible();
-    }
-
-    @Override
-    public boolean isRestoreState() {
-        return getBeDelegatedView().isRestoreState();
-    }
-
     protected IAbsView<T> getBeDelegatedView(){
         return view;
     }

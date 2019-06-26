@@ -15,12 +15,6 @@ public interface IAbsCommon {
     //如果当前P/V层服务于Activity，则返回对应Activity，否则返回null
     public Activity getAreActivity();
 
-    //判断是否第一次可见
-    public boolean isFirstVisible();
-
-    //是否销毁并重建
-    public boolean isRestoreState();
-
     //关闭当前页面
     default void finish() {
         ((Activity)getContext()).finish();

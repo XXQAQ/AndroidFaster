@@ -3,7 +3,7 @@ package com.xq.androidfaster.util.tools;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import com.xq.androidfaster.util.FasterHttpCallback;
+import com.xq.androidfaster.util.callback.httpcallback.FasterHttpCallback;
 import com.xq.worldbean.util.JsonConverter;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
