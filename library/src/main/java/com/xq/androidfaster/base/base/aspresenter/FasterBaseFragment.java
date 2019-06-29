@@ -136,13 +136,13 @@ public abstract class FasterBaseFragment<T extends IFasterBaseView> extends Frag
     @Override
     public void onDestroy() {
         super.onDestroy();
-        destroy();
     }
 
     @Deprecated
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        destroy();
     }
 
     @Override
