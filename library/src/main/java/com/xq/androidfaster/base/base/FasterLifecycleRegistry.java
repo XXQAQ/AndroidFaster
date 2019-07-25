@@ -1,4 +1,4 @@
-package com.xq.androidfaster.base;
+package com.xq.androidfaster.base.base;
 
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;

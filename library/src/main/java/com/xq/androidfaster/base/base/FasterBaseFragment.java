@@ -11,8 +11,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.xq.androidfaster.base.ActivityResultCallback;
-import com.xq.androidfaster.base.FasterLifecycleRegistry;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
 
@@ -64,6 +62,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
         {
             Bundle bundle = getArguments();
             if (bundle == null) bundle = new Bundle();
+
             resolveBundle(bundle);
             if (getBindAnother() != null) getBindAnother().resolveBundle(bundle);
         }

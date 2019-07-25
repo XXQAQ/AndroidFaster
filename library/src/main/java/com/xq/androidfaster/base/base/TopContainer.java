@@ -1,4 +1,4 @@
-package com.xq.androidfaster.base;
+package com.xq.androidfaster.base.base;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -12,8 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.View;
-import com.xq.androidfaster.base.ActivityResultCallback;
-import com.xq.androidfaster.base.FasterLifecycleRegistry;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
 
@@ -54,17 +52,11 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
 
         //传参初始化
         {
-            Intent intent = getIntent();
-            if (intent != null && intent.getExtras() != null)
-            {
-                resolveBundle(intent.getExtras());
-                if (getBindAnother() != null) getBindAnother().resolveBundle(intent.getExtras());
-            }
-            else
-            {
-                resolveBundle(new Bundle());
-                if (getBindAnother() != null) getBindAnother().resolveBundle(new Bundle());
-            }
+            Bundle bundle = getIntent().getExtras();
+            if (bundle == null) bundle = new Bundle();
+
+            resolveBundle(bundle);
+            if (getBindAnother() != null) getBindAnother().resolveBundle(bundle);
         }
 
         //自定义初始化

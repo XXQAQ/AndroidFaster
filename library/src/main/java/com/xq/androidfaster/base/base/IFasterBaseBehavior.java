@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
-import com.xq.androidfaster.base.TopContainer;
 import com.xq.androidfaster.base.core.Controler;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import java.lang.annotation.Annotation;
@@ -21,6 +20,9 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
     //初始化
     public void init();
 
+    //解析数据
+    public void resolveBundle(Bundle bundle);
+
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -30,9 +32,6 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
     default T getBindView() {
         return getBindAnother();
     }
-
-    //解析数据
-    public void resolveBundle(Bundle bundle);
 
 
 

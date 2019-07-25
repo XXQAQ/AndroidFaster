@@ -1,4 +1,4 @@
-package com.xq.androidfaster.base;
+package com.xq.androidfaster.base.base;
 
 import android.content.Intent;
 
