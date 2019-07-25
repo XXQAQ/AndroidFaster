@@ -3,6 +3,7 @@ package com.xq.androidfaster.base.base;
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -38,6 +39,11 @@ public abstract class FasterBaseAnother<T extends IFasterBaseBehavior> implement
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
     }
 
