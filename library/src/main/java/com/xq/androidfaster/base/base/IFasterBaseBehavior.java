@@ -10,8 +10,11 @@ import com.xq.androidfaster.base.core.Controler;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Controler<T> {
+public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Controler{
 
+    ///////////////////////////////////////////////////////////////////////////
+    // C
+    ///////////////////////////////////////////////////////////////////////////
     //获取当前P/V层
     public T getBindAnother();
 
@@ -20,18 +23,22 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
 
 
 
-    //为P层设计的方法
+    ///////////////////////////////////////////////////////////////////////////
+    // P
+    ///////////////////////////////////////////////////////////////////////////
     //获取当前对应V层
     default T getBindView() {
         return getBindAnother();
     }
 
-    //解析
+    //解析数据
     public void resolveBundle(Bundle bundle);
 
 
 
-    //为V层设计的方法
+    ///////////////////////////////////////////////////////////////////////////
+    // V
+    ///////////////////////////////////////////////////////////////////////////
     //获取当前对应P层
     default T getBindPresenter() {
         return getBindAnother();
@@ -82,7 +89,6 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
                 break;
         }
     }
-
 
 //    //以下为Fragment快捷管理
 //    //返回值决定下面所有的方法管理哪个FragmentManager,默认管理自己的子集

@@ -10,12 +10,12 @@ import android.view.View;
 import com.xq.androidfaster.base.core.Controler;
 import java.lang.ref.WeakReference;
 
-public class BaseDelegate<T extends Controler> implements Controler<T> {
+public class BaseDelegate implements Controler {
 
-    private WeakReference<T> controlerReference;
+    private WeakReference<Controler> controlerReference;
 
-    public BaseDelegate(T controler) {
-        this.controlerReference = new WeakReference<T>(controler);
+    public BaseDelegate(Controler controler) {
+        this.controlerReference = new WeakReference<Controler>(controler);
         getLifecycle().addObserver(this);
     }
 
@@ -84,7 +84,7 @@ public class BaseDelegate<T extends Controler> implements Controler<T> {
         return getControler().getRootView();
     }
 
-    protected T getControler() {
+    protected Controler getControler() {
         return controlerReference.get();
     }
 }

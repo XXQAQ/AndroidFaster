@@ -6,7 +6,7 @@ import android.arch.lifecycle.OnLifecycleEvent;
 import android.content.Intent;
 import android.os.Bundle;
 
-public interface Life extends LifecycleObserver  {
+public interface Life extends LifecycleObserver{
 
     public void create(Bundle savedInstanceState);
 
@@ -16,12 +16,8 @@ public interface Life extends LifecycleObserver  {
 
     public void destroy();
 
-    //为P层设计的方法
     public void onActivityResult(int requestCode, int resultCode, Intent data);
 
-
-
-    //为V层设计的方法
     public void onSaveInstanceState(Bundle outState);
 
 
