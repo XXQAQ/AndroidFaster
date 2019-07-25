@@ -262,4 +262,10 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         return false;
     }
 
+    //解决方法覆盖问题
+    @Override
+    public <T_View extends View> T_View findViewById(int id) {
+        return super.findViewById(id);
+    }
+
 }
