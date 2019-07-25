@@ -1,4 +1,4 @@
-package com.xq.androidfaster.base.base.aspresenter;
+package com.xq.androidfaster.base.base;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,33 +11,29 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
-import com.xq.androidfaster.base.abs.AbsPresenterDelegate;
-import com.xq.androidfaster.base.base.IFasterBasePresenter;
-import com.xq.androidfaster.base.base.IFasterBaseView;
-import com.xq.androidfaster.base.life.PresenterLife;
-import com.xq.androidfaster.base.base.ActivityResultCallback;
+import android.view.View;
+import com.xq.androidfaster.base.ActivityResultCallback;
+import com.xq.androidfaster.base.FasterLifecycleRegistry;
 import com.xq.androidfaster.util.tools.FragmentUtils;
-import java.util.LinkedList;
-import java.util.List;
+import com.xq.androidfaster.util.tools.ReflectUtils;
 
-public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppCompatActivity implements IFasterBasePresenter<T> {
+public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends AppCompatActivity implements IFasterBaseBehavior<T>, FragmentUtils.OnBackClickListener {
 
-    private T view = createBindView();
+    {
+        ReflectUtils.reflect(this).field("mLifecycleRegistry",new FasterLifecycleRegistry(this));
+    }
 
-    private List<AbsPresenterDelegate> list_delegate = new LinkedList<>();
+    private T another;
+    {
+        if (another == null)
+            another = createBindView();
+        if (another == null)
+            another = createBindPresenter();
+    }
 
-    //重写该方法，返回对应View层
     protected abstract T createBindView();
 
-    //初始化数据
-    protected void initData(){
-
-    }
-
-    //解析从其他页面传来的数据
-    protected void resolveBundle(Bundle bundle) {
-
-    }
+    protected abstract T createBindPresenter();
 
     @Deprecated
     @Override
@@ -46,15 +42,36 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
         if (savedInstanceState != null) isRestoreState = true;
 
-        if (getBindView() != null) setContentView(getBindView().getLayoutId());
+        //布局初始化
+        {
+            if (getLayoutId() != 0 || (getBindAnother() != null && getBindAnother().getLayoutId() != 0))
+            {
+                setContentView(getLayoutId() == 0?getBindAnother().getLayoutId() : getLayoutId());
+                rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+                autoFindView(getLayoutId() == 0?getBindAnother():this);
+            }
+        }
 
-        Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null)
-            resolveBundle(intent.getExtras());
-        else
-            resolveBundle(new Bundle());
+        //传参初始化
+        {
+            Intent intent = getIntent();
+            if (intent != null && intent.getExtras() != null)
+            {
+                resolveBundle(intent.getExtras());
+                if (getBindAnother() != null) getBindAnother().resolveBundle(intent.getExtras());
+            }
+            else
+            {
+                resolveBundle(new Bundle());
+                if (getBindAnother() != null) getBindAnother().resolveBundle(new Bundle());
+            }
+        }
 
-        initData();
+        //自定义初始化
+        {
+            init();
+            if (getBindAnother() != null) getBindAnother().init();
+        }
 
         create(savedInstanceState);
     }
@@ -67,20 +84,20 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Deprecated
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
     }
 
     @Deprecated
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         visible();
     }
 
     @Deprecated
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         invisible();
         if (isFinishing())  destroy();
@@ -88,56 +105,55 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
 
     @Deprecated
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
     }
 
     @Deprecated
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
     }
 
     @Override
     public void create(Bundle savedInstanceState) {
-        if (getBindView() != null) getBindView().create(savedInstanceState);
-
-        for (PresenterLife life: list_delegate)  life.create(savedInstanceState);
+        getLifecycle().handleCreate(savedInstanceState);
     }
 
     @Override
     public void visible() {
-        if (getBindView() != null) getBindView().visible();
-
-        for (PresenterLife life: list_delegate)  life.visible();
+        getLifecycle().handleVisible();
     }
 
     @Override
     public void invisible() {
         isFirstVisible = false;
-
-        if (getBindView() != null) getBindView().invisible();
-
-        for (PresenterLife life: list_delegate)  life.invisible();
+        getLifecycle().handleInvisible();
     }
 
     @Override
     public void destroy() {
-        if (getBindView() != null) getBindView().destroy();
-
-        for (PresenterLife life: list_delegate)  life.destroy();  list_delegate.clear();
+        getLifecycle().handleDestroy();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        if (getBindView() != null) getBindView().onSaveInstanceState(outState);
+        getLifecycle().handleSaveInstanceState(outState);
     }
 
     @Override
+    public FasterLifecycleRegistry getLifecycle() {
+        return (FasterLifecycleRegistry) super.getLifecycle();
+    }
+
+    //封装startActivityForResult成回调的形式
+    private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        getLifecycle().handleActivityResult(requestCode,resultCode,data);
+
         ActivityResultCallback callback = spa_resultCallback.get(requestCode);
         spa_resultCallback.remove(requestCode);
         if (null != callback)
@@ -152,12 +168,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
                     break;
             }
         }
-
-        for (PresenterLife life: list_delegate)  life.onActivityResult(requestCode,resultCode,data);
     }
-
-    //封装startActivityForResult成回调的形式
-    private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
     public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
         int requestCode;
         if (callback != null)
@@ -185,8 +196,13 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     }
 
     @Override
-    public T getBindView() {
-        return view;
+    public T getBindAnother() {
+        return another;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override
@@ -204,6 +220,17 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
         return this;
     }
 
+    @Override
+    public void resolveBundle(Bundle bundle) {
+
+    }
+
+    private View rootView;
+    @Override
+    public View getRootView() {
+        return rootView;
+    }
+
     private boolean isFirstVisible = true;
     @Override
     public boolean isFirstVisible() {
@@ -214,6 +241,11 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     @Override
     public boolean isRestoreState() {
         return isRestoreState;
+    }
+
+    @Override
+    public void initFragment(Fragment fragment) {
+
     }
 
     @Deprecated
@@ -228,15 +260,6 @@ public abstract class FasterBaseActivity<T extends IFasterBaseView> extends AppC
     @Override
     public boolean onBackClick() {
         return false;
-    }
-
-    @Override
-    public void inject(AbsPresenterDelegate delegate) {
-        getDelegates().add(delegate);
-    }
-
-    protected List<AbsPresenterDelegate> getDelegates() {
-        return list_delegate;
     }
 
 }

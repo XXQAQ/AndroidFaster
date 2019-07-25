@@ -1,4 +1,4 @@
-package com.xq.androidfaster.base.base;
+package com.xq.androidfaster.base;
 
 import android.content.Intent;
 
@@ -9,5 +9,4 @@ public interface ActivityResultCallback {
     default void onCancel(){
 
     }
-
 }

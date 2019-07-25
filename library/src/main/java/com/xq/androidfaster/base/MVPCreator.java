@@ -1,4 +1,4 @@
-package com.xq.androidfaster.base.base.aspresenter;
+package com.xq.androidfaster.base;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
