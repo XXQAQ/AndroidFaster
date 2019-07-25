@@ -12,10 +12,10 @@ import java.lang.ref.WeakReference;
 
 public class BaseDelegate implements Controler {
 
-    private WeakReference<Controler> controlerReference;
+    private WeakReference<Controler> reference;
 
     public BaseDelegate(Controler controler) {
-        this.controlerReference = new WeakReference<Controler>(controler);
+        this.reference = new WeakReference<Controler>(controler);
         getLifecycle().addObserver(this);
     }
 
@@ -85,6 +85,6 @@ public class BaseDelegate implements Controler {
     }
 
     protected Controler getControler() {
-        return controlerReference.get();
+        return reference.get();
     }
 }

@@ -6,9 +6,7 @@ import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-
 import com.xq.androidfaster.base.core.Life;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

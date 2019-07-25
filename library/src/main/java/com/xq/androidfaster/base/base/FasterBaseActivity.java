@@ -37,7 +37,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
 
     @Deprecated
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) isRestoreState = true;
@@ -78,7 +78,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
 
     @Deprecated
     @Override
-    protected void onRestart() {
+    public void onRestart() {
         super.onRestart();
     }
 
