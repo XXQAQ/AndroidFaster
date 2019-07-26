@@ -44,7 +44,9 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
             if (getLayoutId() != 0 || (getBindAnother() != null && getBindAnother().getLayoutId() != 0))
             {
                 rootView = inflater.inflate(getLayoutId() == 0?getBindAnother().getLayoutId() : getLayoutId(),container,false);
-                autoFindView(getLayoutId() == 0?getBindAnother():this);
+
+                autoFindView(this);
+                if (getBindAnother() != null)   autoFindView(getBindAnother());
             }
         }
 

@@ -46,7 +46,9 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
             {
                 setContentView(getLayoutId() == 0?getBindAnother().getLayoutId() : getLayoutId());
                 rootView = getWindow().getDecorView().findViewById(android.R.id.content);
-                autoFindView(getLayoutId() == 0?getBindAnother():this);
+
+                autoFindView(this);
+                if (getBindAnother() != null)   autoFindView(getBindAnother());
             }
         }
 
