@@ -16,8 +16,9 @@ import com.xq.androidfaster.util.tools.ReflectUtils;
 
 public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends Fragment implements IFasterBaseBehavior<T> ,FragmentUtils.OnBackClickListener {
 
+    private FasterLifecycleRegistry lifecycleRegistry = new FasterLifecycleRegistry(this);
     {
-        ReflectUtils.reflect(this).field("mLifecycleRegistry",new FasterLifecycleRegistry(this));
+        ReflectUtils.reflect(this).field("mLifecycleRegistry",lifecycleRegistry);
     }
 
     private T another;
@@ -190,7 +191,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
 
     @Override
     public FasterLifecycleRegistry getLifecycle() {
-        return (FasterLifecycleRegistry) super.getLifecycle();
+        return lifecycleRegistry;
     }
 
     //封装startActivityForResult成回调的形式
