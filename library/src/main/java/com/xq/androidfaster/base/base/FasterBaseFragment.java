@@ -16,10 +16,8 @@ import com.xq.androidfaster.util.tools.ReflectUtils;
 
 public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends Fragment implements IFasterBaseBehavior<T> ,FragmentUtils.OnBackClickListener {
 
-    private FasterLifecycleRegistry lifecycleRegistry;
     {
-        lifecycleRegistry = new FasterLifecycleRegistry(this);
-        ReflectUtils.reflect(this).field("mLifecycleRegistry",lifecycleRegistry);
+        ReflectUtils.reflect(this).field("mLifecycleRegistry",getLifecycle());
     }
 
     private T another;
@@ -190,8 +188,10 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
         getLifecycle().handleSaveInstanceState(outState);
     }
 
+    private FasterLifecycleRegistry lifecycleRegistry;
     @Override
     public FasterLifecycleRegistry getLifecycle() {
+        if (lifecycleRegistry == null) lifecycleRegistry = new FasterLifecycleRegistry(this);
         return lifecycleRegistry;
     }
 
