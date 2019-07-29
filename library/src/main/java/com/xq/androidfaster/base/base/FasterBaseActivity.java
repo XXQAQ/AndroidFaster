@@ -17,8 +17,9 @@ import com.xq.androidfaster.util.tools.ReflectUtils;
 
 public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends AppCompatActivity implements IFasterBaseBehavior<T>, FragmentUtils.OnBackClickListener {
 
-    private FasterLifecycleRegistry lifecycleRegistry = new FasterLifecycleRegistry(this);
+    private FasterLifecycleRegistry lifecycleRegistry;
     {
+        lifecycleRegistry = new FasterLifecycleRegistry(this);
         ReflectUtils.reflect(this).field("mLifecycleRegistry",lifecycleRegistry);
     }
 
