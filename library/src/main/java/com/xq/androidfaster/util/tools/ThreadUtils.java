@@ -43,15 +43,6 @@ public final class ThreadUtils {
     }
 
     /**
-     * Run on the Child thread.
-     *
-     * @param runnable The Runnable
-     */
-    public static void runOnChildThread(Runnable runnable){
-        new Thread(runnable).run();
-    }
-
-    /**
      * Run on the main thread.
      *
      * @param runnable The Runnable
