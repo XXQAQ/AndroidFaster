@@ -1,5 +1,6 @@
 package com.xq.androidfaster.base.base;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,11 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
 
     //解析数据
     public void resolveBundle(Bundle bundle);
+
+    //获取资源文件
+    default Resources getResources(){
+        return getContext().getResources();
+    }
 
 
 
