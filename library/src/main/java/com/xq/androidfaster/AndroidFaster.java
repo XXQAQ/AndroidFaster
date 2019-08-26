@@ -9,14 +9,9 @@ public class AndroidFaster {
 
     private static Application app;
 
-    private static String fileProvider;
-
     public static void init(Application app,String fileProvider){
-
         AndroidFaster.app = app;
-        AndroidFaster.fileProvider = fileProvider;
-
-        Utils.init(app);
+        Utils.init(getApp(),fileProvider);
     }
 
     public static Application getApp() {
@@ -44,10 +39,6 @@ public class AndroidFaster {
             e.printStackTrace();
         }
         throw new NullPointerException("u should init first");
-    }
-
-    public static String getFileProvider() {
-        return fileProvider;
     }
 
 }
