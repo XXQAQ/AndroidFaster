@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 public abstract class FasterBaseAnother<T extends IFasterBaseBehavior> implements IFasterBaseBehavior<T> {
@@ -101,4 +102,13 @@ public abstract class FasterBaseAnother<T extends IFasterBaseBehavior> implement
     public void initFragment(Fragment fragment) {
 
     }
+
+    public String getString(int resId){
+        return getResources().getString(resId);
+    }
+
+    public int getColor(int resId){
+        return ContextCompat.getColor(getContext(),resId);
+    }
+
 }
