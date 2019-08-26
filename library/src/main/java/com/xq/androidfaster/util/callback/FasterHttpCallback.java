@@ -1,4 +1,4 @@
-package com.xq.androidfaster.util.callback.httpcallback;
+package com.xq.androidfaster.util.callback;
 
 public interface FasterHttpCallback<T> {
 
