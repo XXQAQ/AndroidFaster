@@ -1,0 +1,2 @@
+工具说明：工具类中的绝大多部分均从下链接中引入，但是对部分方法进行了筛选并重写
+https://github.com/Blankj/AndroidUtilCode
