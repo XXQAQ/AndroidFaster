@@ -57,6 +57,9 @@ public final class PropertyUtils {
             if(excludesList != null && excludesList.contains(fromMethodName.substring(3).toLowerCase())) {
                 continue;
             }
+            if (fromMethod.getParameterTypes().length >= 1){
+                return;
+            }
             toMethodName = "set" + fromMethodName.substring(3);
             toMethod = findMethodByName(toMethods, toMethodName);
             if (toMethod == null)
