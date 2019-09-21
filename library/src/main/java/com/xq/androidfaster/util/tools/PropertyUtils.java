@@ -58,7 +58,7 @@ public final class PropertyUtils {
                 continue;
             }
             if (fromMethod.getParameterTypes().length >= 1){
-                return;
+                continue;
             }
             toMethodName = "set" + fromMethodName.substring(3);
             toMethod = findMethodByName(toMethods, toMethodName);
