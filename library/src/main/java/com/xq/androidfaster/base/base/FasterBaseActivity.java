@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
 
@@ -45,7 +46,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
             if (getLayoutId() != 0 || (getBindAnother() != null && getBindAnother().getLayoutId() != 0))
             {
                 setContentView(getLayoutId() == 0?getBindAnother().getLayoutId() : getLayoutId());
-                rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+                rootView = ((ViewGroup)getWindow().getDecorView().findViewById(android.R.id.content)).getChildAt(0);
 
                 autoFindView(this);
                 if (getBindAnother() != null)   autoFindView(getBindAnother());
