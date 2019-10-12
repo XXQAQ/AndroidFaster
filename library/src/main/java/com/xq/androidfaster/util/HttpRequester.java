@@ -7,19 +7,21 @@ public class HttpRequester {
 
     private static Requester requester;
 
-    public void get(String url, Map<Object, Object> map, FasterHttpCallback callback, Object... objects) {
+    public static void get(String url, Map<Object, Object> map, FasterHttpCallback callback, Object... objects) {
         requester.get(url,map,callback,objects);
     }
 
-    public void post(String url, Map<Object, Object> map, FasterHttpCallback callback, Object... objects) {
+    public static void post(String url, Map<Object, Object> map, FasterHttpCallback callback, Object... objects) {
         requester.post(url,map,callback,objects);
     }
 
-    public void postJson(String url, String json, FasterHttpCallback callback, Object... objects) {
+    public static void postJson(String url, String json, FasterHttpCallback callback, Object... objects) {
         requester.postJson(url,json,callback,objects);
     }
 
-    public static void setRequester(Requester requester) {
+    public static void setRequester(Requester requester) throws RuntimeException {
+        if (HttpRequester.requester != null)
+            throw new RuntimeException("Can't set Requester again");
         HttpRequester.requester = requester;
     }
 

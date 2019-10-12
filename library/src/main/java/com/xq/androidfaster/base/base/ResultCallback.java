@@ -2,7 +2,7 @@ package com.xq.androidfaster.base.base;
 
 import android.content.Intent;
 
-public interface ActivityResultCallback {
+public interface ResultCallback {
 
     public void onSuccess(Intent data);
 

@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends Fragment implements IFasterBaseBehavior<T> ,FragmentUtils.OnBackClickListener {
 
@@ -181,6 +183,9 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     @Override
     public void destroy() {
         getLifecycle().handleDestroy();
+
+        if (getArguments() != null && getArguments().getInt("requestCode") !=0 && !isSetResult)
+            setResult(RESULT_CANCELED,null);
     }
 
     @Override
@@ -197,28 +202,28 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     }
 
     //封装startActivityForResult成回调的形式
-    private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
+    private SparseArray<ResultCallback> spa_resultCallback = new SparseArray();
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         getLifecycle().handleActivityResult(requestCode,resultCode,data);
 
-        ActivityResultCallback callback = spa_resultCallback.get(requestCode);
+        ResultCallback callback = spa_resultCallback.get(requestCode);
         spa_resultCallback.remove(requestCode);
         if (null != callback)
         {
             switch (resultCode)
             {
-                case Activity.RESULT_OK:
+                case RESULT_OK:
                     callback.onSuccess(data);
                     break;
-                case Activity.RESULT_CANCELED:
+                case RESULT_CANCELED:
                     callback.onCancel();
                     break;
             }
         }
     }
-    public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
+    public void  startActivityForResult(Intent intent, ResultCallback callback){
         int requestCode;
         if (callback != null)
         {
@@ -240,6 +245,11 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
+    }
+
+    public void startFragmentForResult(Fragment fragment,int containerId,ResultCallback callback){
+        if (getContext() instanceof OnStartFragmentBehavior)
+            ((OnStartFragmentBehavior) getContext()).startFragmentForResult(fragment,containerId,callback);
     }
 
     @Override
@@ -302,6 +312,22 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
 
     public int getColor(int resId){
         return ContextCompat.getColor(getContext(),resId);
+    }
+
+    boolean isSetResult = false;
+    public void setResult(int resultCode,Intent intent){
+        if (getContext() instanceof OnStartFragmentBehavior)
+        {
+            if (getArguments() != null)
+            {
+                int requestCode = getArguments().getInt("requestCode");
+                if (requestCode != 0)
+                {
+                    isSetResult = true;
+                    ((OnStartFragmentBehavior) getContext()).onFragmentResult(requestCode,resultCode,intent);
+                }
+            }
+        }
     }
 
 }

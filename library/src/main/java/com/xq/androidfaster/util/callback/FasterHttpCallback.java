@@ -9,7 +9,7 @@ public interface FasterHttpCallback<T> {
 
     //请求错误
     default void requestError(Object... objects) {
-
+        getCallbackBuilder().isOperateSuccess = false;
     }
 
     //当前请求进度(0-1.0)
@@ -54,6 +54,7 @@ public interface FasterHttpCallback<T> {
 
     public class CallbackBuilder<T>{
         public boolean isOperateSuccess = false;
+        public Class<T> dataClass;
         public T data;
     }
 

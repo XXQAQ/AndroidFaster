@@ -15,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends AppCompatActivity implements IFasterBaseBehavior<T>, FragmentUtils.OnBackClickListener {
+public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends AppCompatActivity implements IFasterBaseBehavior<T>, FragmentUtils.OnBackClickListener, OnStartFragmentBehavior {
 
     {
         ReflectUtils.reflect(this).field("mLifecycleRegistry",getLifecycle());
@@ -145,13 +147,13 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
     }
 
     //封装startActivityForResult成回调的形式
-    private SparseArray<ActivityResultCallback> spa_resultCallback = new SparseArray();
+    private SparseArray<ResultCallback> spa_resultCallback = new SparseArray();
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         getLifecycle().handleActivityResult(requestCode,resultCode,data);
 
-        ActivityResultCallback callback = spa_resultCallback.get(requestCode);
+        ResultCallback callback = spa_resultCallback.get(requestCode);
         spa_resultCallback.remove(requestCode);
         if (null != callback)
         {
@@ -166,7 +168,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
             }
         }
     }
-    public void  startActivityForResult(Intent intent, ActivityResultCallback callback){
+    public void  startActivityForResult(Intent intent, ResultCallback callback){
         int requestCode;
         if (callback != null)
         {
@@ -190,6 +192,44 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
+    }
+
+    private Map<Integer,ResultCallback> fragmentResultMap = new LinkedHashMap<>();
+    @Override
+    public void startFragmentForResult(Fragment fragment,int containerId,ResultCallback callback){
+
+        int requestCode = callback.hashCode();
+        requestCode &= 0x0000ffff;
+        fragmentResultMap.put(requestCode,callback);
+
+        Bundle bundle = fragment.getArguments();
+        if (bundle == null)
+        {
+            bundle = new Bundle();
+            fragment.setArguments(bundle);
+        }
+        bundle.putInt("requestCode",callback.hashCode());
+        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,0,0);
+    }
+
+    @Override
+    public void onFragmentResult(int requestCode, int resultCode, Intent intent) {
+        getLifecycle().handleActivityResult(requestCode,resultCode,intent);
+
+        ResultCallback callback = fragmentResultMap.get(requestCode);
+        fragmentResultMap.remove(requestCode);
+        if (null != callback)
+        {
+            switch (resultCode)
+            {
+                case Activity.RESULT_OK:
+                    callback.onSuccess(intent);
+                    break;
+                case Activity.RESULT_CANCELED:
+                    callback.onCancel();
+                    break;
+            }
+        }
     }
 
     @Override

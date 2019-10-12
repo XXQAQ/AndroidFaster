@@ -20,7 +20,11 @@ public interface Life extends LifecycleObserver{
 
     public void onSaveInstanceState(Bundle outState);
 
+    //判断是否第一次可见
+    public boolean isFirstVisible();
 
+    //是否销毁并重建
+    public boolean isRestoreState();
 
     //以下方法不建议使用
     @Deprecated
