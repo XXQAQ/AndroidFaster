@@ -26,35 +26,17 @@ public class HttpRequester {
 
     public static abstract class Callback<T>{
 
-        private T data;
         private Class<T> dataClass;
-        private boolean isSuccess;
 
         public Callback(Class<T> dataClass) {
             this.dataClass = dataClass;
-        }
-
-        public void setData(T data) {
-            this.data = data;
-        }
-
-        public void setSuccess(boolean success) {
-            isSuccess = success;
-        }
-
-        public T getData() {
-            return data;
         }
 
         public Class<T> getDataClass() {
             return dataClass;
         }
 
-        public boolean isSuccess() {
-            return isSuccess;
-        }
-
-        public abstract void onCallback();
+        public abstract void onCallback(boolean isSuccess,T data);
     }
 
     public static abstract class Requester {
