@@ -9,4 +9,6 @@ public interface OnStartFragmentBehavior {
 
     public void startFragmentForResult(Fragment fragment, int containerId, ResultCallback callback);
 
+    public void startFragment(Fragment fragment,int containerId);
+
 }

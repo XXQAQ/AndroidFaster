@@ -194,6 +194,11 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         super.startActivityForResult(intent, requestCode);
     }
 
+    @Override
+    public void startFragment(Fragment fragment, int containerId) {
+        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,0,0);
+    }
+
     private Map<Integer,ResultCallback> fragmentResultMap = new LinkedHashMap<>();
     @Override
     public void startFragmentForResult(Fragment fragment,int containerId,ResultCallback callback){
@@ -208,7 +213,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
             bundle = new Bundle();
             fragment.setArguments(bundle);
         }
-        bundle.putInt("requestCode",callback.hashCode());
+        bundle.putInt("requestCode",requestCode);
         FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,0,0);
     }
 

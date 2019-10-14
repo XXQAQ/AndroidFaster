@@ -48,13 +48,7 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
         getContext().startActivity(new Intent(getContext(),mClass));
     }
 
-    default void startFragment(Fragment fragment,int containerId){
-        startFragment(fragment,containerId,0,0);
-    }
 
-    default void startFragment(Fragment fragment,int containerId,int enterAnimation,int exitAnimation){
-        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,enterAnimation,exitAnimation);
-    }
 
     ///////////////////////////////////////////////////////////////////////////
     // P

@@ -62,7 +62,7 @@ public interface Controler extends Life {
         return null;
     }
 
-    //获取管理当前页面的FragmentManager
+    //获取上级FragmentManager
     default FragmentManager getParentFragmentManager() {
         if (getAreActivity() != null)
             return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();

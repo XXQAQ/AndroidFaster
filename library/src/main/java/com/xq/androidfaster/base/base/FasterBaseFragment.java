@@ -247,6 +247,11 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
         super.startActivityForResult(intent, requestCode);
     }
 
+    public void startFragment(Fragment fragment, int containerId) {
+        if (getContext() instanceof OnStartFragmentBehavior)
+            ((OnStartFragmentBehavior) getContext()).startFragment(fragment,containerId);
+    }
+
     public void startFragmentForResult(Fragment fragment,int containerId,ResultCallback callback){
         if (getContext() instanceof OnStartFragmentBehavior)
             ((OnStartFragmentBehavior) getContext()).startFragmentForResult(fragment,containerId,callback);
