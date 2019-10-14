@@ -54,7 +54,6 @@ public interface FasterHttpCallback<T> {
 
     public class CallbackBuilder<T>{
         public boolean isOperateSuccess = false;
-        public Class<T> dataClass;
         public T data;
     }
 
