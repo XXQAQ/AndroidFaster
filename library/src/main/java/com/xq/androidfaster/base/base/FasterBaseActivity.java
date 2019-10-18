@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import com.xq.androidfaster.util.tools.ActivityUtils;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
 import java.util.LinkedHashMap;
@@ -168,16 +169,16 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
             }
         }
     }
+
     public void  startActivityForResult(Intent intent, ResultCallback callback){
-        int requestCode;
-        if (callback != null)
-        {
-            requestCode = callback.hashCode();
-            requestCode &= 0x0000ffff;
-            spa_resultCallback.append(requestCode,callback);
-            startActivityForResult(intent, requestCode);
-        }
-        else    startActivity(intent);
+        startActivityForResult(intent,0,0,callback);
+    }
+
+    public void  startActivityForResult(Intent intent,int enterAnim,int exitAnim, ResultCallback callback){
+        int requestCode = callback.hashCode();
+        requestCode &= 0x0000ffff;
+        spa_resultCallback.append(requestCode,callback);
+        startActivityForResult(intent,requestCode,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
     @SuppressLint("RestrictedApi")
@@ -194,14 +195,18 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         super.startActivityForResult(intent, requestCode);
     }
 
+    public void startActivity(Intent intent,int enterAnim,int exitAnim){
+        startActivity(intent,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
+    }
+
     @Override
-    public void startFragment(Fragment fragment, int containerId) {
-        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,0,0);
+    public void startFragment(Fragment fragment,int containerId,int enterAnim,int exitAnim) {
+        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,enterAnim,exitAnim);
     }
 
     private Map<Integer,ResultCallback> fragmentResultMap = new LinkedHashMap<>();
     @Override
-    public void startFragmentForResult(Fragment fragment,int containerId,ResultCallback callback){
+    public void startFragmentForResult(Fragment fragment,int containerId,int enterAnim,int exitAnim,ResultCallback callback){
 
         int requestCode = callback.hashCode();
         requestCode &= 0x0000ffff;
@@ -214,7 +219,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
             fragment.setArguments(bundle);
         }
         bundle.putInt("requestCode",requestCode);
-        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,0,0);
+        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,enterAnim,exitAnim);
     }
 
     @Override

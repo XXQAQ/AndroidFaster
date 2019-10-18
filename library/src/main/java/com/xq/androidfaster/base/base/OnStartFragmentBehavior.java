@@ -7,8 +7,16 @@ public interface OnStartFragmentBehavior {
 
     public void onFragmentResult(int requestCode,int resultCode, Intent intent);
 
-    public void startFragmentForResult(Fragment fragment, int containerId, ResultCallback callback);
+    default void startFragmentForResult(Fragment fragment, int containerId, ResultCallback callback) {
+        startFragmentForResult(fragment,containerId,0,0,callback);
+    }
 
-    public void startFragment(Fragment fragment,int containerId);
+    public void startFragmentForResult(Fragment fragment, int containerId,int enterAnim,int exitAnim, ResultCallback callback);
+
+    default void startFragment(Fragment fragment,int containerId){
+        startFragment(fragment,containerId,0,0);
+    }
+
+    public void startFragment(Fragment fragment,int containerId,int enterAnim,int exitAnim);
 
 }

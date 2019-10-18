@@ -12,6 +12,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.xq.androidfaster.util.tools.ActivityUtils;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
 import static android.app.Activity.RESULT_CANCELED;
@@ -223,16 +224,16 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
             }
         }
     }
+
     public void  startActivityForResult(Intent intent, ResultCallback callback){
-        int requestCode;
-        if (callback != null)
-        {
-            requestCode = callback.hashCode();
-            requestCode &= 0x0000ffff;
-            spa_resultCallback.append(requestCode,callback);
-            startActivityForResult(intent, requestCode);
-        }
-        else    startActivity(intent);
+        startActivityForResult(intent,0,0,callback);
+    }
+
+    public void  startActivityForResult(Intent intent,int enterAnim,int exitAnim, ResultCallback callback){
+        int requestCode = callback.hashCode();
+        requestCode &= 0x0000ffff;
+        spa_resultCallback.append(requestCode,callback);
+        startActivityForResult(intent,requestCode,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
     @Deprecated
@@ -247,14 +248,18 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
         super.startActivityForResult(intent, requestCode);
     }
 
-    public void startFragment(Fragment fragment, int containerId) {
-        if (getContext() instanceof OnStartFragmentBehavior)
-            ((OnStartFragmentBehavior) getContext()).startFragment(fragment,containerId);
+    public void startActivity(Intent intent,int enterAnim,int exitAnim){
+        startActivity(intent,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
-    public void startFragmentForResult(Fragment fragment,int containerId,ResultCallback callback){
+    public void startFragment(Fragment fragment,int containerId,int enterAnim,int exitAnim) {
         if (getContext() instanceof OnStartFragmentBehavior)
-            ((OnStartFragmentBehavior) getContext()).startFragmentForResult(fragment,containerId,callback);
+            ((OnStartFragmentBehavior) getContext()).startFragment(fragment,containerId,enterAnim,exitAnim);
+    }
+
+    public void startFragmentForResult(Fragment fragment,int containerId,int enterAnim,int exitAnim,ResultCallback callback){
+        if (getContext() instanceof OnStartFragmentBehavior)
+            ((OnStartFragmentBehavior) getContext()).startFragmentForResult(fragment,containerId,enterAnim,exitAnim,callback);
     }
 
     @Override

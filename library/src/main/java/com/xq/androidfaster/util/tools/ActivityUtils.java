@@ -1613,13 +1613,14 @@ public final class ActivityUtils {
         }
     }
 
-    private static Bundle getOptionsBundle(final Context context,
+    public static Bundle getOptionsBundle(final Context context,
                                            final int enterAnim,
                                            final int exitAnim) {
+        if (enterAnim == 0 && exitAnim == 0)    return null;
         return ActivityOptionsCompat.makeCustomAnimation(context, enterAnim, exitAnim).toBundle();
     }
 
-    private static Bundle getOptionsBundle(final Activity activity,
+    public static Bundle getOptionsBundle(final Activity activity,
                                            final View[] sharedElements) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return null;
         if (sharedElements == null) return null;

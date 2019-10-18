@@ -43,11 +43,6 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
         ((Activity)getContext()).onBackPressed();
     }
 
-    //指定Activity Class跳转页面
-    default void startActivity(Class mClass) {
-        getContext().startActivity(new Intent(getContext(),mClass));
-    }
-
 
 
     ///////////////////////////////////////////////////////////////////////////
