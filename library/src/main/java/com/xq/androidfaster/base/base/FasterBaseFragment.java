@@ -18,7 +18,7 @@ import com.xq.androidfaster.util.tools.ReflectUtils;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends Fragment implements IFasterBaseBehavior<T> ,FragmentUtils.OnBackClickListener {
+public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends Fragment implements IFasterBaseBehavior<T> ,FragmentUtils.OnBackClickListener,OnStartFragmentBehavior {
 
     {
         ReflectUtils.reflect(this).field("mLifecycleRegistry",getLifecycle());
@@ -252,14 +252,21 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
         startActivity(intent,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
+    @Override
     public void startFragment(Fragment fragment,int containerId,int enterAnim,int exitAnim) {
         if (getContext() instanceof OnStartFragmentBehavior)
             ((OnStartFragmentBehavior) getContext()).startFragment(fragment,containerId,enterAnim,exitAnim);
     }
 
+    @Override
     public void startFragmentForResult(Fragment fragment,int containerId,int enterAnim,int exitAnim,ResultCallback callback){
         if (getContext() instanceof OnStartFragmentBehavior)
             ((OnStartFragmentBehavior) getContext()).startFragmentForResult(fragment,containerId,enterAnim,exitAnim,callback);
+    }
+
+    @Override
+    public void onFragmentResult(int requestCode, int resultCode, Intent intent) {
+
     }
 
     @Override
