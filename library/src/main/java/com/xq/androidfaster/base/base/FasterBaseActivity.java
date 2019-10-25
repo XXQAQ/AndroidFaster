@@ -17,7 +17,9 @@ import com.xq.androidfaster.util.tools.ActivityUtils;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends AppCompatActivity implements IFasterBaseBehavior<T>, FragmentUtils.OnBackClickListener, OnStartFragmentBehavior {
 
@@ -178,6 +180,15 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         int requestCode = callback.hashCode();
         requestCode &= 0x0000ffff;
         spa_resultCallback.append(requestCode,callback);
+
+        Bundle bundle = intent.getExtras();
+        if (bundle == null){
+            bundle = new Bundle();
+            intent.putExtras(bundle);
+        }
+        bundle.putInt("enterAnim",enterAnim);
+        bundle.putInt("exitAnim",exitAnim);
+
         startActivityForResult(intent,requestCode,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
@@ -196,12 +207,37 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
     }
 
     public void startActivity(Intent intent,int enterAnim,int exitAnim){
+
+        Bundle bundle = intent.getExtras();
+        if (bundle == null){
+            bundle = new Bundle();
+            intent.putExtras(bundle);
+        }
+        bundle.putInt("enterAnim",enterAnim);
+        bundle.putInt("exitAnim",exitAnim);
+
         startActivity(intent,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
+    private List<Fragment> fragmentStack = new CopyOnWriteArrayList<>();
     @Override
     public void startFragment(Fragment fragment,int containerId,int enterAnim,int exitAnim) {
-        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,enterAnim,exitAnim);
+
+        Bundle bundle = fragment.getArguments();
+        if (bundle == null)
+        {
+            bundle = new Bundle();
+            fragment.setArguments(bundle);
+        }
+        bundle.putInt("enterAnim",enterAnim);
+        bundle.putInt("exitAnim",exitAnim);
+
+        if (fragmentStack != null && !fragmentStack.isEmpty())
+            FragmentUtils.hide(fragmentStack.get(fragmentStack.size()-1));
+
+        fragmentStack.add(fragment);
+
+        FragmentUtils.add(getTopFragmentManager(),fragment,containerId,true,enterAnim,exitAnim,enterAnim,exitAnim);
     }
 
     private Map<Integer,ResultCallback> fragmentResultMap = new LinkedHashMap<>();
@@ -219,7 +255,15 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
             fragment.setArguments(bundle);
         }
         bundle.putInt("requestCode",requestCode);
-        FragmentUtils.add(getParentFragmentManager(),fragment,containerId,true,enterAnim,exitAnim);
+        bundle.putInt("enterAnim",enterAnim);
+        bundle.putInt("exitAnim",exitAnim);
+
+        if (fragmentStack != null && !fragmentStack.isEmpty())
+            FragmentUtils.hide(fragmentStack.get(fragmentStack.size()-1));
+
+        fragmentStack.add(fragment);
+
+        FragmentUtils.add(getTopFragmentManager(),fragment,containerId,true,enterAnim,exitAnim,enterAnim,exitAnim);
     }
 
     @Override
@@ -298,9 +342,29 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
     @Deprecated
     @Override
     public void onBackPressed() {
-        if (!FragmentUtils.dispatchBackPress(getSupportFragmentManager()))
+        if (!FragmentUtils.dispatchBackPress(getTopFragmentManager()))
         {
-            if (!onBackClick()) super.onBackPressed();
+            if (!onBackClick()){
+                if (fragmentStack != null && !fragmentStack.isEmpty())
+                {
+                    fragmentStack.remove(fragmentStack.size()-1);
+                    if (!fragmentStack.isEmpty())
+                        FragmentUtils.show(fragmentStack.get(fragmentStack.size()-1));
+                }
+                super.onBackPressed();
+            }
+        }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        if (getIntent() != null && getIntent().getExtras() != null){
+            Bundle bundle = getIntent().getExtras();
+            int enterAnim = bundle.getInt("enterAnim",0);
+            int exitAnim = bundle.getInt("exitAnim",0);
+            if (enterAnim != 0 || exitAnim != 0)
+                overridePendingTransition(enterAnim,exitAnim);
         }
     }
 

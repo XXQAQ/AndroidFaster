@@ -233,6 +233,15 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
         int requestCode = callback.hashCode();
         requestCode &= 0x0000ffff;
         spa_resultCallback.append(requestCode,callback);
+
+        Bundle bundle = intent.getExtras();
+        if (bundle == null){
+            bundle = new Bundle();
+            intent.putExtras(bundle);
+        }
+        bundle.putInt("enterAnim",enterAnim);
+        bundle.putInt("exitAnim",exitAnim);
+
         startActivityForResult(intent,requestCode,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
@@ -249,6 +258,15 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     }
 
     public void startActivity(Intent intent,int enterAnim,int exitAnim){
+
+        Bundle bundle = intent.getExtras();
+        if (bundle == null){
+            bundle = new Bundle();
+            intent.putExtras(bundle);
+        }
+        bundle.putInt("enterAnim",enterAnim);
+        bundle.putInt("exitAnim",exitAnim);
+
         startActivity(intent,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
@@ -320,6 +338,15 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     @Override
     public void initFragment(Fragment fragment) {
 
+    }
+
+    @Override
+    public void finish() {
+        if (getContext() instanceof FasterBaseActivity && FragmentUtils.getTopShowInStack(getTopFragmentManager()) == this){
+            popFragment();
+        } else {
+            removeMe();
+        }
     }
 
     @Override

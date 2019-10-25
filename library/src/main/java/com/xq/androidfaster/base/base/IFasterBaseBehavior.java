@@ -1,7 +1,6 @@
 package com.xq.androidfaster.base.base;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,22 +24,17 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
     //解析数据
     public void resolveBundle(Bundle bundle);
 
-    //获取资源文件
-    default Resources getResources(){
-        return getContext().getResources();
-    }
-
     //关闭当前页面(兼容Activity与Fragment的使用情形)
-    default void finish() {
-        if (getAreActivity() != null)
-            getAreActivity().finish();
-        else if (getAreFragment() != null)
-            removeMe();
-    }
+    public void finish();
 
     //回退(兼容Activity与Fragment的使用情形)
     default void back() {
         ((Activity)getContext()).onBackPressed();
+    }
+
+    //获取资源文件
+    default Resources getResources(){
+        return getContext().getResources();
     }
 
 
@@ -138,11 +132,6 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
         FragmentUtils.replace(getCPFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);
     }
 
-    //隐藏Fragment
-    default void hideFragment(String fragmentName){
-        hideFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
-    }
-
     default void hideFragment(Fragment fragment){
         FragmentUtils.hide(fragment);
     }
@@ -151,11 +140,6 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
     default void hideMe(){
         if (getAreFragment() != null)
             FragmentUtils.hide(getAreFragment());
-    }
-
-    //显示Fragment
-    default void showFragment(String fragmentName){
-        showFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
     }
 
     default void showFragment(Fragment fragment){
@@ -168,11 +152,6 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
             FragmentUtils.show(getAreFragment());
     }
 
-    //移除Fragment
-    default void removeFragment(String fragmentName){
-        removeFragment(getCPFragmentManager().findFragmentByTag(fragmentName));
-    }
-
     default void removeFragment(Fragment fragment){
         FragmentUtils.remove(fragment);
     }
@@ -180,11 +159,7 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
     //如果当前页面是Fragment，则移除自身
     default void removeMe(){
         if (getAreFragment() != null)
-        {
-            if (FragmentUtils.getTopShowInStack(getParentFragmentManager()) == getAreFragment())
-                FragmentUtils.pop(getParentFragmentManager());
             FragmentUtils.remove(getAreFragment());
-        }
     }
 
     //弹出Fragment
