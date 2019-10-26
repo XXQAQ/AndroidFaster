@@ -111,4 +111,9 @@ public abstract class FasterBaseAnother<T extends IFasterBaseBehavior> implement
         return ContextCompat.getColor(getContext(),resId);
     }
 
+    @Override
+    public void finish() {
+        getBindAnother().finish();
+    }
+
 }
