@@ -17,9 +17,9 @@ import com.xq.androidfaster.util.tools.ActivityUtils;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends AppCompatActivity implements IFasterBaseBehavior<T>, FragmentUtils.OnBackClickListener, OnStartFragmentBehavior {
 
@@ -181,13 +181,10 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         requestCode &= 0x0000ffff;
         spa_resultCallback.append(requestCode,callback);
 
-        Bundle bundle = intent.getExtras();
-        if (bundle == null){
-            bundle = new Bundle();
-            intent.putExtras(bundle);
-        }
+        Bundle bundle = new Bundle(intent.getExtras());
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
+        intent.putExtras(bundle);
 
         startActivityForResult(intent,requestCode,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
@@ -208,18 +205,15 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
 
     public void startActivity(Intent intent,int enterAnim,int exitAnim){
 
-        Bundle bundle = intent.getExtras();
-        if (bundle == null){
-            bundle = new Bundle();
-            intent.putExtras(bundle);
-        }
+        Bundle bundle = new Bundle(intent.getExtras());
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
+        intent.putExtras(bundle);
 
         startActivity(intent,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
 
-    private List<Fragment> fragmentStack = new CopyOnWriteArrayList<>();
+
     @Override
     public void startFragment(Fragment fragment,int containerId,int enterAnim,int exitAnim) {
 
@@ -232,10 +226,14 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
 
-        if (fragmentStack != null && !fragmentStack.isEmpty())
-            FragmentUtils.hide(fragmentStack.get(fragmentStack.size()-1));
-
-        fragmentStack.add(fragment);
+        List<Fragment> containerFragments = new LinkedList<>();
+        for (Fragment f : FragmentUtils.getFragments(getTopFragmentManager())){
+            if (f.getArguments() != null && f.getArguments().getInt(FragmentUtils.ARGS_ID,0) == containerId){
+                containerFragments.add(f);
+            }
+        }
+        if (!containerFragments.isEmpty())
+            FragmentUtils.hide(containerFragments.get(containerFragments.size()-1));
 
         FragmentUtils.add(getTopFragmentManager(),fragment,containerId,true,enterAnim,exitAnim,enterAnim,exitAnim);
     }
@@ -258,10 +256,14 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
 
-        if (fragmentStack != null && !fragmentStack.isEmpty())
-            FragmentUtils.hide(fragmentStack.get(fragmentStack.size()-1));
-
-        fragmentStack.add(fragment);
+        List<Fragment> containerFragments = new LinkedList<>();
+        for (Fragment f : FragmentUtils.getFragments(getTopFragmentManager())){
+            if (f.getArguments() != null && f.getArguments().getInt(FragmentUtils.ARGS_ID,0) == containerId){
+                containerFragments.add(f);
+            }
+        }
+        if (!containerFragments.isEmpty())
+            FragmentUtils.hide(containerFragments.get(containerFragments.size()-1));
 
         FragmentUtils.add(getTopFragmentManager(),fragment,containerId,true,enterAnim,exitAnim,enterAnim,exitAnim);
     }
@@ -342,15 +344,8 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
     @Deprecated
     @Override
     public void onBackPressed() {
-        if (!FragmentUtils.dispatchBackPress(getTopFragmentManager()))
-        {
+        if (!FragmentUtils.dispatchBackPress(getTopFragmentManager())) {
             if (!onBackClick()){
-                if (fragmentStack != null && !fragmentStack.isEmpty())
-                {
-                    fragmentStack.remove(fragmentStack.size()-1);
-                    if (!fragmentStack.isEmpty())
-                        FragmentUtils.show(fragmentStack.get(fragmentStack.size()-1));
-                }
                 super.onBackPressed();
             }
         }

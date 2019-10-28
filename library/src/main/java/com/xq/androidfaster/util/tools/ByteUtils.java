@@ -33,8 +33,20 @@ public final class ByteUtils {
         return b;
     }
 
+    public static byte[] short2Bytes(short c) {
+        byte[] b = new byte[2];
+        b[0] = (byte) ((c & 0xFF00) >> 8);
+        b[1] = (byte) (c & 0xFF);
+        return b;
+    }
+
     public static char bytes2Char(byte[] b) {
         char c = (char) (((b[0] & 0xFF) << 8) | (b[1] & 0xFF));
+        return c;
+    }
+
+    public static short bytes2Short(byte[] b) {
+        short c = (short) (((b[0] & 0xFF) << 8) | (b[1] & 0xFF));
         return c;
     }
 

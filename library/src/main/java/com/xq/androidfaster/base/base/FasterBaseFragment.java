@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.xq.androidfaster.util.tools.ActivityUtils;
 import com.xq.androidfaster.util.tools.FragmentUtils;
 import com.xq.androidfaster.util.tools.ReflectUtils;
+import java.util.LinkedList;
+import java.util.List;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -160,6 +162,20 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+
+        List<Fragment> containerFragments = new LinkedList<>();
+        for (Fragment f : FragmentUtils.getFragments(getTopFragmentManager())){
+            if (getArguments()!= null && f.getArguments() != null && getArguments().getInt(FragmentUtils.ARGS_ID) != 0 && f.getArguments().getInt(FragmentUtils.ARGS_ID,0) == getArguments().getInt(FragmentUtils.ARGS_ID,0)){
+                containerFragments.add(f);
+            }
+        }
+        if (!containerFragments.isEmpty())
+            FragmentUtils.show(containerFragments.get(containerFragments.size()-1));
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
@@ -234,13 +250,10 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
         requestCode &= 0x0000ffff;
         spa_resultCallback.append(requestCode,callback);
 
-        Bundle bundle = intent.getExtras();
-        if (bundle == null){
-            bundle = new Bundle();
-            intent.putExtras(bundle);
-        }
+        Bundle bundle = new Bundle(intent.getExtras());
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
+        intent.putExtras(bundle);
 
         startActivityForResult(intent,requestCode,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }
@@ -259,13 +272,10 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
 
     public void startActivity(Intent intent,int enterAnim,int exitAnim){
 
-        Bundle bundle = intent.getExtras();
-        if (bundle == null){
-            bundle = new Bundle();
-            intent.putExtras(bundle);
-        }
+        Bundle bundle = new Bundle(intent.getExtras());
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
+        intent.putExtras(bundle);
 
         startActivity(intent,ActivityUtils.getOptionsBundle(getContext(),enterAnim,exitAnim));
     }

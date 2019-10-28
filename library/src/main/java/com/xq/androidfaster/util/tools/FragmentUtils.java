@@ -30,10 +30,10 @@ public final class FragmentUtils {
     private static final int TYPE_REMOVE_FRAGMENT    = 0x01 << 5;
     private static final int TYPE_REMOVE_TO_FRAGMENT = 0x01 << 6;
 
-    private static final String ARGS_ID           = "args_id";
-    private static final String ARGS_IS_HIDE      = "args_is_hide";
-    private static final String ARGS_IS_ADD_STACK = "args_is_add_stack";
-    private static final String ARGS_TAG          = "args_tag";
+    public static final String ARGS_ID           = "args_id";
+    public static final String ARGS_IS_HIDE      = "args_is_hide";
+    public static final String ARGS_IS_ADD_STACK = "args_is_add_stack";
+    public static final String ARGS_TAG          = "args_tag";
 
     private FragmentUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
