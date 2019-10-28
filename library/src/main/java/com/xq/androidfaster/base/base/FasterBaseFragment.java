@@ -152,18 +152,6 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Deprecated
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        destroy();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
 
         List<Fragment> containerFragments = new LinkedList<>();
         for (Fragment f : FragmentUtils.getFragments(getTopFragmentManager())){
@@ -172,7 +160,14 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
             }
         }
         if (!containerFragments.isEmpty())
-            FragmentUtils.show(containerFragments.get(containerFragments.size()-1));
+            FragmentUtils.show(containerFragments.get(containerFragments.size()-1-1));
+    }
+
+    @Deprecated
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        destroy();
     }
 
     @Override
