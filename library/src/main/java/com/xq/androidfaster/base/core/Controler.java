@@ -64,7 +64,7 @@ public interface Controler extends Life {
 
     //获取上级FragmentManager
     default FragmentManager getTopFragmentManager() {
-        return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
+        return ((FragmentActivity)getContext()).getSupportFragmentManager();
     }
 
     //获取布局构造器
