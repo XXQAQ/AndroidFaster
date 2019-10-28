@@ -159,7 +159,7 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
                 containerFragments.add(f);
             }
         }
-        if (!containerFragments.isEmpty())
+        if (containerFragments.size() >= 2)
             FragmentUtils.show(containerFragments.get(containerFragments.size()-1-1));
     }
 
