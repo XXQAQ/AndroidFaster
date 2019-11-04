@@ -43,6 +43,16 @@ public final class ThreadUtils {
         return Looper.myLooper() == Looper.getMainLooper();
     }
 
+    private static final Executor THREAD_POOL_SIMPLE = Executors.newFixedThreadPool(2*CPU_COUNT+1);
+    /**
+     * Run on the child thread.
+     *
+     * @param runnable The Runnable
+     */
+    public static void runOnChildThread(Runnable runnable) {
+        THREAD_POOL_SIMPLE.execute(runnable);
+    }
+
     /**
      * Run on the main thread.
      *
