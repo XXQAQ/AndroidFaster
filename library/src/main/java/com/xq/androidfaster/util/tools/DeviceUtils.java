@@ -8,24 +8,23 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Debug;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.RequiresPermission;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-
 import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.UUID;
-
 import static android.Manifest.permission.ACCESS_WIFI_STATE;
+import static android.Manifest.permission.CHANGE_WIFI_STATE;
 import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.content.Context.WIFI_SERVICE;
 import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class DeviceUtils {
@@ -53,6 +52,65 @@ public final class DeviceUtils {
             serial = "ESYDV000";
         }
         return new UUID(devIDShort.hashCode(), serial.hashCode()).toString();
+    }
+
+    /**
+     * Shutdown the device
+     * <p>Requires root permission
+     * or hold {@code android:sharedUserId="android.uid.system"},
+     * {@code <uses-permission android:name="android.permission.SHUTDOWN/>}
+     * in manifest.</p>
+     */
+    public static void shutdown() {
+        ShellUtils.execCmd("reboot -p", true);
+        Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
+        intent.putExtra("android.intent.extra.KEY_CONFIRM", false);
+        getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    /**
+     * Reboot the device.
+     * <p>Requires root permission
+     * or hold {@code android:sharedUserId="android.uid.system"} in manifest.</p>
+     */
+    public static void reboot() {
+        ShellUtils.execCmd("reboot", true);
+        Intent intent = new Intent(Intent.ACTION_REBOOT);
+        intent.putExtra("nowait", 1);
+        intent.putExtra("interval", 1);
+        intent.putExtra("window", 0);
+        getApp().sendBroadcast(intent);
+    }
+
+    /**
+     * Reboot the device.
+     * <p>Requires root permission
+     * or hold {@code android:sharedUserId="android.uid.system"},
+     * {@code <uses-permission android:name="android.permission.REBOOT" />}</p>
+     *
+     * @param reason code to pass to the kernel (e.g., "recovery") to
+     *               request special boot modes, or null.
+     */
+    public static void reboot(final String reason) {
+        PowerManager pm = (PowerManager) getApp().getSystemService(Context.POWER_SERVICE);
+        //noinspection ConstantConditions
+        pm.reboot(reason);
+    }
+
+    /**
+     * Reboot the device to recovery.
+     * <p>Requires root permission.</p>
+     */
+    public static void reboot2Recovery() {
+        ShellUtils.execCmd("reboot recovery", true);
+    }
+
+    /**
+     * Reboot the device to bootloader.
+     * <p>Requires root permission.</p>
+     */
+    public static void reboot2Bootloader() {
+        ShellUtils.execCmd("reboot bootloader", true);
     }
 
     /**
@@ -302,7 +360,7 @@ public final class DeviceUtils {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static boolean isAdbEnabled() {
         return Settings.Secure.getInt(
-                getApp().getContentResolver(),
+                Utils.getApp().getContentResolver(),
                 Settings.Global.ADB_ENABLED, 0
         ) > 0;
     }
@@ -333,22 +391,50 @@ public final class DeviceUtils {
     @SuppressLint("HardwareIds")
     public static String getAndroidID() {
         String id = Settings.Secure.getString(
-                getApp().getContentResolver(),
+                Utils.getApp().getContentResolver(),
                 Settings.Secure.ANDROID_ID
         );
+        if ("9774d56d682e549c".equals(id)) return "";
         return id == null ? "" : id;
     }
 
     /**
      * Return the MAC address.
      * <p>Must hold {@code <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />},
-     * {@code <uses-permission android:name="android.permission.INTERNET" />}</p>
+     * {@code <uses-permission android:name="android.permission.INTERNET" />},
+     * {@code <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />}</p>
      *
      * @return the MAC address
      */
-    @RequiresPermission(allOf = {ACCESS_WIFI_STATE, INTERNET})
+    @RequiresPermission(allOf = {ACCESS_WIFI_STATE, INTERNET, CHANGE_WIFI_STATE})
     public static String getMacAddress() {
+        String macAddress = getMacAddress((String[]) null);
+        if (!macAddress.equals("") || getWifiEnabled()) return macAddress;
+        setWifiEnabled(true);
+        setWifiEnabled(false);
         return getMacAddress((String[]) null);
+    }
+
+    private static boolean getWifiEnabled() {
+        @SuppressLint("WifiManagerLeak")
+        WifiManager manager = (WifiManager) Utils.getApp().getSystemService(WIFI_SERVICE);
+        if (manager == null) return false;
+        return manager.isWifiEnabled();
+    }
+
+    /**
+     * Enable or disable wifi.
+     * <p>Must hold {@code <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />}</p>
+     *
+     * @param enabled True to enabled, false otherwise.
+     */
+    @RequiresPermission(CHANGE_WIFI_STATE)
+    private static void setWifiEnabled(final boolean enabled) {
+        @SuppressLint("WifiManagerLeak")
+        WifiManager manager = (WifiManager) Utils.getApp().getSystemService(WIFI_SERVICE);
+        if (manager == null) return;
+        if (enabled == manager.isWifiEnabled()) return;
+        manager.setWifiEnabled(enabled);
     }
 
     /**
@@ -394,8 +480,8 @@ public final class DeviceUtils {
     @SuppressLint({"MissingPermission", "HardwareIds"})
     private static String getMacAddressByWifiInfo() {
         try {
-            final WifiManager wifi = (WifiManager) getApp()
-                    .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            final WifiManager wifi = (WifiManager) Utils.getApp()
+                    .getApplicationContext().getSystemService(WIFI_SERVICE);
             if (wifi != null) {
                 final WifiInfo info = wifi.getConnectionInfo();
                 if (info != null) return info.getMacAddress();
@@ -532,71 +618,12 @@ public final class DeviceUtils {
     }
 
     /**
-     * Shutdown the device
-     * <p>Requires root permission
-     * or hold {@code android:sharedUserId="android.uid.system"},
-     * {@code <uses-permission android:name="android.permission.SHUTDOWN/>}
-     * in manifest.</p>
-     */
-    public static void shutdown() {
-        ShellUtils.execCmd("reboot -p", true);
-        Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
-        intent.putExtra("android.intent.extra.KEY_CONFIRM", false);
-        getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-    }
-
-    /**
-     * Reboot the device.
-     * <p>Requires root permission
-     * or hold {@code android:sharedUserId="android.uid.system"} in manifest.</p>
-     */
-    public static void reboot() {
-        ShellUtils.execCmd("reboot", true);
-        Intent intent = new Intent(Intent.ACTION_REBOOT);
-        intent.putExtra("nowait", 1);
-        intent.putExtra("interval", 1);
-        intent.putExtra("window", 0);
-        getApp().sendBroadcast(intent);
-    }
-
-    /**
-     * Reboot the device.
-     * <p>Requires root permission
-     * or hold {@code android:sharedUserId="android.uid.system"},
-     * {@code <uses-permission android:name="android.permission.REBOOT" />}</p>
-     *
-     * @param reason code to pass to the kernel (e.g., "recovery") to
-     *               request special boot modes, or null.
-     */
-    public static void reboot(final String reason) {
-        PowerManager pm = (PowerManager) getApp().getSystemService(Context.POWER_SERVICE);
-        //noinspection ConstantConditions
-        pm.reboot(reason);
-    }
-
-    /**
-     * Reboot the device to recovery.
-     * <p>Requires root permission.</p>
-     */
-    public static void reboot2Recovery() {
-        ShellUtils.execCmd("reboot recovery", true);
-    }
-
-    /**
-     * Reboot the device to bootloader.
-     * <p>Requires root permission.</p>
-     */
-    public static void reboot2Bootloader() {
-        ShellUtils.execCmd("reboot bootloader", true);
-    }
-
-    /**
      * Return whether device is tablet.
      *
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isTablet() {
-        return (getApp().getResources().getConfiguration().screenLayout
+        return (Utils.getApp().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
@@ -612,19 +639,14 @@ public final class DeviceUtils {
                 || Build.FINGERPRINT.toLowerCase().contains("test-keys")
                 || Build.MODEL.contains("google_sdk")
                 || Build.MODEL.contains("Emulator")
-                || Build.SERIAL.equalsIgnoreCase("unknown")
-                || Build.SERIAL.equalsIgnoreCase("android")
                 || Build.MODEL.contains("Android SDK built for x86")
                 || Build.MANUFACTURER.contains("Genymotion")
                 || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
                 || "google_sdk".equals(Build.PRODUCT);
         if (checkProperty) return true;
 
-        boolean checkDebuggerConnected = Debug.isDebuggerConnected();
-        if (checkDebuggerConnected) return true;
-
         String operatorName = "";
-        TelephonyManager tm = (TelephonyManager) getApp().getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE);
         if (tm != null) {
             String name = tm.getNetworkOperatorName();
             if (name != null) {
@@ -638,8 +660,11 @@ public final class DeviceUtils {
         Intent intent = new Intent();
         intent.setData(Uri.parse(url));
         intent.setAction(Intent.ACTION_DIAL);
-        boolean checkDial = intent.resolveActivity(getApp().getPackageManager()) != null;
+        boolean checkDial = intent.resolveActivity(Utils.getApp().getPackageManager()) == null;
         if (checkDial) return true;
+
+//        boolean checkDebuggerConnected = Debug.isDebuggerConnected();
+//        if (checkDebuggerConnected) return true;
 
         return false;
     }
