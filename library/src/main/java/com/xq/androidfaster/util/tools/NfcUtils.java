@@ -8,15 +8,11 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 
 import static com.xq.androidfaster.util.tools.Utils.getApp;
 
-@RequiresApi(api = Build.VERSION_CODES.GINGERBREAD_MR1)
 public final class NfcUtils {
 
     /* NFC 适配器 */

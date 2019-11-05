@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
-import static com.xq.androidfaster.util.tools.Utils.getApp;
-
 public class NotificationUtils {
 
     private NotificationUtils() {
@@ -22,7 +20,7 @@ public class NotificationUtils {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Intent para disparar o broadcast
-        PendingIntent p = PendingIntent.getActivity(getApp(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent p = PendingIntent.getActivity(Utils.getApp(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Cria a notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
@@ -42,7 +40,7 @@ public class NotificationUtils {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Intent para disparar o broadcast
-        PendingIntent p = intent != null ? PendingIntent.getActivity(getApp(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT) : null;
+        PendingIntent p = intent != null ? PendingIntent.getActivity(Utils.getApp(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT) : null;
 
         // Cria a notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
@@ -61,10 +59,10 @@ public class NotificationUtils {
     // Notificação simples sem abrir intent (usada para alertas, ex: no wear)
     public static void create(int smallIcon, String contentTitle, String contentText) {
         NotificationManager manager =
-                (NotificationManager) getApp().getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) Utils.getApp().getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Cria a notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApp())
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(Utils.getApp())
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setSmallIcon(smallIcon)
@@ -76,15 +74,14 @@ public class NotificationUtils {
     }
 
     public static void cancel(@Nullable String tag, final int id) {
-        NotificationManagerCompat.from(getApp()).cancel(tag, id);
+        NotificationManagerCompat.from(Utils.getApp()).cancel(tag, id);
     }
 
     public static void cancel(final int id) {
-        NotificationManagerCompat.from(getApp()).cancel(id);
+        NotificationManagerCompat.from(Utils.getApp()).cancel(id);
     }
 
     public static void cancelAll() {
-        NotificationManagerCompat.from(getApp()).cancelAll();
+        NotificationManagerCompat.from(Utils.getApp()).cancelAll();
     }
-
 }

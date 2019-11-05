@@ -1,6 +1,5 @@
 package com.xq.androidfaster.util.tools;
 
-
 public final class LunarUtils {
 
     private LunarUtils() {

@@ -1,5 +1,6 @@
 package com.xq.androidfaster.util.tools;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -27,10 +28,12 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import java.io.BufferedOutputStream;
@@ -42,8 +45,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class ImageUtils {
 
@@ -116,7 +117,7 @@ public final class ImageUtils {
      * @return drawable
      */
     public static Drawable bitmap2Drawable(final Bitmap bitmap) {
-        return bitmap == null ? null : new BitmapDrawable(getApp().getResources(), bitmap);
+        return bitmap == null ? null : new BitmapDrawable(Utils.getApp().getResources(), bitmap);
     }
 
     /**
@@ -268,6 +269,44 @@ public final class ImageUtils {
         options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(data, offset, data.length, options);
+    }
+
+    /**
+     * Return bitmap.
+     *
+     * @param resId The resource id.
+     * @return bitmap
+     */
+    public static Bitmap getBitmap(@DrawableRes final int resId) {
+        Drawable drawable = ContextCompat.getDrawable(Utils.getApp(), resId);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    /**
+     * Return bitmap.
+     *
+     * @param resId     The resource id.
+     * @param maxWidth  The maximum width.
+     * @param maxHeight The maximum height.
+     * @return bitmap
+     */
+    public static Bitmap getBitmap(@DrawableRes final int resId,
+                                   final int maxWidth,
+                                   final int maxHeight) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        final Resources resources = Utils.getApp().getResources();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(resources, resId, options);
+        options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(resources, resId, options);
     }
 
     /**
@@ -1158,7 +1197,7 @@ public final class ImageUtils {
         RenderScript rs = null;
         Bitmap ret = recycle ? src : src.copy(src.getConfig(), true);
         try {
-            rs = RenderScript.create(getApp());
+            rs = RenderScript.create(Utils.getApp());
             rs.setMessageHandler(new RenderScript.RSMessageHandler());
             Allocation input = Allocation.createFromBitmap(rs,
                     ret,
@@ -1506,7 +1545,7 @@ public final class ImageUtils {
      * @param filePath The path of file.
      * @return the type of image
      */
-    public static String getImageType(final String filePath) {
+    public static ImageType getImageType(final String filePath) {
         return getImageType(getFileByPath(filePath));
     }
 
@@ -1516,12 +1555,12 @@ public final class ImageUtils {
      * @param file The file.
      * @return the type of image
      */
-    public static String getImageType(final File file) {
-        if (file == null) return "";
+    public static ImageType getImageType(final File file) {
+        if (file == null) return null;
         InputStream is = null;
         try {
             is = new FileInputStream(file);
-            String type = getImageType(is);
+            ImageType type = getImageType(is);
             if (type != null) {
                 return type;
             }
@@ -1536,35 +1575,56 @@ public final class ImageUtils {
                 e.printStackTrace();
             }
         }
-        return getFileExtension(file.getAbsolutePath()).toUpperCase();
+        return null;
     }
 
-    private static String getFileExtension(final String filePath) {
-        if (isSpace(filePath)) return filePath;
-        int lastPoi = filePath.lastIndexOf('.');
-        int lastSep = filePath.lastIndexOf(File.separator);
-        if (lastPoi == -1 || lastSep >= lastPoi) return "";
-        return filePath.substring(lastPoi + 1);
-    }
-
-    private static String getImageType(final InputStream is) {
+    private static ImageType getImageType(final InputStream is) {
         if (is == null) return null;
         try {
-            byte[] bytes = new byte[8];
-            return is.read(bytes, 0, 8) != -1 ? getImageType(bytes) : null;
+            byte[] bytes = new byte[12];
+            return is.read(bytes) != -1 ? getImageType(bytes) : null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private static String getImageType(final byte[] bytes) {
-        if (isJPEG(bytes)) return "JPEG";
-        if (isGIF(bytes)) return "GIF";
-        if (isPNG(bytes)) return "PNG";
-        if (isBMP(bytes)) return "BMP";
-        return null;
+    private static ImageType getImageType(final byte[] bytes) {
+        String type = bytes2HexString(bytes).toUpperCase();
+        if (type.contains("FFD8FF")) {
+            return ImageType.TYPE_JPG;
+        } else if (type.contains("89504E47")) {
+            return ImageType.TYPE_PNG;
+        } else if (type.contains("47494638")) {
+            return ImageType.TYPE_GIF;
+        } else if (type.contains("49492A00") || type.contains("4D4D002A")) {
+            return ImageType.TYPE_TIFF;
+        } else if (type.contains("424D")) {
+            return ImageType.TYPE_BMP;
+        } else if (type.startsWith("52494646") && type.endsWith("57454250")) {//524946461c57000057454250-12个字节
+            return ImageType.TYPE_WEBP;
+        } else if (type.contains("00000100") || type.contains("00000200")) {
+            return ImageType.TYPE_ICO;
+        } else {
+            return ImageType.TYPE_UNKNOWN;
+        }
     }
+
+    private static final char[] hexDigits =
+            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+    private static String bytes2HexString(final byte[] bytes) {
+        if (bytes == null) return "";
+        int len = bytes.length;
+        if (len <= 0) return "";
+        char[] ret = new char[len << 1];
+        for (int i = 0, j = 0; i < len; i++) {
+            ret[j++] = hexDigits[bytes[i] >> 4 & 0x0f];
+            ret[j++] = hexDigits[bytes[i] & 0x0f];
+        }
+        return new String(ret);
+    }
+
 
     private static boolean isJPEG(final byte[] b) {
         return b.length >= 2
@@ -1924,6 +1984,34 @@ public final class ImageUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public enum ImageType {
+        TYPE_JPG("jpg"),
+
+        TYPE_PNG("png"),
+
+        TYPE_GIF("gif"),
+
+        TYPE_TIFF("tiff"),
+
+        TYPE_BMP("bmp"),
+
+        TYPE_WEBP("webp"),
+
+        TYPE_ICO("ico"),
+
+        TYPE_UNKNOWN("unknown");
+
+        String value;
+
+        ImageType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 }

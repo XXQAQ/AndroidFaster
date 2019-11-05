@@ -58,7 +58,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
 import static android.graphics.BlurMaskFilter.Blur;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class SpanUtils {
 
@@ -126,7 +125,7 @@ public final class SpanUtils {
     private int spaceSize;
     private int spaceColor;
 
-    private SpannableStringBuilder mBuilder;
+    private SerializableSpannableStringBuilder mBuilder;
 
     private       int mType;
     private final int mTypeCharSequence = 0;
@@ -139,7 +138,7 @@ public final class SpanUtils {
     }
 
     public SpanUtils() {
-        mBuilder = new CustomSpannableStringBuilder();
+        mBuilder = new SerializableSpannableStringBuilder();
         mText = "";
         mType = -1;
         setDefault();
@@ -771,6 +770,10 @@ public final class SpanUtils {
         mType = type;
     }
 
+    public SpannableStringBuilder get() {
+        return mBuilder;
+    }
+
     /**
      * Create the span string.
      *
@@ -910,12 +913,9 @@ public final class SpanUtils {
 
     private void updateImage() {
         int start = mBuilder.length();
-        if (start == 0) {
-            mBuilder.append(Character.toString((char) 2));
-            start = 1;
-        }
-        mBuilder.append("<img>");
-        int end = start + 5;
+        mText = "<img>";
+        updateCharCharSequence();
+        int end = mBuilder.length();
         if (imageBitmap != null) {
             mBuilder.setSpan(new CustomImageSpan(imageBitmap, alignImage), start, end, flag);
         } else if (imageDrawable != null) {
@@ -929,8 +929,9 @@ public final class SpanUtils {
 
     private void updateSpace() {
         int start = mBuilder.length();
-        mBuilder.append("< >");
-        int end = start + 3;
+        mText = "< >";
+        updateCharCharSequence();
+        int end = mBuilder.length();
         mBuilder.setSpan(new SpaceSpan(spaceSize, spaceColor), start, end, flag);
     }
 
@@ -1000,6 +1001,7 @@ public final class SpanUtils {
         @Override
         public void chooseHeight(final CharSequence text, final int start, final int end,
                                  final int spanstartv, final int v, final Paint.FontMetricsInt fm) {
+            LogUtils.e(fm, sfm);
             if (sfm == null) {
                 sfm = new Paint.FontMetricsInt();
                 sfm.top = fm.top;
@@ -1039,13 +1041,14 @@ public final class SpanUtils {
             if (end == ((Spanned) text).getSpanEnd(this)) {
                 sfm = null;
             }
+            LogUtils.e(fm, sfm);
         }
     }
 
     static class SpaceSpan extends ReplacementSpan {
 
-        private final int width;
-        private final int color;
+        private final int   width;
+        private final Paint paint = new Paint();
 
         private SpaceSpan(final int width) {
             this(width, Color.TRANSPARENT);
@@ -1054,7 +1057,8 @@ public final class SpanUtils {
         private SpaceSpan(final int width, final int color) {
             super();
             this.width = width;
-            this.color = color;
+            paint.setColor(color);
+            paint.setStyle(Paint.Style.FILL);
         }
 
         @Override
@@ -1071,16 +1075,7 @@ public final class SpanUtils {
                          @IntRange(from = 0) final int end,
                          final float x, final int top, final int y, final int bottom,
                          @NonNull final Paint paint) {
-            Paint.Style style = paint.getStyle();
-            int color = paint.getColor();
-
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(this.color);
-
-            canvas.drawRect(x, top, x + width, bottom, paint);
-
-            paint.setStyle(style);
-            paint.setColor(color);
+            canvas.drawRect(x, top, x + width, bottom, this.paint);
         }
     }
 
@@ -1216,7 +1211,7 @@ public final class SpanUtils {
 
         private CustomImageSpan(final Bitmap b, final int verticalAlignment) {
             super(verticalAlignment);
-            mDrawable = new BitmapDrawable(getApp().getResources(), b);
+            mDrawable = new BitmapDrawable(Utils.getApp().getResources(), b);
             mDrawable.setBounds(
                     0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight()
             );
@@ -1249,9 +1244,9 @@ public final class SpanUtils {
                 Bitmap bitmap;
                 try {
                     InputStream is =
-                            getApp().getContentResolver().openInputStream(mContentUri);
+                            Utils.getApp().getContentResolver().openInputStream(mContentUri);
                     bitmap = BitmapFactory.decodeStream(is);
-                    drawable = new BitmapDrawable(getApp().getResources(), bitmap);
+                    drawable = new BitmapDrawable(Utils.getApp().getResources(), bitmap);
                     drawable.setBounds(
                             0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()
                     );
@@ -1263,7 +1258,7 @@ public final class SpanUtils {
                 }
             } else {
                 try {
-                    drawable = ContextCompat.getDrawable(getApp(), mResourceId);
+                    drawable = ContextCompat.getDrawable(Utils.getApp(), mResourceId);
                     drawable.setBounds(
                             0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight()
                     );
@@ -1406,6 +1401,12 @@ public final class SpanUtils {
         }
     }
 
+    private static class SerializableSpannableStringBuilder extends SpannableStringBuilder
+            implements Serializable {
+
+        private static final long serialVersionUID = 4909567650765875771L;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // static
     ///////////////////////////////////////////////////////////////////////////
@@ -1413,9 +1414,4 @@ public final class SpanUtils {
     public static SpanUtils with(final TextView textView) {
         return new SpanUtils(textView);
     }
-
-    public static class CustomSpannableStringBuilder extends SpannableStringBuilder implements Serializable {
-
-    }
-
 }

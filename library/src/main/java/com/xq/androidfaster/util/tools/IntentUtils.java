@@ -15,28 +15,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import static android.Manifest.permission.CALL_PHONE;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 import static com.xq.androidfaster.util.tools.Utils.getFileProvider;
 
 public final class IntentUtils {
 
     private IntentUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
-    }
-
-    /**
-     * Return whether the intent is available.
-     *
-     * @param intent The intent.
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    public static boolean isIntentAvailable(final Intent intent) {
-        return getApp()
-                .getPackageManager()
-                .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-                .size() > 0;
     }
 
     public static Intent getMailIntent(String mailID) {
@@ -60,6 +45,19 @@ public final class IntentUtils {
         intent.setComponent(comp);
         intent.setAction("android.intent.action.VIEW");
         return getIntent(intent,false);
+    }
+
+    /**
+     * Return whether the intent is available.
+     *
+     * @param intent The intent.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isIntentAvailable(final Intent intent) {
+        return Utils.getApp()
+                .getPackageManager()
+                .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+                .size() > 0;
     }
 
     /**
@@ -118,7 +116,7 @@ public final class IntentUtils {
         } else {
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             String authority = getFileProvider();
-            data = FileProvider.getUriForFile(getApp(), authority, file);
+            data = FileProvider.getUriForFile(Utils.getApp(), authority, file);
         }
         intent.setDataAndType(data, type);
         return getIntent(intent, isNewTask);
@@ -165,7 +163,7 @@ public final class IntentUtils {
      * @return the intent of launch app
      */
     public static Intent getLaunchAppIntent(final String packageName, final boolean isNewTask) {
-        Intent intent = getApp().getPackageManager().getLaunchIntentForPackage(packageName);
+        Intent intent = Utils.getApp().getPackageManager().getLaunchIntentForPackage(packageName);
         if (intent == null) return null;
         return getIntent(intent, isNewTask);
     }
@@ -453,7 +451,7 @@ public final class IntentUtils {
      * Return the intent of shutdown.
      * <p>Requires root permission
      * or hold {@code android:sharedUserId="android.uid.system"},
-     * {@code <uses-permission android:name="android.permission.SHUTDOWN/>}
+     * {@code <uses-permission android:name="android.permission.SHUTDOWN" />}
      * in manifest.</p>
      *
      * @return the intent of shutdown
@@ -466,7 +464,7 @@ public final class IntentUtils {
      * Return the intent of shutdown.
      * <p>Requires root permission
      * or hold {@code android:sharedUserId="android.uid.system"},
-     * {@code <uses-permission android:name="android.permission.SHUTDOWN/>}
+     * {@code <uses-permission android:name="android.permission.SHUTDOWN" />}
      * in manifest.</p>
      *
      * @param isNewTask True to add flag of new task, false otherwise.
@@ -604,7 +602,7 @@ public final class IntentUtils {
         if (file == null) return null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             String authority = getFileProvider();
-            return FileProvider.getUriForFile(getApp(), authority, file);
+            return FileProvider.getUriForFile(Utils.getApp(), authority, file);
         } else {
             return Uri.fromFile(file);
         }

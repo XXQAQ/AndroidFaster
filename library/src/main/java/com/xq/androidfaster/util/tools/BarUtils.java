@@ -28,7 +28,6 @@ import android.view.WindowManager;
 import java.lang.reflect.Method;
 
 import static android.Manifest.permission.EXPAND_STATUS_BAR;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class BarUtils {
 
@@ -50,7 +49,7 @@ public final class BarUtils {
      * @return the status bar's height
      */
     public static int getStatusBarHeight() {
-        Resources resources = Resources.getSystem();
+        Resources resources = Utils.getApp().getResources();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         return resources.getDimensionPixelSize(resourceId);
     }
@@ -410,9 +409,9 @@ public final class BarUtils {
      */
     public static int getActionBarHeight() {
         TypedValue tv = new TypedValue();
-        if (getApp().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+        if (Utils.getApp().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             return TypedValue.complexToDimensionPixelSize(
-                    tv.data, getApp().getResources().getDisplayMetrics()
+                    tv.data, Utils.getApp().getResources().getDisplayMetrics()
             );
         }
         return 0;
@@ -442,7 +441,7 @@ public final class BarUtils {
     private static void invokePanels(final String methodName) {
         try {
             @SuppressLint("WrongConstant")
-            Object service = getApp().getSystemService("statusbar");
+            Object service = Utils.getApp().getSystemService("statusbar");
             @SuppressLint("PrivateApi")
             Class<?> statusBarManager = Class.forName("android.app.StatusBarManager");
             Method expand = statusBarManager.getMethod(methodName);
@@ -462,7 +461,7 @@ public final class BarUtils {
      * @return the navigation bar's height
      */
     public static int getNavBarHeight() {
-        Resources res = Resources.getSystem();
+        Resources res = Utils.getApp().getResources();
         int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId != 0) {
             return res.getDimensionPixelSize(resourceId);
@@ -496,7 +495,7 @@ public final class BarUtils {
             final View child = decorView.getChildAt(i);
             final int id = child.getId();
             if (id != View.NO_ID) {
-                String resourceEntryName = getApp()
+                String resourceEntryName = Utils.getApp()
                         .getResources()
                         .getResourceEntryName(id);
                 if ("navigationBarBackground".equals(resourceEntryName)) {
@@ -539,7 +538,7 @@ public final class BarUtils {
             final View child = decorView.getChildAt(i);
             final int id = child.getId();
             if (id != View.NO_ID) {
-                String resourceEntryName = getApp()
+                String resourceEntryName = Utils.getApp()
                         .getResources()
                         .getResourceEntryName(id);
                 if ("navigationBarBackground".equals(resourceEntryName)
@@ -607,7 +606,7 @@ public final class BarUtils {
      */
     public static boolean isSupportNavBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+            WindowManager wm = (WindowManager) Utils.getApp().getSystemService(Context.WINDOW_SERVICE);
             if (wm == null) return false;
             Display display = wm.getDefaultDisplay();
             Point size = new Point();
@@ -616,7 +615,7 @@ public final class BarUtils {
             display.getRealSize(realSize);
             return realSize.y != size.y || realSize.x != size.x;
         }
-        boolean menu = ViewConfiguration.get(getApp()).hasPermanentMenuKey();
+        boolean menu = ViewConfiguration.get(Utils.getApp()).hasPermanentMenuKey();
         boolean back = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
         return !menu && !back;
     }

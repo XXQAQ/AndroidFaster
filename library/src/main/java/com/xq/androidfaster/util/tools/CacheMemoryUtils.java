@@ -2,9 +2,7 @@ package com.xq.androidfaster.util.tools;
 
 import android.support.annotation.NonNull;
 import android.support.v4.util.LruCache;
-
 import com.xq.androidfaster.util.constant.CacheConstants;
-
 import java.util.HashMap;
 import java.util.Map;
 

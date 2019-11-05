@@ -297,5 +297,4 @@ public final class SnackbarUtils {
             layout.addView(child, params);
         }
     }
-
 }

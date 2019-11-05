@@ -11,7 +11,7 @@ public final class IDUtils {
     }
 
     /**
-     * @return 每次调用该方法都会获取一个唯一的ID
+     * @return id: 每次调用该方法都会获取一个唯一的ID
      */
     public synchronized static int getId() {
         for (; ; ) {

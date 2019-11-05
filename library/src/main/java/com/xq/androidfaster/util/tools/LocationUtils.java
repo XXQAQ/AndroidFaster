@@ -20,7 +20,6 @@ import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class LocationUtils {
 
@@ -106,7 +105,7 @@ public final class LocationUtils {
      * @return {@code true}: 是<br>{@code false}: 否
      */
     public static boolean isGpsEnabled() {
-        LocationManager lm = (LocationManager) getApp().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) Utils.getApp().getSystemService(Context.LOCATION_SERVICE);
         //noinspection ConstantConditions
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
@@ -117,7 +116,7 @@ public final class LocationUtils {
      * @return {@code true}: 是<br>{@code false}: 否
      */
     public static boolean isLocationEnabled() {
-        LocationManager lm = (LocationManager) getApp().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) Utils.getApp().getSystemService(Context.LOCATION_SERVICE);
         //noinspection ConstantConditions
         return lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
                 || lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -128,7 +127,7 @@ public final class LocationUtils {
      */
     public static void openGpsSettings() {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        Utils.getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     /**
@@ -149,7 +148,7 @@ public final class LocationUtils {
     @RequiresPermission(ACCESS_FINE_LOCATION)
     public static boolean register(long minTime, long minDistance, OnLocationChangeListener listener) {
         if (listener == null) return false;
-        mLocationManager = (LocationManager) getApp().getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager) Utils.getApp().getSystemService(Context.LOCATION_SERVICE);
         //noinspection ConstantConditions
         if (!mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
                 && !mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -212,7 +211,7 @@ public final class LocationUtils {
      * @return {@link Address}
      */
     public static Address getAddress(double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(getApp(), Locale.getDefault());
+        Geocoder geocoder = new Geocoder(Utils.getApp(), Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) return addresses.get(0);

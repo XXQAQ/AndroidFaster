@@ -228,7 +228,7 @@ public final class ResourceUtils {
     public static boolean copyFileFromAssets(final String assetsFilePath, final String destFilePath) {
         boolean res = true;
         try {
-            String[] assets = getApp().getAssets().list(assetsFilePath);
+            String[] assets = Utils.getApp().getAssets().list(assetsFilePath);
             if (assets.length > 0) {
                 for (String asset : assets) {
                     res &= copyFileFromAssets(assetsFilePath + "/" + asset, destFilePath + "/" + asset);
@@ -236,7 +236,7 @@ public final class ResourceUtils {
             } else {
                 res = writeFileFromIS(
                         destFilePath,
-                        getApp().getAssets().open(assetsFilePath),
+                        Utils.getApp().getAssets().open(assetsFilePath),
                         false
                 );
             }
@@ -267,7 +267,7 @@ public final class ResourceUtils {
     public static String readAssets2String(final String assetsFilePath, final String charsetName) {
         InputStream is;
         try {
-            is = getApp().getAssets().open(assetsFilePath);
+            is = Utils.getApp().getAssets().open(assetsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -306,7 +306,7 @@ public final class ResourceUtils {
     public static List<String> readAssets2List(final String assetsPath,
                                                final String charsetName) {
         try {
-            return is2List(getApp().getResources().getAssets().open(assetsPath), charsetName);
+            return is2List(Utils.getApp().getResources().getAssets().open(assetsPath), charsetName);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -324,7 +324,7 @@ public final class ResourceUtils {
     public static boolean copyFileFromRaw(@RawRes final int resId, final String destFilePath) {
         return writeFileFromIS(
                 destFilePath,
-                getApp().getResources().openRawResource(resId),
+                Utils.getApp().getResources().openRawResource(resId),
                 false
         );
     }
@@ -347,7 +347,7 @@ public final class ResourceUtils {
      * @return the content of resource in raw
      */
     public static String readRaw2String(@RawRes final int resId, final String charsetName) {
-        InputStream is = getApp().getResources().openRawResource(resId);
+        InputStream is = Utils.getApp().getResources().openRawResource(resId);
         byte[] bytes = is2Bytes(is);
         if (bytes == null) return null;
         if (isSpace(charsetName)) {
@@ -381,7 +381,7 @@ public final class ResourceUtils {
      */
     public static List<String> readRaw2List(@RawRes final int resId,
                                             final String charsetName) {
-        return is2List(getApp().getResources().openRawResource(resId), charsetName);
+        return is2List(Utils.getApp().getResources().openRawResource(resId), charsetName);
     }
 
     ///////////////////////////////////////////////////////////////////////////

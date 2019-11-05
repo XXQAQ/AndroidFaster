@@ -11,8 +11,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.xq.androidfaster.util.tools.Utils.getApp;
-
 public final class SDCardUtils {
 
     private SDCardUtils() {
@@ -48,7 +46,7 @@ public final class SDCardUtils {
     public static List<SDCardInfo> getSDCardInfo() {
         List<SDCardInfo> paths = new ArrayList<>();
         StorageManager sm =
-                (StorageManager) getApp().getSystemService(Context.STORAGE_SERVICE);
+                (StorageManager) Utils.getApp().getSystemService(Context.STORAGE_SERVICE);
         if (sm == null) return paths;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             List<StorageVolume> storageVolumes = sm.getStorageVolumes();

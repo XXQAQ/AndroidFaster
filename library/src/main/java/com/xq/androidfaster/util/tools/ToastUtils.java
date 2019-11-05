@@ -3,7 +3,6 @@ package com.xq.androidfaster.util.tools;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
@@ -28,9 +27,6 @@ import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
-import static com.xq.androidfaster.util.tools.ThreadUtils.runOnUiThread;
-import static com.xq.androidfaster.util.tools.ThreadUtils.runOnUiThreadDelayed;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class ToastUtils {
 
@@ -48,6 +44,44 @@ public final class ToastUtils {
 
     private ToastUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
+    }
+
+    /**
+     * Show the toast for a short period of time.
+     *
+     * @param text The text.
+     */
+    public static void show(final CharSequence text) {
+        showToast(text == null ? NULL : text, Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * Show the toast for a short period of time.
+     *
+     * @param resId The resource id for text.
+     */
+    public static void show(@StringRes final int resId) {
+        showToast(resId, Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * Show the toast for a short period of time.
+     *
+     * @param resId The resource id for text.
+     * @param args  The args.
+     */
+    public static void show(@StringRes final int resId, final Object... args) {
+        showToast(resId, Toast.LENGTH_SHORT, args);
+    }
+
+    /**
+     * Show the toast for a short period of time.
+     *
+     * @param format The format.
+     * @param args   The args.
+     */
+    public static void show(final String format, final Object... args) {
+        showToast(format, Toast.LENGTH_SHORT, args);
     }
 
     /**
@@ -138,44 +172,6 @@ public final class ToastUtils {
     }
 
     /**
-     * Show the toast for a short period of time.
-     *
-     * @param text The text.
-     */
-    public static void show(final CharSequence text) {
-        showToast(text == null ? NULL : text, Toast.LENGTH_SHORT);
-    }
-
-    /**
-     * Show the toast for a short period of time.
-     *
-     * @param resId The resource id for text.
-     */
-    public static void show(@StringRes final int resId) {
-        showToast(resId, Toast.LENGTH_SHORT);
-    }
-
-    /**
-     * Show the toast for a short period of time.
-     *
-     * @param resId The resource id for text.
-     * @param args  The args.
-     */
-    public static void show(@StringRes final int resId, final Object... args) {
-        showToast(resId, Toast.LENGTH_SHORT, args);
-    }
-
-    /**
-     * Show the toast for a short period of time.
-     *
-     * @param format The format.
-     * @param args   The args.
-     */
-    public static void show(final String format, final Object... args) {
-        showToast(format, Toast.LENGTH_SHORT, args);
-    }
-
-    /**
      * Show the toast for a long period of time.
      *
      * @param text The text.
@@ -219,7 +215,15 @@ public final class ToastUtils {
      * @param layoutId ID for an XML layout resource to load.
      */
     public static View showCustomShort(@LayoutRes final int layoutId) {
-        final View view = getView(layoutId);
+        return showCustomShort(getView(layoutId));
+    }
+
+    /**
+     * Show custom toast for a short period of time.
+     *
+     * @param view The view of toast.
+     */
+    public static View showCustomShort(final View view) {
         showToast(view, Toast.LENGTH_SHORT);
         return view;
     }
@@ -230,7 +234,15 @@ public final class ToastUtils {
      * @param layoutId ID for an XML layout resource to load.
      */
     public static View showCustomLong(@LayoutRes final int layoutId) {
-        final View view = getView(layoutId);
+        return showCustomLong(getView(layoutId));
+    }
+
+    /**
+     * Show custom toast for a long period of time.
+     *
+     * @param view The view of toast.
+     */
+    public static View showCustomLong(final View view) {
         showToast(view, Toast.LENGTH_LONG);
         return view;
     }
@@ -246,7 +258,7 @@ public final class ToastUtils {
 
     private static void showToast(final int resId, final int duration) {
         try {
-            CharSequence text = getApp().getResources().getText(resId);
+            CharSequence text = Utils.getApp().getResources().getText(resId);
             showToast(text, duration);
         } catch (Exception ignore) {
             showToast(String.valueOf(resId), duration);
@@ -255,7 +267,7 @@ public final class ToastUtils {
 
     private static void showToast(final int resId, final int duration, final Object... args) {
         try {
-            CharSequence text = getApp().getResources().getText(resId);
+            CharSequence text = Utils.getApp().getResources().getText(resId);
             String format = String.format(text.toString(), args);
             showToast(format, duration);
         } catch (Exception ignore) {
@@ -277,12 +289,12 @@ public final class ToastUtils {
     }
 
     private static void showToast(final CharSequence text, final int duration) {
-        runOnUiThread(new Runnable() {
+        ThreadUtils.runOnUiThread(new Runnable() {
             @SuppressLint("ShowToast")
             @Override
             public void run() {
                 cancel();
-                iToast = ToastFactory.makeToast(getApp(), text, duration);
+                iToast = ToastFactory.makeToast(Utils.getApp(), text, duration);
                 final View toastView = iToast.getView();
                 if (toastView == null) return;
                 final TextView tvMessage = toastView.findViewById(android.R.id.message);
@@ -302,11 +314,11 @@ public final class ToastUtils {
     }
 
     private static void showToast(final View view, final int duration) {
-        runOnUiThread(new Runnable() {
+        ThreadUtils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 cancel();
-                iToast = ToastFactory.newToast(getApp());
+                iToast = ToastFactory.newToast(Utils.getApp());
                 iToast.setView(view);
                 iToast.setDuration(duration);
                 if (sGravity != -1 || sXOffset != -1 || sYOffset != -1) {
@@ -363,7 +375,7 @@ public final class ToastUtils {
 
     private static View getView(@LayoutRes final int layoutId) {
         LayoutInflater inflate =
-                (LayoutInflater) getApp().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                (LayoutInflater) Utils.getApp().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //noinspection ConstantConditions
         return inflate.inflate(layoutId, null);
     }
@@ -406,7 +418,7 @@ public final class ToastUtils {
                     mTNmHandlerField.setAccessible(true);
                     Handler tnHandler = (Handler) mTNmHandlerField.get(mTN);
                     mTNmHandlerField.set(mTN, new SafeHandler(tnHandler));
-                } catch (Exception ignored) { /**/ }
+                } catch (Exception ignored) {/**/}
             }
         }
 
@@ -455,6 +467,7 @@ public final class ToastUtils {
                     @Override
                     public void onActivityDestroyed(Activity activity) {
                         if (iToast == null) return;
+                        activity.getWindow().getDecorView().setVisibility(View.GONE);
                         iToast.cancel();
                     }
                 };
@@ -465,6 +478,16 @@ public final class ToastUtils {
 
         @Override
         public void show() {
+            ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    realShow();
+                }
+            }, 300);
+        }
+
+        private void realShow() {
+            if (mToast == null) return;
             mView = mToast.getView();
             if (mView == null) return;
             final Context context = mToast.getView().getContext();
@@ -486,43 +509,37 @@ public final class ToastUtils {
                 mParams.type = WindowManager.LayoutParams.LAST_APPLICATION_WINDOW;
                 Utils.getActivityLifecycle().addOnActivityDestroyedListener(topActivity, LISTENER);
             }
-//            else {
-//                mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//                mParams.type = WindowManager.LayoutParams.FIRST_SYSTEM_WINDOW + 37;
-//            }
 
-            final Configuration config = context.getResources().getConfiguration();
-            final int gravity = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
-                    ? Gravity.getAbsoluteGravity(mToast.getGravity(), config.getLayoutDirection())
-                    : mToast.getGravity();
-
-            mParams.y = mToast.getYOffset();
             mParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             mParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
             mParams.format = PixelFormat.TRANSLUCENT;
             mParams.windowAnimations = android.R.style.Animation_Toast;
-
             mParams.setTitle("ToastWithoutNotification");
             mParams.flags = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                     | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-            mParams.gravity = gravity;
-            if ((gravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.FILL_HORIZONTAL) {
+            mParams.packageName = Utils.getApp().getPackageName();
+
+            mParams.gravity = mToast.getGravity();
+            if ((mParams.gravity & Gravity.HORIZONTAL_GRAVITY_MASK) == Gravity.FILL_HORIZONTAL) {
                 mParams.horizontalWeight = 1.0f;
             }
-            if ((gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.FILL_VERTICAL) {
+            if ((mParams.gravity & Gravity.VERTICAL_GRAVITY_MASK) == Gravity.FILL_VERTICAL) {
                 mParams.verticalWeight = 1.0f;
             }
+
             mParams.x = mToast.getXOffset();
-            mParams.packageName = getApp().getPackageName();
+            mParams.y = mToast.getYOffset();
+            mParams.horizontalMargin = mToast.getHorizontalMargin();
+            mParams.verticalMargin = mToast.getVerticalMargin();
 
             try {
                 if (mWM != null) {
                     mWM.addView(mView, mParams);
                 }
-            } catch (Exception ignored) { /**/ }
+            } catch (Exception ignored) {/**/}
 
-            runOnUiThreadDelayed(new Runnable() {
+            ThreadUtils.runOnUiThreadDelayed(new Runnable() {
                 @Override
                 public void run() {
                     cancel();
@@ -536,7 +553,7 @@ public final class ToastUtils {
                 if (mWM != null) {
                     mWM.removeViewImmediate(mView);
                 }
-            } catch (Exception ignored) { /**/ }
+            } catch (Exception ignored) {/**/}
             mView = null;
             mWM = null;
             mToast = null;

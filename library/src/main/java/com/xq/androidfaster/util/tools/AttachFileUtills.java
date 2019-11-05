@@ -63,7 +63,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getHtmlFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -79,7 +78,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getImageFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -95,7 +93,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getPdfFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -111,7 +108,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getTextFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -127,7 +123,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getAudioFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -145,7 +140,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getVideoFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -164,7 +158,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getChmFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -180,7 +173,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getWordFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -196,7 +188,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getExcelFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -212,7 +203,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getPPTFileIntent(File file) {
         Intent intent = new Intent("android.intent.action.VIEW");
@@ -228,7 +218,6 @@ public final class AttachFileUtills {
 
     /**
      * @param file
-     * @return
      */
     private static Intent getApkFileIntent(File file) {
         Intent intent = new Intent();

@@ -13,14 +13,14 @@ import java.util.ArrayList;
 
 public final class BundleUtil {
 
-    private BundleUtil() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
-    }
-
     //以下为Bundle常用Key
     public static final String KEY_DATA = "data";
     public static final String KEY_TYPE = "type";
     public static final String KEY_RESULT = "result";
+
+    private BundleUtil() {
+        throw new UnsupportedOperationException("u can't instantiate me...");
+    }
 
     /**
      * 链式构造Bundle的Builder

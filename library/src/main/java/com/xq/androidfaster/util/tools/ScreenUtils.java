@@ -18,9 +18,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import static android.Manifest.permission.WRITE_SETTINGS;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class ScreenUtils {
 
@@ -34,7 +32,7 @@ public final class ScreenUtils {
      * @return
      */
     public static int dip2px(float dpValue) {
-        final float scale = getApp().getResources().getDisplayMetrics().density;
+        final float scale = Utils.getApp().getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
@@ -44,7 +42,7 @@ public final class ScreenUtils {
      * @return
      */
     public static int dip2sp(float dpValue) {
-        return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, getApp().getResources().getDisplayMetrics()));
+        return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, Utils.getApp().getResources().getDisplayMetrics()));
     }
 
     /**
@@ -53,7 +51,7 @@ public final class ScreenUtils {
      * @return
      */
     public static int px2dip(float pxValue) {
-        final float scale = getApp().getResources().getDisplayMetrics().density;
+        final float scale = Utils.getApp().getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
@@ -63,7 +61,7 @@ public final class ScreenUtils {
      * @return
      */
     public static int px2sp(float pxValue) {
-        float fontScale = getApp().getResources().getDisplayMetrics().scaledDensity;
+        float fontScale = Utils.getApp().getResources().getDisplayMetrics().scaledDensity;
         return (int) (pxValue / fontScale + 0.5f);
     }
 
@@ -73,7 +71,7 @@ public final class ScreenUtils {
      * @return
      */
     public static int sp2px(float spValue) {
-        float fontScale = getApp().getResources().getDisplayMetrics().scaledDensity;
+        float fontScale = Utils.getApp().getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
     }
 
@@ -83,7 +81,7 @@ public final class ScreenUtils {
      * @return
      */
     public static int sp2dip(float spValue) {
-        return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, getApp().getResources().getDisplayMetrics()));
+        return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, Utils.getApp().getResources().getDisplayMetrics()));
     }
 
     /**
@@ -92,7 +90,7 @@ public final class ScreenUtils {
      * @return the width of screen, in pixel
      */
     public static int getScreenWidth() {
-        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) Utils.getApp().getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
         Point point = new Point();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -109,7 +107,7 @@ public final class ScreenUtils {
      * @return the height of screen, in pixel
      */
     public static int getScreenHeight() {
-        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) Utils.getApp().getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
         Point point = new Point();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -126,7 +124,7 @@ public final class ScreenUtils {
      * @return the application's width of screen, in pixel
      */
     public static int getAppScreenWidth() {
-        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) Utils.getApp().getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
         Point point = new Point();
         wm.getDefaultDisplay().getSize(point);
@@ -139,7 +137,7 @@ public final class ScreenUtils {
      * @return the application's height of screen, in pixel
      */
     public static int getAppScreenHeight() {
-        WindowManager wm = (WindowManager) getApp().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) Utils.getApp().getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
         Point point = new Point();
         wm.getDefaultDisplay().getSize(point);
@@ -152,7 +150,7 @@ public final class ScreenUtils {
      * @return the density of screen
      */
     public static float getScreenDensity() {
-        return Resources.getSystem().getDisplayMetrics().density;
+        return Utils.getApp().getResources().getDisplayMetrics().density;
     }
 
     /**
@@ -161,7 +159,7 @@ public final class ScreenUtils {
      * @return the screen density expressed as dots-per-inch
      */
     public static int getScreenDensityDpi() {
-        return Resources.getSystem().getDisplayMetrics().densityDpi;
+        return Utils.getApp().getResources().getDisplayMetrics().densityDpi;
     }
 
     /**
@@ -232,7 +230,7 @@ public final class ScreenUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isLandscape() {
-        return getApp().getResources().getConfiguration().orientation
+        return Utils.getApp().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
     }
 
@@ -242,7 +240,7 @@ public final class ScreenUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isPortrait() {
-        return getApp().getResources().getConfiguration().orientation
+        return Utils.getApp().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT;
     }
 
@@ -318,7 +316,7 @@ public final class ScreenUtils {
      */
     public static boolean isScreenLock() {
         KeyguardManager km =
-                (KeyguardManager) getApp().getSystemService(Context.KEYGUARD_SERVICE);
+                (KeyguardManager) Utils.getApp().getSystemService(Context.KEYGUARD_SERVICE);
         if (km == null) return false;
         return km.inKeyguardRestrictedInputMode();
     }
@@ -332,7 +330,7 @@ public final class ScreenUtils {
     @RequiresPermission(WRITE_SETTINGS)
     public static void setSleepDuration(final int duration) {
         Settings.System.putInt(
-                getApp().getContentResolver(),
+                Utils.getApp().getContentResolver(),
                 Settings.System.SCREEN_OFF_TIMEOUT,
                 duration
         );
@@ -346,7 +344,7 @@ public final class ScreenUtils {
     public static int getSleepDuration() {
         try {
             return Settings.System.getInt(
-                    getApp().getContentResolver(),
+                    Utils.getApp().getContentResolver(),
                     Settings.System.SCREEN_OFF_TIMEOUT
             );
         } catch (Settings.SettingNotFoundException e) {
@@ -354,5 +352,4 @@ public final class ScreenUtils {
             return -123;
         }
     }
-
 }

@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public final class TimeUtils {
@@ -16,10 +17,16 @@ public final class TimeUtils {
     private static final ThreadLocal<SimpleDateFormat> SDF_THREAD_LOCAL = new ThreadLocal<>();
 
     private static SimpleDateFormat getDefaultFormat() {
+        return getDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+
+    private static SimpleDateFormat getDateFormat(String pattern) {
         SimpleDateFormat simpleDateFormat = SDF_THREAD_LOCAL.get();
         if (simpleDateFormat == null) {
-            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
             SDF_THREAD_LOCAL.set(simpleDateFormat);
+        } else {
+            simpleDateFormat.applyPattern(pattern);
         }
         return simpleDateFormat;
     }
@@ -42,6 +49,17 @@ public final class TimeUtils {
     /**
      * Milliseconds to the formatted time string.
      *
+     * @param millis  The milliseconds.
+     * @param pattern The pattern of date format, such as yyyy/MM/dd HH:mm
+     * @return the formatted time string
+     */
+    public static String millis2String(long millis, @NonNull final String pattern) {
+        return millis2String(millis, getDateFormat(pattern));
+    }
+
+    /**
+     * Milliseconds to the formatted time string.
+     *
      * @param millis The milliseconds.
      * @param format The format.
      * @return the formatted time string
@@ -59,6 +77,17 @@ public final class TimeUtils {
      */
     public static long string2Millis(final String time) {
         return string2Millis(time, getDefaultFormat());
+    }
+
+    /**
+     * Formatted time string to the milliseconds.
+     *
+     * @param time    The formatted time string.
+     * @param pattern The pattern of date format, such as yyyy/MM/dd HH:mm
+     * @return the milliseconds
+     */
+    public static long string2Millis(final String time, @NonNull final String pattern) {
+        return string2Millis(time, getDateFormat(pattern));
     }
 
     /**
@@ -91,6 +120,17 @@ public final class TimeUtils {
     /**
      * Formatted time string to the date.
      *
+     * @param time    The formatted time string.
+     * @param pattern The pattern of date format, such as yyyy/MM/dd HH:mm
+     * @return the date
+     */
+    public static Date string2Date(final String time, @NonNull final String pattern) {
+        return string2Date(time, getDateFormat(pattern));
+    }
+
+    /**
+     * Formatted time string to the date.
+     *
      * @param time   The formatted time string.
      * @param format The format.
      * @return the date
@@ -113,6 +153,17 @@ public final class TimeUtils {
      */
     public static String date2String(final Date date) {
         return date2String(date, getDefaultFormat());
+    }
+
+    /**
+     * Date to the formatted time string.
+     *
+     * @param date    The date.
+     * @param pattern The pattern of date format, such as yyyy/MM/dd HH:mm
+     * @return the formatted time string
+     */
+    public static String date2String(final Date date, @NonNull final String pattern) {
+        return getDateFormat(pattern).format(date);
     }
 
     /**
@@ -1191,6 +1242,129 @@ public final class TimeUtils {
      */
     public static String getUSWeek(final long millis) {
         return getUSWeek(new Date(millis));
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAm() {
+        Calendar cal = Calendar.getInstance();
+        return cal.get(GregorianCalendar.AM_PM) == 0;
+    }
+
+    /**
+     * Return whether it is am.
+     * <p>The pattern is {@code yyyy-MM-dd HH:mm:ss}.</p>
+     *
+     * @param time The formatted time string.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAm(final String time) {
+        return getValueByCalendarField(time, getDefaultFormat(), GregorianCalendar.AM_PM) == 0;
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @param time   The formatted time string.
+     * @param format The format.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAm(final String time,
+                               @NonNull final DateFormat format) {
+        return getValueByCalendarField(time, format, GregorianCalendar.AM_PM) == 0;
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @param date The date.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAm(final Date date) {
+        return getValueByCalendarField(date, GregorianCalendar.AM_PM) == 0;
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @param millis The milliseconds.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAm(final long millis) {
+        return getValueByCalendarField(millis, GregorianCalendar.AM_PM) == 0;
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isPm() {
+        return !isAm();
+    }
+
+    /**
+     * Return whether it is am.
+     * <p>The pattern is {@code yyyy-MM-dd HH:mm:ss}.</p>
+     *
+     * @param time The formatted time string.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isPm(final String time) {
+        return !isAm(time);
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @param time   The formatted time string.
+     * @param format The format.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isPm(final String time,
+                               @NonNull final DateFormat format) {
+        return !isAm(time, format);
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @param date The date.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isPm(final Date date) {
+        return !isAm(date);
+    }
+
+    /**
+     * Return whether it is am.
+     *
+     * @param millis The milliseconds.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isPm(final long millis) {
+        return !isAm(millis);
+    }
+
+    /**
+     * Returns the value of the given calendar field.
+     *
+     * @param field The given calendar field.
+     *              <ul>
+     *              <li>{@link Calendar#ERA}</li>
+     *              <li>{@link Calendar#YEAR}</li>
+     *              <li>{@link Calendar#MONTH}</li>
+     *              <li>...</li>
+     *              <li>{@link Calendar#DST_OFFSET}</li>
+     *              </ul>
+     * @return the value of the given calendar field
+     */
+    public static int getValueByCalendarField(final int field) {
+        Calendar cal = Calendar.getInstance();
+        return cal.get(field);
     }
 
     /**

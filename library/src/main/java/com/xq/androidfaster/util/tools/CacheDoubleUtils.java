@@ -4,12 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-
 import com.xq.androidfaster.util.constant.CacheConstants;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +16,7 @@ public final class CacheDoubleUtils implements CacheConstants {
     private static final Map<String, CacheDoubleUtils> CACHE_MAP = new HashMap<>();
 
     private final CacheMemoryUtils mCacheMemoryUtils;
-    private final CacheDiskUtils mCacheDiskUtils;
+    private final CacheDiskUtils   mCacheDiskUtils;
 
     /**
      * Return the single {@link CacheDoubleUtils} instance.

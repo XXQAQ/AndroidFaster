@@ -340,7 +340,7 @@ public final class RomUtils {
             if (!TextUtils.isEmpty(manufacturer)) {
                 return manufacturer.toLowerCase();
             }
-        } catch (Throwable ignore) { /**/ }
+        } catch (Throwable ignore) {/**/}
         return UNKNOWN;
     }
 
@@ -350,7 +350,7 @@ public final class RomUtils {
             if (!TextUtils.isEmpty(brand)) {
                 return brand.toLowerCase();
             }
-        } catch (Throwable ignore) { /**/ }
+        } catch (Throwable ignore) {/**/}
         return UNKNOWN;
     }
 
@@ -365,7 +365,7 @@ public final class RomUtils {
                 if (!TextUtils.isEmpty(display)) {
                     ret = display.toLowerCase();
                 }
-            } catch (Throwable ignore) { /**/ }
+            } catch (Throwable ignore) {/**/}
         }
         if (TextUtils.isEmpty(ret)) {
             return UNKNOWN;
@@ -399,7 +399,7 @@ public final class RomUtils {
             if (input != null) {
                 try {
                     input.close();
-                } catch (IOException ignore) { /**/ }
+                } catch (IOException ignore) {/**/}
             }
         }
         return "";
@@ -413,7 +413,7 @@ public final class RomUtils {
             );
             prop.load(is);
             return prop.getProperty(key, "");
-        } catch (Exception ignore) { /**/ }
+        } catch (Exception ignore) {/**/}
         return "";
     }
 
@@ -423,7 +423,7 @@ public final class RomUtils {
             Class<?> clz = Class.forName("android.os.SystemProperties");
             Method getMethod = clz.getMethod("get", String.class, String.class);
             return (String) getMethod.invoke(clz, key, "");
-        } catch (Exception e) { /**/ }
+        } catch (Exception e) {/**/}
         return "";
     }
 
@@ -445,5 +445,4 @@ public final class RomUtils {
                     ", version=" + version + "}";
         }
     }
-
 }

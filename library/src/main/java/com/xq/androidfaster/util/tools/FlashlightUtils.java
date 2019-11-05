@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import static android.hardware.Camera.Parameters.FLASH_MODE_OFF;
 import static android.hardware.Camera.Parameters.FLASH_MODE_TORCH;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class FlashlightUtils {
 
@@ -26,7 +25,7 @@ public final class FlashlightUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isFlashlightEnable() {
-        return getApp()
+        return Utils.getApp()
                 .getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
@@ -95,5 +94,4 @@ public final class FlashlightUtils {
         }
         return true;
     }
-
 }

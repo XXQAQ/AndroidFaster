@@ -5,8 +5,6 @@ import android.os.Environment;
 
 import java.io.File;
 
-import static com.xq.androidfaster.util.tools.Utils.getApp;
-
 public class PathUtils {
 
     private PathUtils() {
@@ -47,9 +45,9 @@ public class PathUtils {
      */
     public static String getInternalAppDataPath() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return getApp().getApplicationInfo().dataDir;
+            return Utils.getApp().getApplicationInfo().dataDir;
         }
-        return getAbsolutePath(getApp().getDataDir());
+        return getAbsolutePath(Utils.getApp().getDataDir());
     }
 
     /**
@@ -59,9 +57,9 @@ public class PathUtils {
      */
     public static String getInternalAppCodeCacheDir() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return getApp().getApplicationInfo().dataDir + "/code_cache";
+            return Utils.getApp().getApplicationInfo().dataDir + "/code_cache";
         }
-        return getAbsolutePath(getApp().getCodeCacheDir());
+        return getAbsolutePath(Utils.getApp().getCodeCacheDir());
     }
 
     /**
@@ -70,7 +68,7 @@ public class PathUtils {
      * @return the path of /data/data/package/cache
      */
     public static String getInternalAppCachePath() {
-        return getAbsolutePath(getApp().getCacheDir());
+        return getAbsolutePath(Utils.getApp().getCacheDir());
     }
 
     /**
@@ -79,7 +77,7 @@ public class PathUtils {
      * @return the path of /data/data/package/databases
      */
     public static String getInternalAppDbsPath() {
-        return getApp().getApplicationInfo().dataDir + "/databases";
+        return Utils.getApp().getApplicationInfo().dataDir + "/databases";
     }
 
     /**
@@ -89,7 +87,7 @@ public class PathUtils {
      * @return the path of /data/data/package/databases/name
      */
     public static String getInternalAppDbPath(String name) {
-        return getAbsolutePath(getApp().getDatabasePath(name));
+        return getAbsolutePath(Utils.getApp().getDatabasePath(name));
     }
 
     /**
@@ -98,7 +96,7 @@ public class PathUtils {
      * @return the path of /data/data/package/files
      */
     public static String getInternalAppFilesPath() {
-        return getAbsolutePath(getApp().getFilesDir());
+        return getAbsolutePath(Utils.getApp().getFilesDir());
     }
 
     /**
@@ -107,7 +105,7 @@ public class PathUtils {
      * @return the path of /data/data/package/shared_prefs
      */
     public static String getInternalAppSpPath() {
-        return getApp().getApplicationInfo().dataDir + "shared_prefs";
+        return Utils.getApp().getApplicationInfo().dataDir + "/shared_prefs";
     }
 
     /**
@@ -117,9 +115,9 @@ public class PathUtils {
      */
     public static String getInternalAppNoBackupFilesPath() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return getApp().getApplicationInfo().dataDir + "no_backup";
+            return Utils.getApp().getApplicationInfo().dataDir + "/no_backup";
         }
-        return getAbsolutePath(getApp().getNoBackupFilesDir());
+        return getAbsolutePath(Utils.getApp().getNoBackupFilesDir());
     }
 
     /**
@@ -242,7 +240,7 @@ public class PathUtils {
      */
     public static String getExternalAppDataPath() {
         if (isExternalStorageDisable()) return "";
-        File externalCacheDir = getApp().getExternalCacheDir();
+        File externalCacheDir = Utils.getApp().getExternalCacheDir();
         if (externalCacheDir == null) return "";
         return getAbsolutePath(externalCacheDir.getParentFile());
     }
@@ -254,7 +252,7 @@ public class PathUtils {
      */
     public static String getExternalAppCachePath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalCacheDir());
+        return getAbsolutePath(Utils.getApp().getExternalCacheDir());
     }
 
     /**
@@ -264,7 +262,7 @@ public class PathUtils {
      */
     public static String getExternalAppFilesPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(null));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(null));
     }
 
     /**
@@ -274,7 +272,7 @@ public class PathUtils {
      */
     public static String getExternalAppMusicPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_MUSIC));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_MUSIC));
     }
 
     /**
@@ -284,7 +282,7 @@ public class PathUtils {
      */
     public static String getExternalAppPodcastsPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_PODCASTS));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_PODCASTS));
     }
 
     /**
@@ -294,7 +292,7 @@ public class PathUtils {
      */
     public static String getExternalAppRingtonesPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_RINGTONES));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_RINGTONES));
     }
 
     /**
@@ -304,7 +302,7 @@ public class PathUtils {
      */
     public static String getExternalAppAlarmsPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_ALARMS));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_ALARMS));
     }
 
     /**
@@ -314,7 +312,7 @@ public class PathUtils {
      */
     public static String getExternalAppNotificationsPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_NOTIFICATIONS));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_NOTIFICATIONS));
     }
 
     /**
@@ -324,7 +322,7 @@ public class PathUtils {
      */
     public static String getExternalAppPicturesPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
     }
 
     /**
@@ -334,7 +332,7 @@ public class PathUtils {
      */
     public static String getExternalAppMoviesPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_MOVIES));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_MOVIES));
     }
 
     /**
@@ -344,7 +342,7 @@ public class PathUtils {
      */
     public static String getExternalAppDownloadPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS));
     }
 
     /**
@@ -354,7 +352,7 @@ public class PathUtils {
      */
     public static String getExternalAppDcimPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_DCIM));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_DCIM));
     }
 
     /**
@@ -365,9 +363,9 @@ public class PathUtils {
     public static String getExternalAppDocumentsPath() {
         if (isExternalStorageDisable()) return "";
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            return getAbsolutePath(getApp().getExternalFilesDir(null)) + "/Documents";
+            return getAbsolutePath(Utils.getApp().getExternalFilesDir(null)) + "/Documents";
         }
-        return getAbsolutePath(getApp().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS));
+        return getAbsolutePath(Utils.getApp().getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS));
     }
 
     /**
@@ -377,7 +375,7 @@ public class PathUtils {
      */
     public static String getExternalAppObbPath() {
         if (isExternalStorageDisable()) return "";
-        return getAbsolutePath(getApp().getObbDir());
+        return getAbsolutePath(Utils.getApp().getObbDir());
     }
 
     private static boolean isExternalStorageDisable() {
@@ -388,5 +386,4 @@ public class PathUtils {
         if (file == null) return "";
         return file.getAbsolutePath();
     }
-
 }

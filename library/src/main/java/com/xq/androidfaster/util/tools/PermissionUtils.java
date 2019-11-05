@@ -16,9 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-
 import com.xq.androidfaster.util.constant.PermissionConstants;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +24,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class PermissionUtils {
 
@@ -53,7 +50,7 @@ public final class PermissionUtils {
      * @return the permissions used in application
      */
     public static List<String> getPermissions() {
-        return getPermissions(getApp().getPackageName());
+        return getPermissions(Utils.getApp().getPackageName());
     }
 
     /**
@@ -63,7 +60,7 @@ public final class PermissionUtils {
      * @return the permissions used in application
      */
     public static List<String> getPermissions(final String packageName) {
-        PackageManager pm = getApp().getPackageManager();
+        PackageManager pm = Utils.getApp().getPackageManager();
         try {
             String[] permissions = pm.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS).requestedPermissions;
             if (permissions == null) return Collections.emptyList();
@@ -92,7 +89,7 @@ public final class PermissionUtils {
     private static boolean isGranted(final String permission) {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
                 || PackageManager.PERMISSION_GRANTED
-                == ContextCompat.checkSelfPermission(getApp(), permission);
+                == ContextCompat.checkSelfPermission(Utils.getApp(), permission);
     }
 
     /**
@@ -102,7 +99,7 @@ public final class PermissionUtils {
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean isGrantedWriteSettings() {
-        return Settings.System.canWrite(getApp());
+        return Settings.System.canWrite(Utils.getApp());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -112,13 +109,13 @@ public final class PermissionUtils {
             return;
         }
         sSimpleCallback4WriteSettings = callback;
-        PermissionActivity.start(getApp(), PermissionActivity.TYPE_WRITE_SETTINGS);
+        PermissionActivity.start(Utils.getApp(), PermissionActivity.TYPE_WRITE_SETTINGS);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private static void startWriteSettingsActivity(final Activity activity, final int requestCode) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-        intent.setData(Uri.parse("package:" + getApp().getPackageName()));
+        intent.setData(Uri.parse("package:" + Utils.getApp().getPackageName()));
         if (!isIntentAvailable(intent)) {
             launchAppDetailsSettings();
             return;
@@ -133,49 +130,23 @@ public final class PermissionUtils {
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean isGrantedDrawOverlays() {
-        return Settings.canDrawOverlays(getApp());
-    }
-
-    /**
-     * Return whether the app can draw on top of other apps.
-     *
-     * @return {@code true}: yes<br>{@code false}: no
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public static boolean isGrantedDrawOverlays(final Utils.Callback<Boolean> callback) {
-        return Utils.UTIL_HANDLER.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                callback.onCall(isGrantedDrawOverlays());
-            }
-        }, 200);
+        return Settings.canDrawOverlays(Utils.getApp());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void requestDrawOverlays(final SimpleCallback callback) {
-        isGrantedDrawOverlays(new Utils.Callback<Boolean>() {
-            @Override
-            public void onCall(Boolean data) {
-                if (data) {
-                    if (callback != null) callback.onGranted();
-                    return;
-                }
-                sSimpleCallback4DrawOverlays = callback;
-                PermissionActivity.start(getApp(), PermissionActivity.TYPE_DRAW_OVERLAYS);
-            }
-        });
         if (isGrantedDrawOverlays()) {
             if (callback != null) callback.onGranted();
             return;
         }
         sSimpleCallback4DrawOverlays = callback;
-        PermissionActivity.start(getApp(), PermissionActivity.TYPE_DRAW_OVERLAYS);
+        PermissionActivity.start(Utils.getApp(), PermissionActivity.TYPE_DRAW_OVERLAYS);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private static void startOverlayPermissionActivity(final Activity activity, final int requestCode) {
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-        intent.setData(Uri.parse("package:" + getApp().getPackageName()));
+        intent.setData(Uri.parse("package:" + Utils.getApp().getPackageName()));
         if (!isIntentAvailable(intent)) {
             launchAppDetailsSettings();
             return;
@@ -188,9 +159,9 @@ public final class PermissionUtils {
      */
     public static void launchAppDetailsSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.setData(Uri.parse("package:" + getApp().getPackageName()));
+        intent.setData(Uri.parse("package:" + Utils.getApp().getPackageName()));
         if (!isIntentAvailable(intent)) return;
-        getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        Utils.getApp().startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     /**
@@ -204,7 +175,7 @@ public final class PermissionUtils {
     }
 
     private static boolean isIntentAvailable(final Intent intent) {
-        return getApp()
+        return Utils.getApp()
                 .getPackageManager()
                 .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
                 .size() > 0;
@@ -295,7 +266,7 @@ public final class PermissionUtils {
     private void startPermissionActivity() {
         mPermissionsDenied = new ArrayList<>();
         mPermissionsDeniedForever = new ArrayList<>();
-        PermissionActivity.start(getApp(), PermissionActivity.TYPE_RUNTIME);
+        PermissionActivity.start(Utils.getApp(), PermissionActivity.TYPE_RUNTIME);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -308,6 +279,7 @@ public final class PermissionUtils {
                     mOnRationaleListener.rationale(new OnRationaleListener.ShouldRequest() {
                         @Override
                         public void again(boolean again) {
+                            activity.finish();
                             if (again) {
                                 startPermissionActivity();
                             } else {
@@ -403,7 +375,6 @@ public final class PermissionUtils {
                 super.onCreate(savedInstanceState);
 
                 if (sInstance.rationale(this)) {
-                    finish();
                     return;
                 }
                 if (sInstance.mPermissionsRequest != null) {
@@ -427,7 +398,9 @@ public final class PermissionUtils {
         public void onRequestPermissionsResult(int requestCode,
                                                @NonNull String[] permissions,
                                                @NonNull int[] grantResults) {
-            sInstance.onRequestPermissionsResult(this);
+            if (sInstance != null && sInstance.mPermissionsRequest != null) {
+                sInstance.onRequestPermissionsResult(this);
+            }
             finish();
         }
 
@@ -449,12 +422,17 @@ public final class PermissionUtils {
                 sSimpleCallback4WriteSettings = null;
             } else if (requestCode == TYPE_DRAW_OVERLAYS) {
                 if (sSimpleCallback4DrawOverlays == null) return;
-                if (isGrantedDrawOverlays()) {
-                    sSimpleCallback4DrawOverlays.onGranted();
-                } else {
-                    sSimpleCallback4DrawOverlays.onDenied();
-                }
-                sSimpleCallback4DrawOverlays = null;
+                ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isGrantedDrawOverlays()) {
+                            sSimpleCallback4DrawOverlays.onGranted();
+                        } else {
+                            sSimpleCallback4DrawOverlays.onDenied();
+                        }
+                        sSimpleCallback4DrawOverlays = null;
+                    }
+                }, 100);
             }
             finish();
         }

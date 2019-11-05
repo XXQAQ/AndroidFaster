@@ -1,9 +1,7 @@
 package com.xq.androidfaster.util.tools;
 
 import android.support.v4.util.SimpleArrayMap;
-
 import com.xq.androidfaster.util.constant.RegexConstants;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

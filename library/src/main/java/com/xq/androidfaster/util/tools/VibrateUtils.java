@@ -5,7 +5,6 @@ import android.os.Vibrator;
 import android.support.annotation.RequiresPermission;
 
 import static android.Manifest.permission.VIBRATE;
-import static com.xq.androidfaster.util.tools.Utils.getApp;
 
 public final class VibrateUtils {
 
@@ -55,9 +54,8 @@ public final class VibrateUtils {
 
     private static Vibrator getVibrator() {
         if (vibrator == null) {
-            vibrator = (Vibrator) getApp().getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator = (Vibrator) Utils.getApp().getSystemService(Context.VIBRATOR_SERVICE);
         }
         return vibrator;
     }
-
 }
