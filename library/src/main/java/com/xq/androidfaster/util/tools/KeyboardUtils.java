@@ -11,12 +11,10 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import java.lang.reflect.Field;
@@ -29,11 +27,26 @@ public final class KeyboardUtils {
 
     /**
      * Show the soft input.
+     *
+     * @param activity The activity.
      */
-    public static void showSoftInput(@NonNull Activity activity) {
-        if (!isSoftInputVisible(activity)) {
-            toggleSoftInput();
+    public static void showSoftInput(final Activity activity) {
+        showSoftInput(activity, InputMethodManager.SHOW_FORCED);
+    }
+
+    /**
+     * Show the soft input.
+     *
+     * @param activity The activity.
+     * @param flags    Provides additional operating flags.  Currently may be
+     *                 0 or have the {@link InputMethodManager#SHOW_IMPLICIT} bit set.
+     */
+    public static void showSoftInput(final Activity activity, final int flags) {
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
         }
+        showSoftInput(view, flags);
     }
 
     /**
@@ -41,8 +54,8 @@ public final class KeyboardUtils {
      *
      * @param view The view.
      */
-    public static void showSoftInput(@NonNull final View view) {
-        showSoftInput(view, 0);
+    public static void showSoftInput(final View view) {
+        showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
     /**
@@ -52,10 +65,13 @@ public final class KeyboardUtils {
      * @param flags Provides additional operating flags.  Currently may be
      *              0 or have the {@link InputMethodManager#SHOW_IMPLICIT} bit set.
      */
-    public static void showSoftInput(@NonNull final View view, final int flags) {
+    public static void showSoftInput(final View view, final int flags) {
         InputMethodManager imm =
                 (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm == null) return;
+        // clear the focus of view
+        view.clearFocus();
+
         view.setFocusable(true);
         view.setFocusableInTouchMode(true);
         view.requestFocus();
@@ -68,7 +84,6 @@ public final class KeyboardUtils {
                 }
             }
         });
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     /**
@@ -76,19 +91,10 @@ public final class KeyboardUtils {
      *
      * @param activity The activity.
      */
-    public static void hideSoftInput(@NonNull final Activity activity) {
+    public static void hideSoftInput(final Activity activity) {
         View view = activity.getCurrentFocus();
         if (view == null) {
-            View decorView = activity.getWindow().getDecorView();
-            View focusView = decorView.findViewWithTag("keyboardTagView");
-            if (focusView == null) {
-                view = new EditText(activity);
-                view.setTag("keyboardTagView");
-                ((ViewGroup) decorView).addView(view, 0, 0);
-            } else {
-                view = focusView;
-            }
-            view.requestFocus();
+            view = new View(activity);
         }
         hideSoftInput(view);
     }
@@ -98,11 +104,19 @@ public final class KeyboardUtils {
      *
      * @param view The view.
      */
-    public static void hideSoftInput(@NonNull final View view) {
+    public static void hideSoftInput(final View view) {
         InputMethodManager imm =
                 (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm == null) return;
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0, new ResultReceiver(new Handler()) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (resultCode == InputMethodManager.RESULT_UNCHANGED_SHOWN
+                        || resultCode == InputMethodManager.RESULT_SHOWN) {
+                    toggleSoftInput();
+                }
+            }
+        });
     }
 
     /**
@@ -111,8 +125,8 @@ public final class KeyboardUtils {
     public static void toggleSoftInput() {
         InputMethodManager imm =
                 (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm == null) return;
-        imm.toggleSoftInput(0, 0);
+        //noinspection ConstantConditions
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private static int sDecorViewDelta = 0;
