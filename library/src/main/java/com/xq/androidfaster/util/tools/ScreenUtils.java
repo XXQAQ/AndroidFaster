@@ -31,6 +31,15 @@ public final class ScreenUtils {
      * @param dpValue
      * @return
      */
+    public static int dp2px(float dpValue) {
+        return dip2px(dpValue);
+    }
+
+    /**
+     * dp to px
+     * @param dpValue
+     * @return
+     */
     public static int dip2px(float dpValue) {
         final float scale = Utils.getApp().getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
@@ -41,8 +50,26 @@ public final class ScreenUtils {
      * @param dpValue
      * @return
      */
+    public static int dp2sp(float dpValue) {
+        return dip2sp(dpValue);
+    }
+
+    /**
+     * dp to sp
+     * @param dpValue
+     * @return
+     */
     public static int dip2sp(float dpValue) {
         return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, Utils.getApp().getResources().getDisplayMetrics()));
+    }
+
+    /**
+     * px to dp
+     * @param pxValue
+     * @return
+     */
+    public static int px2dp(float pxValue) {
+        return px2dip(pxValue);
     }
 
     /**
@@ -73,6 +100,15 @@ public final class ScreenUtils {
     public static int sp2px(float spValue) {
         float fontScale = Utils.getApp().getResources().getDisplayMetrics().scaledDensity;
         return (int) (spValue * fontScale + 0.5f);
+    }
+
+    /**
+     * sp to dp
+     * @param spValue
+     * @return
+     */
+    public static int sp2dp(float spValue) {
+        return sp2dip(spValue);
     }
 
     /**
