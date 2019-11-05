@@ -95,6 +95,23 @@ forAllDo          : 对所有元素做操作
 toString          : 数组转为字符串
 ```
 
+* ### 附件相关 -> [AttachFileUtills.java]
+```
+startActivity     : 指明文件路径吊起对应的应用程序打开文件
+getHtmlFileIntent : 获取打开HTML文件的意图
+getImageFileIntent: 获取打开IMAGE文件的意图
+getPdfFileIntent  : 获取打开PDF文件的意图
+getTextFileIntent : 获取打开TEXT文件的意图
+getAudioFileIntent: 获取打开AUDIO文件的意图
+getVideoFileIntent: 获取打开VIDEO文件的意图
+getChmFileIntent  : 获取打开CHM文件的意图
+getWordFileIntent : 获取打开WORD文件的意图
+getExcelFileIntent: 获取打开EXCLE文件的意图
+getPPTFileIntent  : 获取打开PPT文件的意图
+getApkFileIntent  : 获取打开APK文件的意图
+checkExtensions   : 检查文件类型
+```
+
 * ### 栏相关 -> [BarUtils.java]
 ```
 getStatusBarHeight                   : 获取状态栏高度（px）
@@ -116,6 +133,14 @@ getNavBarColor                       : 获取导航栏颜色
 isSupportNavBar                      : 判断是否支持导航栏
 ```
 
+* ### Bit位运算相关 -> [BitUtils.java]
+```
+getBitValue     : 获取运算数指定位置的值
+setBitValue     : 将运算数指定位置的值置为指定值
+reverseBitValue : 将运算数指定位置取反值
+checkBitValue   : 检查运算数的指定位置是否为1
+```
+
 * ### 亮度相关 -> [BrightnessUtils.java]
 ```
 isAutoBrightnessEnabled : 判断是否开启自动调节亮度
@@ -124,6 +149,24 @@ getBrightness           : 获取屏幕亮度
 setBrightness           : 设置屏幕亮度
 setWindowBrightness     : 设置窗口亮度
 getWindowBrightness     : 获取窗口亮度
+```
+
+* ### Bundle相关 -> [BundleUtil.java]
+```
+BundleUtil.Builder.put... : 链式put各种类型的数据
+```
+
+* ### byte相关 -> [ByteUtils.java]
+```
+reverseBytes            : 字节翻转
+datagramPacket2Bytes    : DatagramPacket转byte
+byteBuffer2Bytes        : ByteBuffer转byte
+char2Bytes, bytes2Char  : char与byte互转
+short2Bytes, bytes2Short: short与byte互转
+bytes2Int, int2Bytes    : int与byte互转
+long2Bytes, bytes2Long  : long与bytes互转
+bytes2HexString, hexString2Bytes: String与byte互转
+hex2Dec :
 ```
 
 * ### 磁盘缓存相关 -> [CacheDiskUtils.java]
@@ -389,6 +432,14 @@ getFileExtension          : 根据全路径获取文件拓展名
 notifySystemToScan        : 通知系统扫描文件
 ```
 
+* ### Flashlight闪光灯相关 -> [FlashlightUtils.java]
+```
+isFlashlightEnable  : 检查闪光灯是否可用
+isFlashlightOn      : 开/关闪光灯
+setFlashlightStatus : 设置闪光灯状态
+destroy             : 销毁
+```
+
 * ### Fragment 相关 -> [FragmentUtils.java]
 ```
 add                   : 新增 fragment
@@ -415,6 +466,18 @@ dispatchBackPress     : 处理 fragment 回退键
 setBackgroundColor    : 设置背景色
 setBackgroundResource : 设置背景资源
 setBackground         : 设置背景
+```
+
+* ### Http网络请求相关 -> [HttpUtils.java]
+```
+get: get请求
+post: post请求
+postJson: postJson请求
+```
+
+* ### Id相关 -> [IDUtils.java]
+```
+getId: 获取全局唯一Id
 ```
 
 * ### 图片相关 -> [ImageUtils.java]
@@ -538,6 +601,21 @@ json                     : log 字符串之 json
 xml                      : log 字符串之 xml
 ```
 
+* ### 农历相关 -> [LunarUtils.java]
+```
+lunarYear2GanZhi: 农历年转干支年
+lunar2Solar: 农历转公历
+solar2Lunar: 公历转农历
+```
+
+* ### Messenger相关 -> [MessengerUtils.java]
+```
+register:
+unregister:
+subscribe:
+post:
+```
+
 * ### MetaData 相关 -> [MetaDataUtils.java]
 ```
 getMetaDataInApp     : 获取 application 的 meta-data 值
@@ -570,6 +648,19 @@ getNetMaskByWifi                      : 根据 WiFi 获取子网掩码 IP 地址
 getServerAddressByWifi                : 根据 WiFi 获取服务端 IP 地址
 registerNetworkStatusChangedListener  : 注册网络状态改变监听器
 unregisterNetworkStatusChangedListener: 注销网络状态改变监听器
+```
+
+* ### NFC相关 -> [NfcUtils.java]
+```
+暂无说明...
+```
+
+* ### Notification通知相关 -> [NotificationUtils.java]
+```
+create                  : 创建通知
+createStackNotification : 创建通知
+cancel                  : 取消通知
+cancelAll               : 取消所有通知
 ```
 
 * ### 路径相关 -> [PathUtils.java]
@@ -645,6 +736,14 @@ killAllBackgroundProcesses: 杀死所有的后台服务进程
 killBackgroundProcesses   : 杀死后台服务进程
 isMainProcess             : 判断是否运行在主进程
 getCurrentProcessName     : 获取当前进程名称
+```
+
+* ### 属性相关 -> [PropertyUtils.java]
+```
+clearProperties      : 利用反射实现数据擦除
+copyProperties       : 利用反射实现对象之间属性复制(复制的属性必须实现set与get方法)
+copyPropertiesExclude: 利用反射实现对象之间属性复制
+copyPropertiesInclude: 利用反射实现对象之间属性复制
 ```
 
 * ### 反射相关 -> [ReflectUtils.java]
