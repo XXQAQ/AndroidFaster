@@ -2,6 +2,13 @@
     package="com.xq.androidfaster" >
 
     <application>
+
+        <service android:name="com.xq.androidfaster.util.tools.MessengerUtils$ServerService">
+            <intent-filter>
+                <action android:name="${applicationId}.messenger" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".util.tools.PermissionUtils$PermissionActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
