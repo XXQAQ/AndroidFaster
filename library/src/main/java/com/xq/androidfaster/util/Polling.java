@@ -8,16 +8,18 @@ public class Polling {
 
     private CustomThread thread;
 
+    private boolean isOnUiThread = true;
     private int millis;
     private int delay;
 
     public Polling(int millis, Runnable run) {
-        this(millis,0,run);
+        this(millis,0,true,run);
     }
 
-    public Polling(int millis, int delay, Runnable run) {
+    public Polling(int millis, int delay, boolean isOnUiThread, Runnable run) {
         this.millis = millis;
         this.delay = delay;
+        this.isOnUiThread = isOnUiThread;
         this.run = run;
     }
 
@@ -115,12 +117,15 @@ public class Polling {
 
                     isFirstRun = false;
 
-                    ThreadUtils.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            run.run();
-                        }
-                    });
+                    if (isOnUiThread)
+                        ThreadUtils.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                run.run();
+                            }
+                        });
+                    else
+                        run.run();
                 }catch (Exception e){
                     e.printStackTrace();
                     isPause = true;
