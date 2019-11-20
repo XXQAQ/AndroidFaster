@@ -42,6 +42,7 @@ public final class ThreadUtils {
     private static Executor sDeliver;
 
     private static final Executor THREAD_POOL_SIMPLE = Executors.newFixedThreadPool(2*CPU_COUNT+1);
+
     /**
      * Run on the child thread.
      *
@@ -49,6 +50,25 @@ public final class ThreadUtils {
      */
     public static void runOnChildThread(Runnable runnable) {
         THREAD_POOL_SIMPLE.execute(runnable);
+    }
+
+    /**
+     * Run on the child thread.
+     *
+     * @param runnable The Runnable
+     */
+    public static void runOnChildThreadDelayed(Runnable runnable,int delay) {
+        THREAD_POOL_SIMPLE.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(delay);
+                    runnable.run();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
