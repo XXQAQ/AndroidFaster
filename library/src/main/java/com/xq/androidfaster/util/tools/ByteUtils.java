@@ -225,16 +225,16 @@ public final class ByteUtils {
         return c;
     }
 
-    public static byte[] short2Bytes(short c) {
+    public static byte[] short2Bytes(short s) {
         byte[] b = new byte[2];
-        b[0] = (byte) ((c & 0xFF00) >> 8);
-        b[1] = (byte) (c & 0xFF);
+        b[0] = (byte) ((s & 0xFF00) >> 8);
+        b[1] = (byte) (s & 0xFF);
         return b;
     }
 
     public static short bytes2Short(byte[] b) {
-        short c = (short) (((b[0] & 0xFF) << 8) | (b[1] & 0xFF));
-        return c;
+        short s = (short) (((b[0] & 0xFF) << 8) | (b[1] & 0xFF));
+        return s;
     }
 
     public static int bytes2Int(byte[] b) {
@@ -256,7 +256,7 @@ public final class ByteUtils {
 
     public static byte[] long2Bytes(long x) {
         ByteBuffer buffer = ByteBuffer.allocate(8);
-        buffer.putLong(0, x);
+        buffer.putLong(x);
         return buffer.array();
     }
 
@@ -265,6 +265,30 @@ public final class ByteUtils {
         buffer.put(bytes, 0, bytes.length);
         buffer.flip();//need flip
         return buffer.getLong();
+    }
+
+    public static boolean bytes2Boolean(byte[] bytes){
+        return bytes[0] == (byte) 1;
+    }
+
+    public static byte[] boolean2Bytes(boolean b){
+        return new byte[]{b?(byte) 1:(byte) 0};
+    }
+
+    public static double bytes2Double(byte[] bytes){
+        return Double.longBitsToDouble(bytes2Long(bytes));
+    }
+
+    public static byte[] double2bytes(double d){
+        return long2Bytes(Double.doubleToLongBits(d));
+    }
+
+    public static float bytes2Float(byte[] bytes){
+        return Float.intBitsToFloat(bytes2Int(bytes));
+    }
+
+    public static byte[] float2bytes(float f){
+        return int2Bytes(Float.floatToIntBits(f));
     }
 
     private static final char HEX_DIGITS[] =
