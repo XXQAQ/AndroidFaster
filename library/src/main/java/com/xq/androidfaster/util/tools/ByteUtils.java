@@ -100,16 +100,16 @@ public final class ByteUtils {
 
     }
 
-    public static Object bytes2ObjectField(byte[] bytes,Class mClass) throws Exception{
+    public static <T>T bytes2ObjectField(byte[] bytes,Class<T> mClass) throws Exception{
         return bytes2ObjectField(ByteBuffer.wrap(bytes),mClass);
     }
 
-    private static Object bytes2ObjectField(ByteBuffer byteBuffer,Class mClass) throws Exception {
+    private static <T>T bytes2ObjectField(ByteBuffer byteBuffer,Class<T> mClass) throws Exception {
         if (mClass == null)  return null;
 
-        Constructor constructor = mClass.getDeclaredConstructor();
+        Constructor<T> constructor = mClass.getDeclaredConstructor();
         constructor.setAccessible(true);
-        Object o = constructor.newInstance();
+        T o = constructor.newInstance();
 
         if (!classMap.containsKey(mClass)){
             classMap.put(mClass,mClass.getDeclaredFields());
