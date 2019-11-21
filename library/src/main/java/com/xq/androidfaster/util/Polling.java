@@ -4,13 +4,12 @@ import com.xq.androidfaster.util.tools.ThreadUtils;
 
 public class Polling {
 
-    private Runnable run;
-
     private CustomThread thread;
 
-    private boolean isOnUiThread = true;
+    private Runnable run;
     private int millis;
     private int delay;
+    private boolean isOnUiThread = true;
 
     public Polling(int millis, Runnable run) {
         this(millis,0,true,run);
@@ -57,7 +56,7 @@ public class Polling {
         if (thread != null){
             return thread.isPause();
         }
-        return false;
+        return true;
     }
 
     public boolean isPolling(){
@@ -128,6 +127,7 @@ public class Polling {
                         run.run();
                 }catch (Exception e){
                     e.printStackTrace();
+                    isFirstRun = false;
                     isPause = true;
                     break;
                 }
