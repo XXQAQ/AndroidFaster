@@ -5,6 +5,16 @@ import java.nio.ByteBuffer;
 
 public final class ByteUtils {
 
+    public static byte[] concatBytes(byte[]... bytess){
+        ByteBuffer byteBuffer = ByteBuffer.allocate(64*1024);
+        for (byte[] bytes : bytess)
+            byteBuffer.put(bytes);
+        byteBuffer.flip();
+        byte[] bytes = new byte[byteBuffer.limit()];
+        byteBuffer.get(bytes);
+        return bytes;
+    }
+
     public static byte[] reverseBytes(byte[] a){
         byte[] b = new byte[a.length];
         for (int i = 0; i < b.length; i++) {
@@ -20,9 +30,8 @@ public final class ByteUtils {
     }
 
     public static byte[] byteBuffer2Bytes(ByteBuffer byteBuffer){
-        if (byteBuffer.position() != 0) byteBuffer.flip();
         byte[] bytes = new byte[byteBuffer.limit()];
-        byteBuffer.get(bytes);
+        System.arraycopy(byteBuffer.array(),0,bytes,0,byteBuffer.limit());
         return bytes;
     }
 
@@ -33,16 +42,16 @@ public final class ByteUtils {
         return b;
     }
 
+    public static char bytes2Char(byte[] b) {
+        char c = (char) (((b[0] & 0xFF) << 8) | (b[1] & 0xFF));
+        return c;
+    }
+
     public static byte[] short2Bytes(short c) {
         byte[] b = new byte[2];
         b[0] = (byte) ((c & 0xFF00) >> 8);
         b[1] = (byte) (c & 0xFF);
         return b;
-    }
-
-    public static char bytes2Char(byte[] b) {
-        char c = (char) (((b[0] & 0xFF) << 8) | (b[1] & 0xFF));
-        return c;
     }
 
     public static short bytes2Short(byte[] b) {
