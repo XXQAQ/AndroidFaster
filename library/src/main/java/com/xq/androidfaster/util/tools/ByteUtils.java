@@ -15,7 +15,7 @@ public final class ByteUtils {
 
     public interface ByteConverter{
 
-        public byte[] convertToBytes(Object o,Field[] fields,int fieldPosition);
+        public byte[] convertToBytes(Object o,Field[] fields,int fieldPosition,byte[] afterBytes);
 
         public Object convertFromBytes(Class mClass,Field[] fields,int fieldPosition,ByteBuffer byteBuffer);
     }
@@ -78,7 +78,7 @@ public final class ByteUtils {
 
                 Object value = null;
 
-                if (converter != null && (value = converter.convertToBytes(o,fields,i)) != null){
+                if (converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null){
 
                     byteBuffer.put((byte[]) value);
 
