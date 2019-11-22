@@ -12,12 +12,24 @@ import java.util.Map;
 public final class ByteUtils {
 
     private static Map<Class, Field[]> classMap = new HashMap<>();
-    public static byte[] objectField2Bytes(Object o) throws Exception {
-        if (o == null) return null;
-        return objectField2Bytes(o,o.getClass());
+
+    public interface ByteConverter{
+
+        public byte[] convertToBytes(Object o,Field[] fields,int fieldPosition);
+
+        public Object convertFromBytes(Class mClass,Field[] fields,int fieldPosition,ByteBuffer byteBuffer);
     }
 
-    private static byte[] objectField2Bytes(Object o,Class mClass) throws Exception {
+    public static byte[] object2Bytes(Object o) throws Exception{
+        return object2Bytes(o,null);
+    }
+
+    public static byte[] object2Bytes(Object o,ByteConverter converter) throws Exception {
+        if (o == null) return null;
+        return object2Bytes(o,o.getClass(),converter);
+    }
+
+    private static byte[] object2Bytes(Object o, Class mClass, ByteConverter converter) throws Exception {
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1000);
 
@@ -58,40 +70,46 @@ public final class ByteUtils {
                         throw  new Exception(field.getName() + " is null");
                     }
 
-                    byte[] bytes = objectField2Bytes(value[j],field.getType().getComponentType());
+                    byte[] bytes = object2Bytes(value[j],field.getType().getComponentType(),converter);
                     if (bytes != null && bytes.length > 0)
                         byteBuffer.put(bytes);
                 }
             } else {
 
-                Object value = field.get(o);
+                Object value = null;
 
-                if (field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)){
-                    byteBuffer.putLong(value == null?0 : (Long) value);
-                }
-                else    if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)){
-                    byteBuffer.putInt(value == null?0 : (Integer) value);
-                }
-                else    if (field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)){
-                    byteBuffer.putShort(value == null?0 : (Short) value);
-                }
-                else    if (field.getType().isAssignableFrom(char.class) || field.getType().isAssignableFrom(Character.class)){
-                    byteBuffer.putChar(value == null?0 : (Character) value);
-                }
-                else    if (field.getType().isAssignableFrom(byte.class) || field.getType().isAssignableFrom(Byte.class)){
-                    byteBuffer.put(value == null?0 : (Byte) value);
-                }
-                else    if (field.getType().isAssignableFrom(boolean.class) || field.getType().isAssignableFrom(Boolean.class)){
-                    byteBuffer.put(value == null?0 : (Boolean)value?(byte) 1:(byte) 0);
-                }
-                else    if (field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)){
-                    byteBuffer.putDouble(value == null?0 : (Double) value);
-                }
-                else    if (field.getType().isAssignableFrom(float.class) || field.getType().isAssignableFrom(Float.class)){
-                    byteBuffer.putFloat(value == null?0 : (Float) value);
-                }
-                else    if (value != null){
-                    byteBuffer.put(objectField2Bytes(value,field.getType()));
+                if (converter != null && (value = converter.convertToBytes(o,fields,i)) != null){
+
+                    byteBuffer.put((byte[]) value);
+
+                } else {
+                    if (field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)){
+                        byteBuffer.putLong(value == null?0 : (Long) value);
+                    }
+                    else    if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)){
+                        byteBuffer.putInt(value == null?0 : (Integer) value);
+                    }
+                    else    if (field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)){
+                        byteBuffer.putShort(value == null?0 : (Short) value);
+                    }
+                    else    if (field.getType().isAssignableFrom(char.class) || field.getType().isAssignableFrom(Character.class)){
+                        byteBuffer.putChar(value == null?0 : (Character) value);
+                    }
+                    else    if (field.getType().isAssignableFrom(byte.class) || field.getType().isAssignableFrom(Byte.class)){
+                        byteBuffer.put(value == null?0 : (Byte) value);
+                    }
+                    else    if (field.getType().isAssignableFrom(boolean.class) || field.getType().isAssignableFrom(Boolean.class)){
+                        byteBuffer.put(value == null?0 : (Boolean)value?(byte) 1:(byte) 0);
+                    }
+                    else    if (field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)){
+                        byteBuffer.putDouble(value == null?0 : (Double) value);
+                    }
+                    else    if (field.getType().isAssignableFrom(float.class) || field.getType().isAssignableFrom(Float.class)){
+                        byteBuffer.putFloat(value == null?0 : (Float) value);
+                    }
+                    else    {
+                        if (value != null) byteBuffer.put(object2Bytes(value,field.getType(),converter));
+                    }
                 }
             }
         }
@@ -100,11 +118,15 @@ public final class ByteUtils {
 
     }
 
-    public static <T>T bytes2ObjectField(byte[] bytes,Class<T> mClass) throws Exception{
-        return bytes2ObjectField(ByteBuffer.wrap(bytes),mClass);
+    public static <T>T bytes2Object(byte[] bytes,Class<T> mClass) throws Exception {
+        return bytes2Object(bytes,mClass,null);
     }
 
-    private static <T>T bytes2ObjectField(ByteBuffer byteBuffer,Class<T> mClass) throws Exception {
+    public static <T>T bytes2Object(byte[] bytes,Class<T> mClass,ByteConverter converter) throws Exception{
+        return bytes2Object(ByteBuffer.wrap(bytes),mClass,converter);
+    }
+
+    private static <T>T bytes2Object(ByteBuffer byteBuffer,Class<T> mClass,ByteConverter converter) throws Exception {
         if (mClass == null)  return null;
 
         Constructor<T> constructor = mClass.getDeclaredConstructor();
@@ -145,36 +167,46 @@ public final class ByteUtils {
                 field.set(o,value);
 
                 for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
-                    value[j] = bytes2ObjectField(byteBuffer,field.getType().getComponentType());
+                    value[j] = bytes2Object(byteBuffer,field.getType().getComponentType(),converter);
                 }
             } else {
 
-                if (field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)){
-                    field.set(o,byteBuffer.getLong());
-                }
-                else    if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)){
-                    field.set(o,byteBuffer.getInt());
-                }
-                else    if (field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)){
-                    field.set(o,byteBuffer.getShort());
-                }
-                else    if (field.getType().isAssignableFrom(char.class) || field.getType().isAssignableFrom(Character.class)){
-                    field.set(o,byteBuffer.getChar());
-                }
-                else    if (field.getType().isAssignableFrom(byte.class) || field.getType().isAssignableFrom(Byte.class)){
-                    field.set(o,byteBuffer.get());
-                }
-                else    if (field.getType().isAssignableFrom(boolean.class) || field.getType().isAssignableFrom(Boolean.class)){
-                    field.set(o,byteBuffer.get() == (byte)1);
-                }
-                else    if (field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)){
-                    field.set(o,byteBuffer.getDouble());
-                }
-                else    if (field.getType().isAssignableFrom(float.class) || field.getType().isAssignableFrom(Float.class)){
-                    field.set(o,byteBuffer.getFloat());
-                }
-                else {
-                    field.set(o,bytes2ObjectField(byteBuffer,field.getType()));
+                Object value = null;
+
+                if (converter != null && (value = converter.convertFromBytes(mClass,fields,i,byteBuffer)) != null){
+
+                    field.set(o,value);
+
+                } else {
+                    if (field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)){
+                        value = byteBuffer.getLong();
+                    }
+                    else    if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)){
+                        value = byteBuffer.getInt();
+                    }
+                    else    if (field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)){
+                        value = byteBuffer.getShort();
+                    }
+                    else    if (field.getType().isAssignableFrom(char.class) || field.getType().isAssignableFrom(Character.class)){
+                        value = byteBuffer.getChar();
+                    }
+                    else    if (field.getType().isAssignableFrom(byte.class) || field.getType().isAssignableFrom(Byte.class)){
+                        value = byteBuffer.get();
+                    }
+                    else    if (field.getType().isAssignableFrom(boolean.class) || field.getType().isAssignableFrom(Boolean.class)){
+                        value = byteBuffer.get() == (byte)1;
+                    }
+                    else    if (field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)){
+                        value = byteBuffer.getDouble();
+                    }
+                    else    if (field.getType().isAssignableFrom(float.class) || field.getType().isAssignableFrom(Float.class)){
+                        value = byteBuffer.getFloat();
+                    }
+                    else {
+                        value = bytes2Object(byteBuffer,field.getType(),converter);
+                    }
+
+                    if (value != null) field.set(o,value);
                 }
             }
         }
@@ -187,10 +219,7 @@ public final class ByteUtils {
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1024);
         for (byte[] bytes : bytess)
             byteBuffer.put(bytes);
-        byteBuffer.flip();
-        byte[] bytes = new byte[byteBuffer.limit()];
-        byteBuffer.get(bytes);
-        return bytes;
+        return byteBuffer2Bytes(byteBuffer);
     }
 
     public static byte[] reverseBytes(byte[] a){
@@ -208,8 +237,9 @@ public final class ByteUtils {
     }
 
     public static byte[] byteBuffer2Bytes(ByteBuffer byteBuffer){
-        byte[] bytes = new byte[byteBuffer.position()];
-        System.arraycopy(byteBuffer.array(),0,bytes,0,byteBuffer.position());
+        int len = byteBuffer.position() > 0? byteBuffer.position() : byteBuffer.limit();
+        byte[] bytes = new byte[len];
+        System.arraycopy(byteBuffer.array(),0,bytes,0,len);
         return bytes;
     }
 
