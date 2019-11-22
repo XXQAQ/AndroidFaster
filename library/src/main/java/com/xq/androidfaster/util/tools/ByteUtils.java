@@ -78,11 +78,13 @@ public final class ByteUtils {
 
                 Object value = null;
 
-                if (converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null){
+                if (converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null && ((byte[])value).length >0 ){
 
                     byteBuffer.put((byte[]) value);
 
                 } else {
+                    value = field.get(o);
+
                     if (field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)){
                         byteBuffer.putLong(value == null?0 : (Long) value);
                     }
