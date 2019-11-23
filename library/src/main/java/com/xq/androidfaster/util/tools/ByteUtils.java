@@ -335,7 +335,7 @@ public final class ByteUtils {
     }
 
     public static byte[] byteBuffer2Bytes(ByteBuffer byteBuffer){
-        int len = byteBuffer.position() > 0? byteBuffer.position() : byteBuffer.limit();
+        int len = byteBuffer.position() > 0? byteBuffer.position() : byteBuffer.limit() == byteBuffer.capacity()?0 : byteBuffer.limit();
         byte[] bytes = new byte[len];
         System.arraycopy(byteBuffer.array(),0,bytes,0,len);
         return bytes;
