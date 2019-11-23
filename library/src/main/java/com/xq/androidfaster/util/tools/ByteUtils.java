@@ -6,7 +6,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +25,8 @@ public final class ByteUtils {
 
         public Object convertFromBytes(Class mClass,Field[] fields,int fieldPosition,ByteBuffer byteBuffer);
     }
+
+    //注意：下4列方法被排序的字段必须使用@FieldOrder进行注解使用
 
     public static byte[] object2Bytes(Object o) throws Exception{
         return object2Bytes(o,null);
@@ -229,9 +234,28 @@ public final class ByteUtils {
         if (allParentField != null && allParentField.length >0)
             list.addAll(Arrays.asList(allParentField));
 
-        list.addAll(Arrays.asList(mClass.getDeclaredFields()));
+        list.addAll(getOrderedFieldList(mClass.getFields()));
 
         return list.toArray(new Field[0]);
+    }
+
+    private static List<Field> getOrderedFieldList(Field[] fields){
+        // 用来存放所有的属性域
+        List<Field> list = new ArrayList<>();
+        // 过滤带有注解的Field
+        for(Field f:fields){
+            if(f.getAnnotation(FieldOrder.class)!=null){
+                list.add(f);
+            }
+        }
+        // 排序
+        Collections.sort(list, new Comparator<Field>() {
+            @Override
+            public int compare(Field o1, Field o2) {
+                return o1.getAnnotation(FieldOrder.class).order() - o2.getAnnotation(FieldOrder.class).order();
+            }
+        });
+        return list;
     }
 
     public static byte[] concatBytes(byte[]... bytess){
