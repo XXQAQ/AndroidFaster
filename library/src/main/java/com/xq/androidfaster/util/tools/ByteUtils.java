@@ -19,10 +19,11 @@ public final class ByteUtils {
 
     private static Map<Class, Field[]> classMap = new HashMap<>();
 
-    public interface ByteConverter{
-
+    public interface ToBytesConverter{
         public byte[] convertToBytes(Object o,Field[] fields,int fieldPosition,byte[] afterBytes);
+    }
 
+    public interface FromBytesConverter{
         public Object convertFromBytes(Class mClass,Field[] fields,int fieldPosition,ByteBuffer byteBuffer);
     }
 
@@ -32,12 +33,12 @@ public final class ByteUtils {
         return object2Bytes(o,null);
     }
 
-    public static byte[] object2Bytes(Object o,ByteConverter converter) throws Exception {
+    public static byte[] object2Bytes(Object o,ToBytesConverter converter) throws Exception {
         if (o == null) return null;
         return object2Bytes(o,o.getClass(),converter);
     }
 
-    private static byte[] object2Bytes(Object o, Class mClass, ByteConverter converter) throws Exception {
+    private static byte[] object2Bytes(Object o, Class mClass, ToBytesConverter converter) throws Exception {
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1000);
 
@@ -163,11 +164,11 @@ public final class ByteUtils {
         return bytes2Object(bytes,mClass,null);
     }
 
-    public static <T>T bytes2Object(byte[] bytes,Class<T> mClass,ByteConverter converter) throws Exception{
-        return bytes2Object(ByteBuffer.wrap(bytes),mClass,converter);
+    public static <T>T bytes2Object(byte[] bytes,Class<T> mClass,FromBytesConverter converter) throws Exception{
+        return bytes2Object(mClass,ByteBuffer.wrap(bytes),converter);
     }
 
-    private static <T>T bytes2Object(ByteBuffer byteBuffer,Class<T> mClass,ByteConverter converter) throws Exception {
+    private static <T>T bytes2Object(Class<T> mClass,ByteBuffer byteBuffer,FromBytesConverter converter) throws Exception {
         if (mClass == null)  return null;
 
         Constructor<T> constructor = mClass.getDeclaredConstructor();
@@ -218,7 +219,7 @@ public final class ByteUtils {
                             if (field.getType().getComponentType().isPrimitive()){
                                 ArrayUtils.set(value, j, getPrimitive(field.getType().getComponentType(),byteBuffer));
                             } else {
-                                ArrayUtils.set(value, j, bytes2Object(byteBuffer, field.getType().getComponentType(), converter));
+                                ArrayUtils.set(value, j, bytes2Object(field.getType().getComponentType(),byteBuffer, converter));
                             }
                         }
                     } else {
@@ -228,7 +229,7 @@ public final class ByteUtils {
                             if (field.getType().getComponentType().isPrimitive()){
                                 ((List)value).set(j,getPrimitive(field.getType().getComponentType(),byteBuffer));
                             } else {
-                                ((List)value).set(j,bytes2Object(byteBuffer,field.getType().getComponentType(),converter));
+                                ((List)value).set(j,bytes2Object(field.getType().getComponentType(),byteBuffer,converter));
                             }
                         }
                     }
@@ -238,7 +239,7 @@ public final class ByteUtils {
                 else
                 {
                     if ((value = getPrimitive(field.getType(),byteBuffer)) == null){
-                        value = bytes2Object(byteBuffer,field.getType(),converter);
+                        value = bytes2Object(field.getType(),byteBuffer,converter);
                     }
 
                     if (value != null){
