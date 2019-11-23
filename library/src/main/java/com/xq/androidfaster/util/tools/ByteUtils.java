@@ -60,65 +60,60 @@ public final class ByteUtils {
                 continue;
             }
 
-            if (field.getType().isArray()){
+            Object value = null;
 
-                if (i == 0){
-                    throw  new Exception("what the fucking");
-                }
+            if (converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null && ((byte[])value).length >0 )
+            {
+                byteBuffer.put((byte[]) value);
+            }
+            else
+            {
+                value = field.get(o);
 
-                if (!(fields[i-1].getType().isPrimitive())){
-                    throw  new Exception(fields[i-1].getName() + " must be Number");
-                }
+                if (field.getType().isArray() || List.class.isAssignableFrom(field.getType()))
+                {
+                    if (i == 0){
+                        throw  new Exception("what the fucking");
+                    }
 
-                for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
-
-                    Object[] value = (Object[]) field.get(o);
+                    if (!(fields[i-1].getType().isPrimitive())){
+                        throw  new Exception(fields[i-1].getName() + " must be Number");
+                    }
 
                     if (value == null){
                         throw  new Exception(field.getName() + " is null");
                     }
 
-                    byte[] bytes = object2Bytes(value[j],field.getType().getComponentType(),converter);
-                    if (bytes != null && bytes.length > 0)
-                        byteBuffer.put(bytes);
+                    if (field.getType().getComponentType().isPrimitive()){
+                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+                            if (field.getType().isArray()){
+                                putPrimitive(ArrayUtils.get(value,j),field.getType().getComponentType(),byteBuffer);
+                            } else {
+                                putPrimitive(((List)value).get(j),field.getType().getComponentType(),byteBuffer);
+                            }
+                        }
+                    } else {
+                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+
+                            byte[] bytes = null;
+
+                            if (field.getType().isArray()){
+                                bytes = object2Bytes(ArrayUtils.get(value,j),field.getType().getComponentType(),converter);
+                            } else {
+                                bytes = object2Bytes(((List)value).get(j),field.getType().getComponentType(),converter);
+                            }
+
+                            if (bytes != null && bytes.length > 0)
+                                byteBuffer.put(bytes);
+                        }
+                    }
                 }
-            } else {
+                else
+                {
+                    if (!putPrimitive(value,field.getType(),byteBuffer)){
 
-                Object value = null;
-
-                if (converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null && ((byte[])value).length >0 ){
-
-                    byteBuffer.put((byte[]) value);
-
-                } else {
-                    value = field.get(o);
-
-                    if (long.class.isAssignableFrom(field.getType()) || Long.class.isAssignableFrom(field.getType())){
-                        byteBuffer.putLong(value == null?0 : (Long) value);
-                    }
-                    else    if (int.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType())){
-                        byteBuffer.putInt(value == null?0 : (Integer) value);
-                    }
-                    else    if (short.class.isAssignableFrom(field.getType()) || Short.class.isAssignableFrom(field.getType())){
-                        byteBuffer.putShort(value == null?0 : (Short) value);
-                    }
-                    else    if (char.class.isAssignableFrom(field.getType()) || Character.class.isAssignableFrom(field.getType())){
-                        byteBuffer.putChar(value == null?0 : (Character) value);
-                    }
-                    else    if (byte.class.isAssignableFrom(field.getType()) || Byte.class.isAssignableFrom(field.getType())){
-                        byteBuffer.put(value == null?0 : (Byte) value);
-                    }
-                    else    if (boolean.class.isAssignableFrom(field.getType()) || Boolean.class.isAssignableFrom(field.getType())){
-                        byteBuffer.put(value == null?0 : (Boolean)value?(byte) 1:(byte) 0);
-                    }
-                    else    if (double.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())){
-                        byteBuffer.putDouble(value == null?0 : (Double) value);
-                    }
-                    else    if (float.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType())){
-                        byteBuffer.putFloat(value == null?0 : (Float) value);
-                    }
-                    else    {
-                        if (value != null) byteBuffer.put(object2Bytes(value,field.getType(),converter));
+                        if (value != null)
+                            byteBuffer.put(object2Bytes(value,field.getType(),converter));
                     }
                 }
             }
@@ -126,6 +121,42 @@ public final class ByteUtils {
 
         return byteBuffer2Bytes(byteBuffer);
 
+    }
+
+    private static boolean putPrimitive(Object value,Class valueClass,ByteBuffer byteBuffer){
+        if (long.class.isAssignableFrom(valueClass) || Long.class.isAssignableFrom(valueClass)){
+            byteBuffer.putLong(value == null?0 : (Long) value);
+            return true;
+        }
+        else    if (int.class.isAssignableFrom(valueClass) || Integer.class.isAssignableFrom(valueClass)){
+            byteBuffer.putInt(value == null?0 : (Integer) value);
+            return true;
+        }
+        else    if (short.class.isAssignableFrom(valueClass) || Short.class.isAssignableFrom(valueClass)){
+            byteBuffer.putShort(value == null?0 : (Short) value);
+            return true;
+        }
+        else    if (char.class.isAssignableFrom(valueClass) || Character.class.isAssignableFrom(valueClass)){
+            byteBuffer.putChar(value == null?0 : (Character) value);
+            return true;
+        }
+        else    if (byte.class.isAssignableFrom(valueClass) || Byte.class.isAssignableFrom(valueClass)){
+            byteBuffer.put(value == null?0 : (Byte) value);
+            return true;
+        }
+        else    if (boolean.class.isAssignableFrom(valueClass) || Boolean.class.isAssignableFrom(valueClass)){
+            byteBuffer.put(value == null?0 : (Boolean)value?(byte) 1:(byte) 0);
+            return true;
+        }
+        else    if (double.class.isAssignableFrom(valueClass) || Double.class.isAssignableFrom(valueClass)){
+            byteBuffer.putDouble(value == null?0 : (Double) value);
+            return true;
+        }
+        else    if (float.class.isAssignableFrom(valueClass) || Float.class.isAssignableFrom(valueClass)){
+            byteBuffer.putFloat(value == null?0 : (Float) value);
+            return true;
+        }
+        return false;
     }
 
     public static <T>T bytes2Object(byte[] bytes,Class<T> mClass) throws Exception {
@@ -162,67 +193,90 @@ public final class ByteUtils {
                 continue;
             }
 
-            if (field.getType().isArray()){
+            Object value = null;
 
-                if (i == 0){
-                    throw  new Exception("what the fucking");
-                }
-
-                if (!(fields[i-1].getType().isPrimitive())){
-                    throw  new Exception(fields[i-1].getName() + " must be Number");
-                }
-
-                Object[] value = (Object[]) Array.newInstance(field.getType().getComponentType(),((Number) fields[i-1].get(o)).intValue());
-
+            if (converter != null && (value = converter.convertFromBytes(mClass,fields,i,byteBuffer)) != null)
+            {
                 field.set(o,value);
+            }
+            else
+            {
+                if (field.getType().isArray() || List.class.isAssignableFrom(field.getType()))
+                {
+                    if (i == 0){
+                        throw  new Exception("what the fucking");
+                    }
 
-                for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
-                    value[j] = bytes2Object(byteBuffer,field.getType().getComponentType(),converter);
-                }
-            } else {
+                    if (!(fields[i-1].getType().isPrimitive())){
+                        throw  new Exception(fields[i-1].getName() + " must be Number");
+                    }
 
-                Object value = null;
+                    if (field.getType().isArray()){
+                        value = Array.newInstance(field.getType().getComponentType(),((Number) fields[i-1].get(o)).intValue());
 
-                if (converter != null && (value = converter.convertFromBytes(mClass,fields,i,byteBuffer)) != null){
+                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+                            if (field.getType().getComponentType().isPrimitive()){
+                                ArrayUtils.set(value, j, getPrimitive(field.getType().getComponentType(),byteBuffer));
+                            } else {
+                                ArrayUtils.set(value, j, bytes2Object(byteBuffer, field.getType().getComponentType(), converter));
+                            }
+                        }
+                    } else {
+                        value = new LinkedList<>();
+
+                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+                            if (field.getType().getComponentType().isPrimitive()){
+                                ((List)value).set(j,getPrimitive(field.getType().getComponentType(),byteBuffer));
+                            } else {
+                                ((List)value).set(j,bytes2Object(byteBuffer,field.getType().getComponentType(),converter));
+                            }
+                        }
+                    }
 
                     field.set(o,value);
-
-                } else {
-                    if (long.class.isAssignableFrom(field.getType()) || Long.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.getLong();
-                    }
-                    else    if (int.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.getInt();
-                    }
-                    else    if (short.class.isAssignableFrom(field.getType()) || Short.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.getShort();
-                    }
-                    else    if (char.class.isAssignableFrom(field.getType()) || Character.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.getChar();
-                    }
-                    else    if (byte.class.isAssignableFrom(field.getType()) || Byte.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.get();
-                    }
-                    else    if (boolean.class.isAssignableFrom(field.getType()) || Boolean.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.get() == (byte)1;
-                    }
-                    else    if (double.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.getDouble();
-                    }
-                    else    if (float.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType())){
-                        value = byteBuffer.getFloat();
-                    }
-                    else {
+                }
+                else
+                {
+                    if ((value = getPrimitive(field.getType(),byteBuffer)) == null){
                         value = bytes2Object(byteBuffer,field.getType(),converter);
                     }
 
-                    if (value != null) field.set(o,value);
+                    if (value != null){
+                        field.set(o,value);
+                    }
                 }
             }
         }
 
         return o;
+    }
 
+    private static Object getPrimitive(Class valueClass,ByteBuffer byteBuffer){
+        if (long.class.isAssignableFrom(valueClass) || Long.class.isAssignableFrom(valueClass)){
+            return byteBuffer.getLong();
+        }
+        else    if (int.class.isAssignableFrom(valueClass) || Integer.class.isAssignableFrom(valueClass)){
+            return byteBuffer.getInt();
+        }
+        else    if (short.class.isAssignableFrom(valueClass) || Short.class.isAssignableFrom(valueClass)){
+            return byteBuffer.getShort();
+        }
+        else    if (char.class.isAssignableFrom(valueClass) || Character.class.isAssignableFrom(valueClass)){
+            return byteBuffer.getChar();
+        }
+        else    if (byte.class.isAssignableFrom(valueClass) || Byte.class.isAssignableFrom(valueClass)){
+            return byteBuffer.get();
+        }
+        else    if (boolean.class.isAssignableFrom(valueClass) || Boolean.class.isAssignableFrom(valueClass)){
+            return byteBuffer.get() == (byte)1;
+        }
+        else    if (double.class.isAssignableFrom(valueClass) || Double.class.isAssignableFrom(valueClass)){
+            return byteBuffer.getDouble();
+        }
+        else    if (float.class.isAssignableFrom(valueClass) || Float.class.isAssignableFrom(valueClass)){
+            return byteBuffer.getFloat();
+        }
+        return null;
     }
 
     private static Field[] getAllDeclaredFields(Class mClass){
