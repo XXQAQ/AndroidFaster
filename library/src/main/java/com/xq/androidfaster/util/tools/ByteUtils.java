@@ -93,28 +93,28 @@ public final class ByteUtils {
                 } else {
                     value = field.get(o);
 
-                    if (field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)){
+                    if (long.class.isAssignableFrom(field.getType()) || Long.class.isAssignableFrom(field.getType())){
                         byteBuffer.putLong(value == null?0 : (Long) value);
                     }
-                    else    if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)){
+                    else    if (int.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType())){
                         byteBuffer.putInt(value == null?0 : (Integer) value);
                     }
-                    else    if (field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)){
+                    else    if (short.class.isAssignableFrom(field.getType()) || Short.class.isAssignableFrom(field.getType())){
                         byteBuffer.putShort(value == null?0 : (Short) value);
                     }
-                    else    if (field.getType().isAssignableFrom(char.class) || field.getType().isAssignableFrom(Character.class)){
+                    else    if (char.class.isAssignableFrom(field.getType()) || Character.class.isAssignableFrom(field.getType())){
                         byteBuffer.putChar(value == null?0 : (Character) value);
                     }
-                    else    if (field.getType().isAssignableFrom(byte.class) || field.getType().isAssignableFrom(Byte.class)){
+                    else    if (byte.class.isAssignableFrom(field.getType()) || Byte.class.isAssignableFrom(field.getType())){
                         byteBuffer.put(value == null?0 : (Byte) value);
                     }
-                    else    if (field.getType().isAssignableFrom(boolean.class) || field.getType().isAssignableFrom(Boolean.class)){
+                    else    if (boolean.class.isAssignableFrom(field.getType()) || Boolean.class.isAssignableFrom(field.getType())){
                         byteBuffer.put(value == null?0 : (Boolean)value?(byte) 1:(byte) 0);
                     }
-                    else    if (field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)){
+                    else    if (double.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())){
                         byteBuffer.putDouble(value == null?0 : (Double) value);
                     }
-                    else    if (field.getType().isAssignableFrom(float.class) || field.getType().isAssignableFrom(Float.class)){
+                    else    if (float.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType())){
                         byteBuffer.putFloat(value == null?0 : (Float) value);
                     }
                     else    {
@@ -188,28 +188,28 @@ public final class ByteUtils {
                     field.set(o,value);
 
                 } else {
-                    if (field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)){
+                    if (long.class.isAssignableFrom(field.getType()) || Long.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.getLong();
                     }
-                    else    if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)){
+                    else    if (int.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.getInt();
                     }
-                    else    if (field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)){
+                    else    if (short.class.isAssignableFrom(field.getType()) || Short.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.getShort();
                     }
-                    else    if (field.getType().isAssignableFrom(char.class) || field.getType().isAssignableFrom(Character.class)){
+                    else    if (char.class.isAssignableFrom(field.getType()) || Character.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.getChar();
                     }
-                    else    if (field.getType().isAssignableFrom(byte.class) || field.getType().isAssignableFrom(Byte.class)){
+                    else    if (byte.class.isAssignableFrom(field.getType()) || Byte.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.get();
                     }
-                    else    if (field.getType().isAssignableFrom(boolean.class) || field.getType().isAssignableFrom(Boolean.class)){
+                    else    if (boolean.class.isAssignableFrom(field.getType()) || Boolean.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.get() == (byte)1;
                     }
-                    else    if (field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)){
+                    else    if (double.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.getDouble();
                     }
-                    else    if (field.getType().isAssignableFrom(float.class) || field.getType().isAssignableFrom(Float.class)){
+                    else    if (float.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType())){
                         value = byteBuffer.getFloat();
                     }
                     else {
