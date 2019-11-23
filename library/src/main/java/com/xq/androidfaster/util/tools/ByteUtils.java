@@ -42,7 +42,7 @@ public final class ByteUtils {
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1000);
 
         if (!classMap.containsKey(mClass)){
-            classMap.put(mClass,getAllDeclaredFields(mClass));
+            classMap.put(mClass,getOrderedFields(getAllDeclaredFields(mClass)));
         }
 
         Field[] fields = classMap.get(mClass);
@@ -144,7 +144,7 @@ public final class ByteUtils {
         T o = constructor.newInstance();
 
         if (!classMap.containsKey(mClass)){
-            classMap.put(mClass,getAllDeclaredFields(mClass));
+            classMap.put(mClass,getOrderedFields(getAllDeclaredFields(mClass)));
         }
 
         Field[] fields = classMap.get(mClass);
@@ -234,12 +234,12 @@ public final class ByteUtils {
         if (allParentField != null && allParentField.length >0)
             list.addAll(Arrays.asList(allParentField));
 
-        list.addAll(getOrderedFieldList(mClass.getDeclaredFields()));
+        list.addAll(Arrays.asList(mClass.getDeclaredFields()));
 
         return list.toArray(new Field[0]);
     }
 
-    private static List<Field> getOrderedFieldList(Field[] fields){
+    private static Field[] getOrderedFields(Field[]fields){
         // 用来存放所有的属性域
         List<Field> list = new ArrayList<>();
         // 过滤带有注解的Field
@@ -255,7 +255,7 @@ public final class ByteUtils {
                 return o1.getAnnotation(FieldOrder.class).order() - o2.getAnnotation(FieldOrder.class).order();
             }
         });
-        return list;
+        return list.toArray(new Field[0]);
     }
 
     public static byte[] concatBytes(byte[]... bytess){
