@@ -234,7 +234,7 @@ public final class ByteUtils {
         if (allParentField != null && allParentField.length >0)
             list.addAll(Arrays.asList(allParentField));
 
-        list.addAll(getOrderedFieldList(mClass.getFields()));
+        list.addAll(getOrderedFieldList(mClass.getDeclaredFields()));
 
         return list.toArray(new Field[0]);
     }
