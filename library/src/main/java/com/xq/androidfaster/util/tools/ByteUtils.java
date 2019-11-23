@@ -6,7 +6,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public final class ByteUtils {
@@ -34,7 +37,7 @@ public final class ByteUtils {
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1000);
 
         if (!classMap.containsKey(mClass)){
-            classMap.put(mClass,mClass.getDeclaredFields());
+            classMap.put(mClass,getAllDeclaredFields(mClass));
         }
 
         Field[] fields = classMap.get(mClass);
@@ -136,7 +139,7 @@ public final class ByteUtils {
         T o = constructor.newInstance();
 
         if (!classMap.containsKey(mClass)){
-            classMap.put(mClass,mClass.getDeclaredFields());
+            classMap.put(mClass,getAllDeclaredFields(mClass));
         }
 
         Field[] fields = classMap.get(mClass);
@@ -215,6 +218,20 @@ public final class ByteUtils {
 
         return o;
 
+    }
+
+    private static Field[] getAllDeclaredFields(Class mClass){
+        if (mClass == null) return null;
+
+        List<Field> list = new LinkedList<>();
+
+        Field[] allParentField = getAllDeclaredFields(mClass.getSuperclass());
+        if (allParentField != null && allParentField.length >0)
+            list.addAll(Arrays.asList(allParentField));
+
+        list.addAll(Arrays.asList(mClass.getDeclaredFields()));
+
+        return list.toArray(new Field[0]);
     }
 
     public static byte[] concatBytes(byte[]... bytess){
