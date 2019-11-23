@@ -24,7 +24,7 @@ public final class ByteUtils {
     }
 
     public interface FromBytesConverter{
-        public Object convertFromBytes(Class mClass,Field[] fields,int fieldPosition,ByteBuffer byteBuffer);
+        public Object convertFromBytes(Object o,Field[] fields,int fieldPosition,ByteBuffer byteBuffer);
     }
 
     //注意：下4列方法被排序的字段必须使用@FieldOrder进行注解使用
@@ -39,6 +39,10 @@ public final class ByteUtils {
     }
 
     private static byte[] object2Bytes(Object o, Class mClass, ToBytesConverter converter) throws Exception {
+        if (o == null) return null;
+
+        if (o instanceof ToBytesConverter && converter == null)
+            converter = (ToBytesConverter) o;
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1000);
 
@@ -175,6 +179,9 @@ public final class ByteUtils {
         constructor.setAccessible(true);
         T o = constructor.newInstance();
 
+        if (o instanceof FromBytesConverter && converter == null)
+            converter = (FromBytesConverter) o;
+
         if (!classMap.containsKey(mClass)){
             classMap.put(mClass,getOrderedFields(getAllDeclaredFields(mClass)));
         }
@@ -196,7 +203,7 @@ public final class ByteUtils {
 
             Object value = null;
 
-            if (converter != null && (value = converter.convertFromBytes(mClass,fields,i,byteBuffer)) != null)
+            if (converter != null && (value = converter.convertFromBytes(o,fields,i,byteBuffer)) != null)
             {
                 field.set(o,value);
             }
