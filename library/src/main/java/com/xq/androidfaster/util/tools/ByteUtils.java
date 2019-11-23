@@ -221,7 +221,7 @@ public final class ByteUtils {
     }
 
     private static Field[] getAllDeclaredFields(Class mClass){
-        if (mClass == null) return null;
+        if (mClass == null || mClass.getName().equals(Object.class.getName())) return null;
 
         List<Field> list = new LinkedList<>();
 
