@@ -41,9 +41,6 @@ public final class ByteUtils {
     private static byte[] object2Bytes(Object o, Class mClass, ToBytesConverter converter) throws Exception {
         if (o == null) return null;
 
-        if (o instanceof ToBytesConverter && converter == null)
-            converter = (ToBytesConverter) o;
-
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1000);
 
         if (!classMap.containsKey(mClass)){
@@ -67,7 +64,7 @@ public final class ByteUtils {
 
             Object value = null;
 
-            if (converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null && ((byte[])value).length >0 )
+            if (((converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null) || (o instanceof ToBytesConverter && (value = ((ToBytesConverter) o).convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null)) && ((byte[])value).length >0 )
             {
                 byteBuffer.put((byte[]) value);
             }
@@ -179,9 +176,6 @@ public final class ByteUtils {
         constructor.setAccessible(true);
         T o = constructor.newInstance();
 
-        if (o instanceof FromBytesConverter && converter == null)
-            converter = (FromBytesConverter) o;
-
         if (!classMap.containsKey(mClass)){
             classMap.put(mClass,getOrderedFields(getAllDeclaredFields(mClass)));
         }
@@ -203,7 +197,7 @@ public final class ByteUtils {
 
             Object value = null;
 
-            if (converter != null && (value = converter.convertFromBytes(o,fields,i,byteBuffer)) != null)
+            if (converter != null && (value = converter.convertFromBytes(o,fields,i,byteBuffer)) != null || (o instanceof FromBytesConverter && (value = ((FromBytesConverter) o).convertFromBytes(o,fields,i,byteBuffer)) != null))
             {
                 field.set(o,value);
             }
