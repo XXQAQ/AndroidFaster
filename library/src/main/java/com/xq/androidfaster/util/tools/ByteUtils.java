@@ -20,11 +20,11 @@ public final class ByteUtils {
     private static Map<Class, Field[]> classMap = new HashMap<>();
 
     public interface ToBytesConverter{
-        public byte[] convertToBytes(Object o,Field[] fields,int fieldPosition,byte[] afterBytes);
+        public byte[] convertToBytes(Object o,Field[] fields,int fieldPosition,byte[] afterBytes) throws RuntimeException;
     }
 
     public interface FromBytesConverter{
-        public Object convertFromBytes(Object o,Field[] fields,int fieldPosition,ByteBuffer byteBuffer);
+        public Object convertFromBytes(Object o,Field[] fields,int fieldPosition,ByteBuffer byteBuffer) throws RuntimeException;
     }
 
     //注意：下4列方法被排序的字段必须使用@FieldOrder进行注解使用
