@@ -1,5 +1,7 @@
 package com.xq.androidfaster.util;
 
+import java.util.List;
+
 public class JsonConverter {
 
     private static Converter converter;
@@ -8,7 +10,7 @@ public class JsonConverter {
         return converter.jsonToObject(json,mClass,objects);
     }
 
-    public static <T>T jsonToListObject(String json, Class<T> mClass, Object... objects) throws RuntimeException {
+    public static <T>List<T> jsonToListObject(String json, Class<T> mClass, Object... objects) throws RuntimeException {
         return converter.jsonToListObject(json,mClass,objects);
     }
 
@@ -24,7 +26,7 @@ public class JsonConverter {
 
         public abstract <T>T jsonToObject(String json,Class<T> mClass,Object... objects) throws RuntimeException;
 
-        public abstract <T>T jsonToListObject(String json,Class<T> mClass,Object... objects) throws RuntimeException;
+        public abstract <T>List<T> jsonToListObject(String json,Class<T> mClass,Object... objects) throws RuntimeException;
 
         public abstract String objectToJson(Object object,Object... objects);
 
