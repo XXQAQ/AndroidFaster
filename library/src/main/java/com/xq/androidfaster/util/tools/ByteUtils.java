@@ -203,7 +203,9 @@ public final class ByteUtils {
                     int length = getArrayFieldLength(o,field,fields,i);
 
                     if (field.getType().isArray()){
+
                         value = Array.newInstance(field.getType().getComponentType(),length);
+
                         for (int j=0;j<length;j++){
                             if (field.getType().getComponentType().isPrimitive()){
                                 ArrayUtils.set(value, j, getPrimitive(field.getType().getComponentType(),byteBuffer));
@@ -212,7 +214,9 @@ public final class ByteUtils {
                             }
                         }
                     } else {
+
                         value = new LinkedList<>();
+
                         for (int j=0;j<length;j++){
                             if (field.getType().getComponentType().isPrimitive()){
                                 ((List)value).set(j,getPrimitive(field.getType().getComponentType(),byteBuffer));
