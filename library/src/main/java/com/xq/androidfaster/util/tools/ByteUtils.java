@@ -1,5 +1,6 @@
 package com.xq.androidfaster.util.tools;
 
+import android.text.TextUtils;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -74,20 +75,14 @@ public final class ByteUtils {
 
                 if (field.getType().isArray() || List.class.isAssignableFrom(field.getType()))
                 {
-                    if (i == 0){
-                        throw  new Exception("what the fucking");
-                    }
-
-                    if (!(fields[i-1].getType().isPrimitive())){
-                        throw  new Exception(fields[i-1].getName() + " must be Number");
-                    }
-
                     if (value == null){
                         throw  new Exception(field.getName() + " is null");
                     }
 
+                    int length = getArrayFieldLength(o,field,fields,i);
+
                     if (field.getType().getComponentType().isPrimitive()){
-                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+                        for (int j=0;j<length;j++){
                             if (field.getType().isArray()){
                                 putPrimitive(ArrayUtils.get(value,j),field.getType().getComponentType(),byteBuffer);
                             } else {
@@ -95,7 +90,7 @@ public final class ByteUtils {
                             }
                         }
                     } else {
-                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+                        for (int j=0;j<length;j++){
 
                             byte[] bytes = null;
 
@@ -205,18 +200,11 @@ public final class ByteUtils {
             {
                 if (field.getType().isArray() || List.class.isAssignableFrom(field.getType()))
                 {
-                    if (i == 0){
-                        throw  new Exception("what the fucking");
-                    }
-
-                    if (!(fields[i-1].getType().isPrimitive())){
-                        throw  new Exception(fields[i-1].getName() + " must be Number");
-                    }
+                    int length = getArrayFieldLength(o,field,fields,i);
 
                     if (field.getType().isArray()){
-                        value = Array.newInstance(field.getType().getComponentType(),((Number) fields[i-1].get(o)).intValue());
-
-                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+                        value = Array.newInstance(field.getType().getComponentType(),length);
+                        for (int j=0;j<length;j++){
                             if (field.getType().getComponentType().isPrimitive()){
                                 ArrayUtils.set(value, j, getPrimitive(field.getType().getComponentType(),byteBuffer));
                             } else {
@@ -225,8 +213,7 @@ public final class ByteUtils {
                         }
                     } else {
                         value = new LinkedList<>();
-
-                        for (int j=0;j<((Number) fields[i-1].get(o)).intValue();j++){
+                        for (int j=0;j<length;j++){
                             if (field.getType().getComponentType().isPrimitive()){
                                 ((List)value).set(j,getPrimitive(field.getType().getComponentType(),byteBuffer));
                             } else {
@@ -251,6 +238,32 @@ public final class ByteUtils {
         }
 
         return o;
+    }
+
+    private static int getArrayFieldLength(Object o,Field field,Field[] fields,int position) throws Exception{
+        if (field.getAnnotation(ArrayFieldLength.class) != null){
+            String lengthFieldName = field.getAnnotation(ArrayFieldLength.class).lenthByField();
+            if (TextUtils.isEmpty(lengthFieldName)){
+                return field.getAnnotation(ArrayFieldLength.class).length();
+            } else {
+                for (Field lengthField : fields){
+                    if (lengthField.getName().equals(lengthFieldName)){
+                        if (lengthField.getType().isPrimitive()){
+                            return  ((Number) lengthField.get(o)).intValue();
+                        } else {
+                            throw  new Exception(lengthField.getName() + " must be Number");
+                        }
+                    }
+                }
+            }
+        }
+        if (position == 0){
+            throw  new Exception("Are you sure " + field.getName() + "is array???");
+        }
+        if (!(fields[position-1].getType().isPrimitive())){
+            throw  new Exception(fields[position-1].getName() + " must be Number");
+        }
+        return ((Number) fields[position-1].get(o)).intValue();
     }
 
     private static Object getPrimitive(Class valueClass,ByteBuffer byteBuffer){
