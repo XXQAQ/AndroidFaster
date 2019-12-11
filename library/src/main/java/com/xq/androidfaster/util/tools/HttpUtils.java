@@ -3,10 +3,8 @@ package com.xq.androidfaster.util.tools;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-
 import com.xq.androidfaster.util.JsonConverter;
-import com.xq.androidfaster.util.callback.FasterHttpCallback;
-
+import com.xq.androidfaster.util.HttpCallback;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -323,7 +321,7 @@ public final class HttpUtils {
 
     }
 
-    public static abstract class HttpUtilsCallback<T> implements FasterHttpCallback<T> {
+    public static abstract class HttpUtilsCallback<T> implements HttpCallback<T> {
 
         static Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -386,15 +384,10 @@ public final class HttpUtils {
             });
         }
 
+        private CallbackBean callbackBean = new CallbackBean();
         @Override
-        public boolean operating(T s, Object... objects) {
-            return true;
-        }
-
-        private CallbackBuilder callbackBuilder = new CallbackBuilder();
-        @Override
-        public CallbackBuilder getCallbackBuilder() {
-            return callbackBuilder;
+        public CallbackBean<T> getCallbackBean() {
+            return callbackBean;
         }
     }
 

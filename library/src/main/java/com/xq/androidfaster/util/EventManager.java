@@ -4,20 +4,20 @@ public class EventManager {
 
     private static Manager manager;
 
-    public static void regist(Object object,Object... objects) {
-        manager.regist(object,objects);
+    public static void regist(Object object) {
+        manager.regist(object);
     }
 
-    public static void unRegist(Object object,Object... objects) {
-        manager.unRegist(object,objects);
+    public static void unRegist(Object object) {
+        manager.unRegist(object);
     }
 
-    public static void send(Object message,Object... objects) {
-        manager.send(message,objects);
+    public static void send(Object message) {
+        manager.send(message);
     }
 
-    public static void cancel(Object message,Object... objects) {
-        manager.cancel(message,objects);
+    public static void cancel(Object message) {
+        manager.cancel(message);
     }
 
     public static void setManager(Manager manager){
@@ -26,13 +26,13 @@ public class EventManager {
 
     public static abstract class Manager {
 
-        public abstract void regist(Object object,Object... objects);
+        public abstract void regist(Object object);
 
-        public abstract void unRegist(Object object,Object... objects);
+        public abstract void unRegist(Object object);
 
-        public abstract void send(Object message,Object... objects);
+        public abstract void send(Object message);
 
-        public abstract void cancel(Object message,Object... objects);
+        public abstract void cancel(Object message);
 
     }
 

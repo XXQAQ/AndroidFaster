@@ -8,20 +8,20 @@ public class ImageLoader {
 
     private static Loader loader;
 
-    public static void loadImage(Context context, String url,ImageView view,Object... objects) {
-        loader.loadImage(context,url,view,objects);
+    public static void loadImage(Context context, String url,ImageView view) {
+        loader.loadImage(context,url,view);
     }
 
-    public static void loadImage(Context context, int placeHolder, String url, ImageView view, Object... objects) {
-        loader.loadImage(context,placeHolder,url,view,objects);
+    public static void loadImage(Context context, int placeHolder, String url, ImageView view) {
+        loader.loadImage(context,placeHolder,url,view);
     }
 
-    public static void loadImage(Context context, String url, BitmapTarget target, Object... objects){
-        loader.loadImage(context,url,target,objects);
+    public static void loadImage(Context context, String url, BitmapTarget target){
+        loader.loadImage(context,url,target);
     }
 
-    public static void loadImage(Context context, int placeHolder, String url, BitmapTarget target, Object... objects){
-        loader.loadImage(context,placeHolder,url,target,objects);
+    public static void loadImage(Context context, int placeHolder, String url, BitmapTarget target){
+        loader.loadImage(context,placeHolder,url,target);
     }
 
     public static void setLoader(Loader loader){
@@ -30,17 +30,17 @@ public class ImageLoader {
 
     public static abstract class Loader{
 
-        public void loadImage(Context context, String url,ImageView view,Object... objects) {
-            loadImage(context,0,url,view,objects);
+        public void loadImage(Context context, String url,ImageView view) {
+            loadImage(context,0,url,view);
         }
 
-        public abstract void loadImage(Context context, int placeHolder, String url, ImageView view, Object... objects);
+        public abstract void loadImage(Context context, int placeHolder, String url, ImageView view);
 
-        public void loadImage(Context context, String url, BitmapTarget target, Object... objects) {
-            loadImage(context,0,url,target,objects);
+        public void loadImage(Context context, String url, BitmapTarget target) {
+            loadImage(context,0,url,target);
         }
 
-        public abstract void loadImage(Context context, int placeHolder, String url, BitmapTarget target, Object... objects);
+        public abstract void loadImage(Context context, int placeHolder, String url, BitmapTarget target);
 
     }
 
