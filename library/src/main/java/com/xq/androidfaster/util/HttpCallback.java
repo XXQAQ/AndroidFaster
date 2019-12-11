@@ -42,6 +42,10 @@ public interface HttpCallback<T> {
 
     }
 
+    default Class<T> getDataClass(){
+        return getCallbackBean().dataClass;
+    }
+
     default boolean isOperateSuccess(){
         return getCallbackBean().isOperateSuccess;
     }
@@ -65,6 +69,7 @@ public interface HttpCallback<T> {
 
     public class CallbackBean<T>{
         public boolean isOperateSuccess = false;
+        public Class<T> dataClass;
         public T data;
     }
 

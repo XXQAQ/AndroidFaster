@@ -325,10 +325,8 @@ public final class HttpUtils {
 
         static Handler mainHandler = new Handler(Looper.getMainLooper());
 
-        private Class<T> entityClass;
-
         public HttpUtilsCallback(Class<T> entityClass) {
-            this.entityClass = entityClass;
+            getCallbackBean().dataClass = entityClass;
         }
 
         @Deprecated
@@ -346,16 +344,18 @@ public final class HttpUtils {
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (entityClass.isAssignableFrom(byte[].class))
+                    if (getDataClass().isAssignableFrom(byte[].class))
+                    {
                         requestSuccess((T) bytes);
+                    }
                     else
                     {
                         try {
                             String data = new String(bytes,"utf-8");
-                            if (entityClass.isAssignableFrom(String.class))
+                            if (getDataClass().isAssignableFrom(String.class))
                                 requestSuccess((T) data);
                             else
-                                requestSuccess(JsonConverter.jsonToObject(data,entityClass));
+                                requestSuccess(JsonConverter.jsonToObject(data,getDataClass()));
                         } catch (Exception e) {
                             requestError(e);
                         }
@@ -384,7 +384,7 @@ public final class HttpUtils {
             });
         }
 
-        private CallbackBean callbackBean = new CallbackBean();
+        private CallbackBean<T> callbackBean = new CallbackBean<T>();
         @Override
         public CallbackBean<T> getCallbackBean() {
             return callbackBean;
