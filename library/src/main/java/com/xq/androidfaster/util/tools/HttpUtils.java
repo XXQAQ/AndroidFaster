@@ -384,10 +384,9 @@ public final class HttpUtils {
             });
         }
 
-        private CallbackBean<T> callbackBean = new CallbackBean<T>();
         @Override
-        public CallbackBean<T> getCallbackBean() {
-            return callbackBean;
+        public CallbackBean<T> createCallbackBean() {
+            return new CallbackBean<>();
         }
     }
 

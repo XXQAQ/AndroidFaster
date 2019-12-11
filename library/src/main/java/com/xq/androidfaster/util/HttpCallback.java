@@ -65,7 +65,11 @@ public interface HttpCallback<T> {
     //业务操作失败之后的回调方法
     public void operateErro(T t);
 
-    public CallbackBean<T> getCallbackBean();
+    default CallbackBean<T> getCallbackBean(){
+        return createCallbackBean();
+    }
+
+    public CallbackBean<T> createCallbackBean();
 
     public class CallbackBean<T>{
         public boolean isOperateSuccess = false;
