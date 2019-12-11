@@ -18,7 +18,7 @@ public interface HttpCallback<T> {
     }
 
     //请求错误
-    default void requestError(Exception e) {
+    default void requestError(Throwable e) {
         getCallbackBean().isOperateSuccess = false;
         operateErro(null);
     }
