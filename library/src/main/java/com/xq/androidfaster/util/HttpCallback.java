@@ -32,6 +32,7 @@ public interface HttpCallback<T> {
             getCallbackBean().isOperateSuccess = true;
             operateSuccess(t);
         } else {
+            getCallbackBean().isOperateSuccess = false;
             operateErro(t);
         }
     }
@@ -51,7 +52,7 @@ public interface HttpCallback<T> {
 
     //重写本方法判断业务操作是否成功
     default boolean operating(T t){
-        return t == null;
+        return t != null;
     }
 
     //业务操作成功之后的回调方法
