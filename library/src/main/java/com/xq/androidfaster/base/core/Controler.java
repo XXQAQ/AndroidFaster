@@ -3,7 +3,6 @@ package com.xq.androidfaster.base.core;
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,10 +23,10 @@ public interface Controler extends Life {
     public Context getContext();
 
     //如果当前服务于Fragment，则返回对应Fragment，否则返回null
-    public Fragment getAreFragment();
+    public Fragment areFragment();
 
     //如果当前服务于Activity，则返回对应Activity，否则返回null
-    public Activity getAreActivity();
+    public Activity areActivity();
 
 
 
@@ -54,11 +53,11 @@ public interface Controler extends Life {
     }
 
     //获取子FragmentManager，无需判断Activity或者Fragment的使用情景
-    default FragmentManager getCPFragmentManager() {
-        if (getAreActivity() != null)
-            return ((FragmentActivity)getAreActivity()).getSupportFragmentManager();
-        else     if (getAreFragment() != null)
-            return (getAreFragment()).getChildFragmentManager();
+    default FragmentManager getMatchFragmentManager() {
+        if (areActivity() != null)
+            return ((FragmentActivity) areActivity()).getSupportFragmentManager();
+        else     if (areFragment() != null)
+            return (areFragment()).getChildFragmentManager();
         return null;
     }
 

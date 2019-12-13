@@ -308,12 +308,12 @@ public abstract class FasterBaseFragment<T extends IFasterBaseBehavior> extends 
     }
 
     @Override
-    public Fragment getAreFragment() {
+    public Fragment areFragment() {
         return this;
     }
 
     @Override
-    public Activity getAreActivity() {
+    public Activity areActivity() {
         return null;
     }
 

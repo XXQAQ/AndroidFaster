@@ -68,19 +68,23 @@ public abstract class FasterBaseAnother<T extends IFasterBaseBehavior> implement
 
     }
 
+    public Activity getActivity(){
+        return (Activity) getContext();
+    }
+
     @Override
     public Context getContext() {
         return getBindAnother().getContext();
     }
 
     @Override
-    public Fragment getAreFragment() {
-        return getBindAnother().getAreFragment();
+    public Fragment areFragment() {
+        return getBindAnother().areFragment();
     }
 
     @Override
-    public Activity getAreActivity() {
-        return getBindAnother().getAreActivity();
+    public Activity areActivity() {
+        return getBindAnother().areActivity();
     }
 
     @Override

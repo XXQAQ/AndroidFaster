@@ -70,13 +70,13 @@ public class BaseDelegate implements Controler {
     }
 
     @Override
-    public Fragment getAreFragment() {
-        return getControler().getAreFragment();
+    public Fragment areFragment() {
+        return getControler().areFragment();
     }
 
     @Override
-    public Activity getAreActivity() {
-        return getControler().getAreActivity();
+    public Activity areActivity() {
+        return getControler().areActivity();
     }
 
     @Override
