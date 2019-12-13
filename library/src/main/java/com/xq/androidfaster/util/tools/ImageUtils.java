@@ -35,7 +35,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -148,10 +147,26 @@ public final class ImageUtils {
      * @return bitmap
      */
     public static Bitmap view2Bitmap(final View view) {
-        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-        view.buildDrawingCache();
-        return view.getDrawingCache();
+        if (view == null) return null;
+        boolean drawingCacheEnabled = view.isDrawingCacheEnabled();
+        boolean willNotCacheDrawing = view.willNotCacheDrawing();
+        view.setDrawingCacheEnabled(true);
+        view.setWillNotCacheDrawing(false);
+        final Bitmap drawingCache = view.getDrawingCache();
+        Bitmap bitmap;
+        if (null == drawingCache) {
+            view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+            view.buildDrawingCache();
+            bitmap = Bitmap.createBitmap(view.getDrawingCache());
+        } else {
+            bitmap = Bitmap.createBitmap(drawingCache);
+        }
+        view.destroyDrawingCache();
+        view.setWillNotCacheDrawing(willNotCacheDrawing);
+        view.setDrawingCacheEnabled(drawingCacheEnabled);
+        return bitmap;
     }
 
     /**
@@ -917,7 +932,7 @@ public final class ImageUtils {
                 0x00FFFFFF,
                 Shader.TileMode.MIRROR);
         paint.setShader(shader);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        paint.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.DST_IN));
         canvas.drawRect(0, srcHeight + REFLECTION_GAP, srcWidth, ret.getHeight(), paint);
         if (!reflectionBitmap.isRecycled()) reflectionBitmap.recycle();
         if (recycle && !src.isRecycled() && ret != src) src.recycle();
@@ -1720,59 +1735,59 @@ public final class ImageUtils {
     }
 
     /**
-     * Return the compressed bitmap using quality.
+     * Return the compressed data using quality.
      *
      * @param src     The source of bitmap.
      * @param quality The quality.
-     * @return the compressed bitmap
+     * @return the compressed data using quality
      */
-    public static Bitmap compressByQuality(final Bitmap src,
+    public static byte[] compressByQuality(final Bitmap src,
                                            @IntRange(from = 0, to = 100) final int quality) {
         return compressByQuality(src, quality, false);
     }
 
     /**
-     * Return the compressed bitmap using quality.
+     * Return the compressed data using quality.
      *
      * @param src     The source of bitmap.
      * @param quality The quality.
      * @param recycle True to recycle the source of bitmap, false otherwise.
-     * @return the compressed bitmap
+     * @return the compressed data using quality
      */
-    public static Bitmap compressByQuality(final Bitmap src,
+    public static byte[] compressByQuality(final Bitmap src,
                                            @IntRange(from = 0, to = 100) final int quality,
                                            final boolean recycle) {
         if (isEmptyBitmap(src)) return null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        src.compress(CompressFormat.JPEG, quality, baos);
+        src.compress(Bitmap.CompressFormat.JPEG, quality, baos);
         byte[] bytes = baos.toByteArray();
         if (recycle && !src.isRecycled()) src.recycle();
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return bytes;
     }
 
     /**
-     * Return the compressed bitmap using quality.
+     * Return the compressed data using quality.
      *
      * @param src         The source of bitmap.
      * @param maxByteSize The maximum size of byte.
-     * @return the compressed bitmap
+     * @return the compressed data using quality
      */
-    public static Bitmap compressByQuality(final Bitmap src, final long maxByteSize) {
+    public static byte[] compressByQuality(final Bitmap src, final long maxByteSize) {
         return compressByQuality(src, maxByteSize, false);
     }
 
     /**
-     * Return the compressed bitmap using quality.
+     * Return the compressed data using quality.
      *
      * @param src         The source of bitmap.
      * @param maxByteSize The maximum size of byte.
      * @param recycle     True to recycle the source of bitmap, false otherwise.
-     * @return the compressed bitmap
+     * @return the compressed data using quality
      */
-    public static Bitmap compressByQuality(final Bitmap src,
+    public static byte[] compressByQuality(final Bitmap src,
                                            final long maxByteSize,
                                            final boolean recycle) {
-        if (isEmptyBitmap(src) || maxByteSize <= 0) return null;
+        if (isEmptyBitmap(src) || maxByteSize <= 0) return new byte[0];
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         src.compress(CompressFormat.JPEG, 100, baos);
         byte[] bytes;
@@ -1809,7 +1824,7 @@ public final class ImageUtils {
             }
         }
         if (recycle && !src.isRecycled()) src.recycle();
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return bytes;
     }
 
     /**
@@ -1839,7 +1854,7 @@ public final class ImageUtils {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = sampleSize;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        src.compress(CompressFormat.JPEG, 100, baos);
+        src.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] bytes = baos.toByteArray();
         if (recycle && !src.isRecycled()) src.recycle();
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
@@ -1876,7 +1891,7 @@ public final class ImageUtils {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        src.compress(CompressFormat.JPEG, 100, baos);
+        src.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] bytes = baos.toByteArray();
         BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
         options.inSampleSize = calculateInSampleSize(options, maxWidth, maxHeight);
@@ -1917,9 +1932,9 @@ public final class ImageUtils {
      * @param maxHeight The maximum height.
      * @return the sample size
      */
-    private static int calculateInSampleSize(final BitmapFactory.Options options,
-                                             final int maxWidth,
-                                             final int maxHeight) {
+    public static int calculateInSampleSize(final BitmapFactory.Options options,
+                                            final int maxWidth,
+                                            final int maxHeight) {
         int height = options.outHeight;
         int width = options.outWidth;
         int inSampleSize = 1;

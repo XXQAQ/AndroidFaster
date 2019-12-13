@@ -24,7 +24,7 @@ public class Polling {
 
     public void start(){
         if (thread != null && thread.isAlive())
-            destory();
+            destroy();
 
         thread = new CustomThread();
         thread.start();
@@ -40,7 +40,7 @@ public class Polling {
             thread.pauseThread();
     }
 
-    public void destory(){
+    public void destroy(){
         if (thread != null)
             thread.interrupt();
     }

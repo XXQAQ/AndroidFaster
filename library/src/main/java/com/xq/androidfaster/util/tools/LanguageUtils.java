@@ -1,6 +1,7 @@
 package com.xq.androidfaster.util.tools;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -27,12 +27,30 @@ public class LanguageUtils {
     }
 
     /**
+     * Apply the system language in the {@link Application#onCreate()}.
+     */
+    public static void applySystemLanguageInAppOnCreate() {
+        if (isAppliedSystemLanguage()) return;
+        applyLanguage(Resources.getSystem().getConfiguration().locale, "", true, false);
+    }
+
+    /**
+     * Apply the language in the {@link Application#onCreate()}.
+     *
+     * @param locale The language of locale.
+     */
+    public static void applyLanguageInAppOnCreate(@NonNull final Locale locale) {
+        if (isAppliedLanguage()) return;
+        applyLanguage(locale, "", false, false);
+    }
+
+    /**
      * Apply the system language.
      *
      * @param activityClz The class of activity will be started after apply system language.
      */
     public static void applySystemLanguage(final Class<? extends Activity> activityClz) {
-        applyLanguage(Resources.getSystem().getConfiguration().locale, activityClz, true);
+        applyLanguage(Resources.getSystem().getConfiguration().locale, activityClz, true, true);
     }
 
     /**
@@ -41,7 +59,7 @@ public class LanguageUtils {
      * @param activityClassName The full class name of activity will be started after apply system language.
      */
     public static void applySystemLanguage(final String activityClassName) {
-        applyLanguage(Resources.getSystem().getConfiguration().locale, activityClassName, true);
+        applyLanguage(Resources.getSystem().getConfiguration().locale, activityClassName, true, true);
     }
 
     /**
@@ -53,7 +71,7 @@ public class LanguageUtils {
      */
     public static void applyLanguage(@NonNull final Locale locale,
                                      final Class<? extends Activity> activityClz) {
-        applyLanguage(locale, activityClz, false);
+        applyLanguage(locale, activityClz, false, true);
     }
 
     /**
@@ -65,45 +83,72 @@ public class LanguageUtils {
      */
     public static void applyLanguage(@NonNull final Locale locale,
                                      final String activityClassName) {
-        applyLanguage(locale, activityClassName, false);
+        applyLanguage(locale, activityClassName, false, true);
     }
 
     private static void applyLanguage(@NonNull final Locale locale,
                                       final Class<? extends Activity> activityClz,
-                                      final boolean isFollowSystem) {
+                                      final boolean isFollowSystem,
+                                      final boolean isNeedStartActivity) {
         if (activityClz == null) {
-            applyLanguage(locale, "", isFollowSystem);
+            applyLanguage(locale, "", isFollowSystem, isNeedStartActivity);
             return;
         }
-        applyLanguage(locale, activityClz.getName(), isFollowSystem);
+        applyLanguage(locale, activityClz.getName(), isFollowSystem, isNeedStartActivity);
     }
 
     private static void applyLanguage(@NonNull final Locale locale,
                                       final String activityClassName,
-                                      final boolean isFollowSystem) {
+                                      final boolean isFollowSystem,
+                                      final boolean isNeedStartActivity) {
         if (isFollowSystem) {
-            CacheDiskUtils.getInstance().put(KEY_LOCALE, VALUE_FOLLOW_SYSTEM);
+            Utils.getSpUtils4Utils().put(KEY_LOCALE, VALUE_FOLLOW_SYSTEM);
         } else {
             String localLanguage = locale.getLanguage();
             String localCountry = locale.getCountry();
-            CacheDiskUtils.getInstance().put(KEY_LOCALE, localLanguage + "$" + localCountry);
+            Utils.getSpUtils4Utils().put(KEY_LOCALE, localLanguage + "$" + localCountry);
         }
 
         updateLanguage(Utils.getApp(), locale);
 
-        Intent intent = new Intent();
-        String realActivityClassName
-                = TextUtils.isEmpty(activityClassName) ? getLauncherActivity() : activityClassName;
-        intent.setComponent(new ComponentName(Utils.getApp(), realActivityClassName));
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
-        Utils.getApp().startActivity(intent);
+        if (isNeedStartActivity) {
+            Intent intent = new Intent();
+            String realActivityClassName = TextUtils.isEmpty(activityClassName) ? getLauncherActivity() : activityClassName;
+            intent.setComponent(new ComponentName(Utils.getApp(), realActivityClassName));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Utils.getApp().startActivity(intent);
+        }
+    }
+
+    /**
+     * Return whether applied the system language by {@link LanguageUtils}.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAppliedSystemLanguage() {
+        return VALUE_FOLLOW_SYSTEM.equals(Utils.getSpUtils4Utils().getString(KEY_LOCALE));
+    }
+
+    /**
+     * Return whether applied the language by {@link LanguageUtils}.
+     *
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isAppliedLanguage() {
+        return !TextUtils.isEmpty(Utils.getSpUtils4Utils().getString(KEY_LOCALE));
+    }
+
+    /**
+     * Return the locale.
+     *
+     * @return the locale
+     */
+    public static Locale getCurrentLocale() {
+        return Utils.getApp().getResources().getConfiguration().locale;
     }
 
     static void applyLanguage(@NonNull final Activity activity) {
-        final String spLocale = CacheDiskUtils.getInstance().getString(KEY_LOCALE);
+        final String spLocale = Utils.getSpUtils4Utils().getString(KEY_LOCALE);
         if (TextUtils.isEmpty(spLocale)) {
             return;
         }

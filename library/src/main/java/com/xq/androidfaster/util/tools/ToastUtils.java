@@ -257,39 +257,35 @@ public final class ToastUtils {
     }
 
     private static void showToast(final int resId, final int duration) {
+        showToast(resId, duration, (Object) null);
+    }
+
+    private static void showToast(final int resId, final int duration, final Object... args) {
         try {
             CharSequence text = Utils.getApp().getResources().getText(resId);
+            if (args != null) {
+                text = String.format(text.toString(), args);
+            }
             showToast(text, duration);
         } catch (Exception ignore) {
             showToast(String.valueOf(resId), duration);
         }
     }
 
-    private static void showToast(final int resId, final int duration, final Object... args) {
-        try {
-            CharSequence text = Utils.getApp().getResources().getText(resId);
-            String format = String.format(text.toString(), args);
-            showToast(format, duration);
-        } catch (Exception ignore) {
-            showToast(String.valueOf(resId), duration);
-        }
-    }
-
     private static void showToast(final String format, final int duration, final Object... args) {
-        String text;
-        if (format == null) {
+        String text = format;
+        if (text == null) {
             text = NULL;
         } else {
-            text = String.format(format, args);
-            if (text == null) {
-                text = NULL;
+            if (args != null) {
+                text = String.format(format, args);
             }
         }
         showToast(text, duration);
     }
 
     private static void showToast(final CharSequence text, final int duration) {
-        ThreadUtils.runOnUiThread(new Runnable() {
+        Utils.runOnUiThread(new Runnable() {
             @SuppressLint("ShowToast")
             @Override
             public void run() {
@@ -314,7 +310,7 @@ public final class ToastUtils {
     }
 
     private static void showToast(final View view, final int duration) {
-        ThreadUtils.runOnUiThread(new Runnable() {
+        Utils.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 cancel();
@@ -478,7 +474,7 @@ public final class ToastUtils {
 
         @Override
         public void show() {
-            ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+            Utils.runOnUiThreadDelayed(new Runnable() {
                 @Override
                 public void run() {
                     realShow();
@@ -539,7 +535,7 @@ public final class ToastUtils {
                 }
             } catch (Exception ignored) {/**/}
 
-            ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+            Utils.runOnUiThreadDelayed(new Runnable() {
                 @Override
                 public void run() {
                     cancel();

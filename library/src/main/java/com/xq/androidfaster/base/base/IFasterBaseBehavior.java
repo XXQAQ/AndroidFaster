@@ -108,28 +108,28 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
     //以下为Fragment快捷管理
     //添加Fragment
     default void addFragment(Fragment fragment){
-        getCPFragmentManager().beginTransaction().add(fragment,fragment.getClass().getName()).commitAllowingStateLoss();
+        getMatchFragmentManager().beginTransaction().add(fragment,fragment.getClass().getName()).commitAllowingStateLoss();
     }
 
     default void addFragment(Fragment fragment,int containerId){
-        FragmentUtils.add(getCPFragmentManager(),fragment,containerId);
+        FragmentUtils.add(getMatchFragmentManager(),fragment,containerId);
     }
 
     default void addFragment(Fragment fragment,int containerId,boolean isHide){
-        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isHide);
+        FragmentUtils.add(getMatchFragmentManager(),fragment,containerId,isHide);
     }
 
     default void addFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
-        FragmentUtils.add(getCPFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);;
+        FragmentUtils.add(getMatchFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);;
     }
 
     //替换Fragment
     default void replaceFragment(Fragment fragment,int containerId){
-        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId);
+        FragmentUtils.replace(getMatchFragmentManager(),fragment,containerId);
     }
 
     default void replaceFragment(Fragment fragment,int containerId,boolean isAddStack,int enterAnim,int exitAnim,int popEnterAnim,int popExitAnim){
-        FragmentUtils.replace(getCPFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);
+        FragmentUtils.replace(getMatchFragmentManager(),fragment,containerId,isAddStack,enterAnim,exitAnim,popEnterAnim,popExitAnim);
     }
 
     default void hideFragment(Fragment fragment){
@@ -138,8 +138,8 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
 
     //如果当前页面是Fragment，则隐藏自身
     default void hideMe(){
-        if (getAreFragment() != null)
-            FragmentUtils.hide(getAreFragment());
+        if (areFragment() != null)
+            FragmentUtils.hide(areFragment());
     }
 
     default void showFragment(Fragment fragment){
@@ -148,8 +148,8 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
 
     //如果当前页面是Fragment，则显示自身
     default void showMe(){
-        if (getAreFragment() != null)
-            FragmentUtils.show(getAreFragment());
+        if (areFragment() != null)
+            FragmentUtils.show(areFragment());
     }
 
     default void removeFragment(Fragment fragment){
@@ -158,32 +158,32 @@ public interface IFasterBaseBehavior<T extends IFasterBaseBehavior> extends Cont
 
     //如果当前页面是Fragment，则移除自身
     default void removeMe(){
-        if (getAreFragment() != null)
-            FragmentUtils.remove(getAreFragment());
+        if (areFragment() != null)
+            FragmentUtils.remove(areFragment());
     }
 
     //弹出Fragment
     default void popFragment(){
-        FragmentUtils.pop(getCPFragmentManager());
+        FragmentUtils.pop(getMatchFragmentManager());
     }
 
     default void popFragmentImmediate(){
-        FragmentUtils.pop(getCPFragmentManager(),true);
+        FragmentUtils.pop(getMatchFragmentManager(),true);
     }
 
     //显示所有Fragment
     default void showAllFragment(){
-        FragmentUtils.show(getCPFragmentManager());
+        FragmentUtils.show(getMatchFragmentManager());
     }
 
     //隐藏所有Fragment
     default void hideAllFragment(){
-        FragmentUtils.hide(getCPFragmentManager());
+        FragmentUtils.hide(getMatchFragmentManager());
     }
 
     //移除所有Fragment
     default void removeAllFragment(){
-        FragmentUtils.removeAll(getCPFragmentManager());
+        FragmentUtils.removeAll(getMatchFragmentManager());
     }
 
 }

@@ -663,7 +663,7 @@ public final class NetworkUtils {
 
         void registerListener(final OnNetworkStatusChangedListener listener) {
             if (listener == null) return;
-            ThreadUtils.runOnUiThread(new Runnable() {
+            Utils.runOnUiThread(new Runnable() {
                 @SuppressLint("MissingPermission")
                 @Override
                 public void run() {
@@ -680,7 +680,7 @@ public final class NetworkUtils {
 
         void unregisterListener(final OnNetworkStatusChangedListener listener) {
             if (listener == null) return;
-            ThreadUtils.runOnUiThread(new Runnable() {
+            Utils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     int preSize = mListeners.size();
@@ -697,7 +697,7 @@ public final class NetworkUtils {
         public void onReceive(Context context, Intent intent) {
             if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
                 // debouncing
-                ThreadUtils.runOnUiThreadDelayed(new Runnable() {
+                Utils.runOnUiThreadDelayed(new Runnable() {
                     @Override
                     public void run() {
                         NetworkType networkType = NetworkUtils.getNetworkType();

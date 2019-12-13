@@ -3,18 +3,30 @@
 
     <application>
 
-        <service android:name="com.xq.androidfaster.util.tools.MessengerUtils$ServerService">
+        <activity
+            android:name=".util.tools.Utils$TransActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:multiprocess="true"
+            android:theme="@style/TranslucentActivity"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
+
+        <provider
+            android:name=".util.tools.Utils$FileProvider4UtilCode"
+            android:authorities="${applicationId}.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:multiprocess="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/util_code_provider_paths" />
+        </provider>
+
+        <service android:name=".util.tools.MessengerUtils$ServerService">
             <intent-filter>
                 <action android:name="${applicationId}.messenger" />
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".util.tools.PermissionUtils$PermissionActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:multiprocess="true"
-            android:theme="@style/TranslucentActivity"
-            android:windowSoftInputMode="stateHidden|stateAlwaysHidden" />
     </application>
 
 </manifest>

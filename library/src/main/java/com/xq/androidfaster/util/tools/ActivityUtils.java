@@ -1908,7 +1908,7 @@ public final class ActivityUtils {
                                       final String pkg,
                                       final String cls,
                                       @Nullable final Bundle options) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent();
         if (extras != null) intent.putExtras(extras);
         intent.setComponent(new ComponentName(pkg, cls));
         startActivity(intent, context, options);
@@ -1945,7 +1945,7 @@ public final class ActivityUtils {
                                                   final String cls,
                                                   final int requestCode,
                                                   @Nullable final Bundle options) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent();
         if (extras != null) intent.putExtras(extras);
         intent.setComponent(new ComponentName(pkg, cls));
         return startActivityForResult(intent, activity, requestCode, options);
@@ -1988,7 +1988,7 @@ public final class ActivityUtils {
                                                   final String cls,
                                                   final int requestCode,
                                                   @Nullable final Bundle options) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent = new Intent();
         if (extras != null) intent.putExtras(extras);
         intent.setComponent(new ComponentName(pkg, cls));
         return startActivityForResult(intent, fragment, requestCode, options);

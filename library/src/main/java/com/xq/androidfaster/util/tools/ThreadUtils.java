@@ -25,8 +25,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public final class ThreadUtils {
 
-    private static final Handler UTIL_HANDLER = new Handler(Looper.getMainLooper());
-
     private static final Map<Integer, Map<Integer, ExecutorService>> TYPE_PRIORITY_POOLS = new HashMap<>();
 
     private static final Map<Task, TaskInfo> TASK_TASKINFO_MAP = new ConcurrentHashMap<>();
@@ -42,7 +40,6 @@ public final class ThreadUtils {
     private static Executor sDeliver;
 
     private static final Executor THREAD_POOL_SIMPLE = Executors.newFixedThreadPool(2*CPU_COUNT+1);
-
     /**
      * Run on the child thread.
      *
@@ -77,11 +74,7 @@ public final class ThreadUtils {
      * @param runnable The Runnable
      */
     public static void runOnUiThread(final Runnable runnable) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            runnable.run();
-        } else {
-            UTIL_HANDLER.post(runnable);
-        }
+        Utils.runOnUiThread(runnable);
     }
 
     /**
@@ -91,11 +84,7 @@ public final class ThreadUtils {
      * @param delayMillis The delay time
      */
     static void runOnUiThreadDelayed(final Runnable runnable, long delayMillis) {
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            runnable.run();
-        } else {
-            UTIL_HANDLER.postDelayed(runnable, delayMillis);
-        }
+        Utils.runOnUiThreadDelayed(runnable,delayMillis);
     }
 
     /**
