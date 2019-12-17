@@ -407,6 +407,13 @@ public final class ByteUtils {
         return subArray;
     }
 
+    public static byte[] concatByte(byte... bytess){
+        ByteBuffer byteBuffer = ByteBuffer.allocate(64*1024);
+        for (byte bytes : bytess)
+            byteBuffer.put(bytes);
+        return byteBuffer2Bytes(byteBuffer);
+    }
+
     public static byte[] concatBytes(byte[]... bytess){
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1024);
         for (byte[] bytes : bytess)
