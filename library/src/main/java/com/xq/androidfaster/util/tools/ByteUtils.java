@@ -442,6 +442,10 @@ public final class ByteUtils {
         return bytes;
     }
 
+    public static byte[] byte2Bytes(byte b){
+        return new byte[]{b};
+    }
+
     public static byte[] char2Bytes(char c) {
         byte[] b = new byte[2];
         b[0] = (byte) ((c & 0xFF00) >> 8);
