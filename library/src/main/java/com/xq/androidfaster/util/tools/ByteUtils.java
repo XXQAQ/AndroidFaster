@@ -18,34 +18,18 @@ import java.util.Map;
 
 public final class ByteUtils {
 
-    private static Map<Class, Field[]> classMap = new HashMap<>();
-
-    public interface ToBytesConverter{
-        public byte[] convertToBytes(Object o,Field[] fields,int fieldPosition,byte[] afterBytes) throws RuntimeException;
-    }
-
-    public interface FromBytesConverter{
-        public Object convertFromBytes(Object o,Field[] fields,int fieldPosition,ByteBuffer byteBuffer) throws RuntimeException;
-    }
-
     //注意：下4列方法被排序的字段必须使用@FieldOrder进行注解使用
 
-    public static byte[] object2Bytes(Object o) throws Exception{
-        return object2Bytes(o,null);
-    }
+    private static Map<Class, Field[]> classMap = new HashMap<>();
 
-    public static byte[] object2Bytes(Object o,ToBytesConverter converter) throws Exception {
-        if (o == null) return null;
-        return object2Bytes(o,o.getClass(),converter);
-    }
+    public static byte[] object2Bytes(Object o) throws Exception {
+        if (o == null) return new byte[0];
 
-    private static byte[] object2Bytes(Object o, Class mClass, ToBytesConverter converter) throws Exception {
-        if (o == null) return null;
+        Class mClass = o.getClass();
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(64*1000);
-
         if (!classMap.containsKey(mClass)){
-            classMap.put(mClass,getOrderedFields(getAllDeclaredFields(mClass)));
+            classMap.put(mClass,orderedFields(getAllDeclaredFields(mClass)));
         }
 
         Field[] fields = classMap.get(mClass);
@@ -54,20 +38,24 @@ public final class ByteUtils {
 
             Field field = fields[i];
 
-            //设置强制访问
-            if (!field.isAccessible())
-                field.setAccessible(true);
-
             // 静态字段 等情况不受理
             if (Modifier.isStatic(field.getModifiers())){
                 continue;
             }
+            //设置强制访问
+            if (!field.isAccessible()){
+                field.setAccessible(true);
+            }
 
             Object value = null;
 
-            if (((converter != null && (value = converter.convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null) || (o instanceof ToBytesConverter && (value = ((ToBytesConverter) o).convertToBytes(o,fields,i,byteBuffer2Bytes(byteBuffer))) != null)) && ((byte[])value).length >0 )
+            DataPointer<byte[]> pointer = new DataPointer<>();
+
+            if ( o instanceof ToBytesConverter && ((ToBytesConverter) o).interceptToBytes(fields,i,byteBuffer,pointer) )
             {
-                byteBuffer.put((byte[]) value);
+                if (pointer.get() != null){
+                    byteBuffer.put(pointer.get());
+                }
             }
             else
             {
@@ -76,95 +64,68 @@ public final class ByteUtils {
                 if (field.getType().isArray() || List.class.isAssignableFrom(field.getType()))
                 {
                     if (value == null){
-                        throw  new Exception(field.getName() + " is null");
+                        continue;
                     }
 
-                    int length = getArrayFieldLength(o,field,fields,i);
+                    Field lengthField = getLengthField(field,fields,i);
+                    int length = 0;
 
-                    if (field.getType().getComponentType().isPrimitive()){
+                    if (lengthField == null){
+                        length = getArrayFieldLength(o,field,fields,i);
+                    } else {
+                        if (field.getType().isArray()){
+                            length = ArrayUtils.getLength(value);
+                        } else  if (List.class.isAssignableFrom(field.getType())){
+                            length = ((List)value).size();
+                        }
+                        lengthField.set(o,length);
+                    }
+
+                    if (field.getType().isArray())
+                    {
                         for (int j=0;j<length;j++){
-                            if (field.getType().isArray()){
-                                putPrimitive(ArrayUtils.get(value,j),field.getType().getComponentType(),byteBuffer);
-                            } else {
-                                putPrimitive(((List)value).get(j),field.getType().getComponentType(),byteBuffer);
+                            DataPointer<byte[]> temp = new DataPointer<>();
+                            toBytes(field.getType().getComponentType(),ArrayUtils.get(value,j),temp);
+                            if (temp.get() != null){
+                                byteBuffer.put(temp.get());
                             }
                         }
-                    } else {
+                    }
+                    else      if(List.class.isAssignableFrom(field.getType()))
+                    {
                         for (int j=0;j<length;j++){
-
-                            byte[] bytes = null;
-
-                            if (field.getType().isArray()){
-                                bytes = object2Bytes(ArrayUtils.get(value,j),field.getType().getComponentType(),converter);
-                            } else {
-                                bytes = object2Bytes(((List)value).get(j),field.getType().getComponentType(),converter);
+                            DataPointer<byte[]> temp = new DataPointer<>();
+                            toBytes(field.getType().getComponentType(),((List)value).get(j),temp);
+                            if (temp.get() != null){
+                                byteBuffer.put(temp.get());
                             }
-
-                            if (bytes != null && bytes.length > 0)
-                                byteBuffer.put(bytes);
                         }
                     }
                 }
                 else
                 {
-                    if (!putPrimitive(value,field.getType(),byteBuffer)){
+                    toBytes(field.getType(),value,pointer);
 
-                        if (value != null)
-                            byteBuffer.put(object2Bytes(value,field.getType(),converter));
+                    if (pointer.get() != null){
+                        byteBuffer.put(pointer.get());
                     }
                 }
             }
+        }
+
+        if (o instanceof ToBytesConverter){
+            ((ToBytesConverter) o).finishToBytes(fields,byteBuffer);
         }
 
         return byteBuffer2Bytes(byteBuffer);
 
     }
 
-    private static boolean putPrimitive(Object value,Class valueClass,ByteBuffer byteBuffer){
-        if (long.class.isAssignableFrom(valueClass) || Long.class.isAssignableFrom(valueClass)){
-            byteBuffer.putLong(value == null?0 : (Long) value);
-            return true;
-        }
-        else    if (int.class.isAssignableFrom(valueClass) || Integer.class.isAssignableFrom(valueClass)){
-            byteBuffer.putInt(value == null?0 : (Integer) value);
-            return true;
-        }
-        else    if (short.class.isAssignableFrom(valueClass) || Short.class.isAssignableFrom(valueClass)){
-            byteBuffer.putShort(value == null?0 : (Short) value);
-            return true;
-        }
-        else    if (char.class.isAssignableFrom(valueClass) || Character.class.isAssignableFrom(valueClass)){
-            byteBuffer.putChar(value == null?0 : (Character) value);
-            return true;
-        }
-        else    if (byte.class.isAssignableFrom(valueClass) || Byte.class.isAssignableFrom(valueClass)){
-            byteBuffer.put(value == null?0 : (Byte) value);
-            return true;
-        }
-        else    if (boolean.class.isAssignableFrom(valueClass) || Boolean.class.isAssignableFrom(valueClass)){
-            byteBuffer.put(value == null?0 : (Boolean)value?(byte) 1:(byte) 0);
-            return true;
-        }
-        else    if (double.class.isAssignableFrom(valueClass) || Double.class.isAssignableFrom(valueClass)){
-            byteBuffer.putDouble(value == null?0 : (Double) value);
-            return true;
-        }
-        else    if (float.class.isAssignableFrom(valueClass) || Float.class.isAssignableFrom(valueClass)){
-            byteBuffer.putFloat(value == null?0 : (Float) value);
-            return true;
-        }
-        return false;
+    public static <T>T bytes2Object(Class<T> mClass,byte[] bytes) throws Exception {
+        return bytes2Object(mClass,ByteBuffer.wrap(bytes));
     }
 
-    public static <T>T bytes2Object(byte[] bytes,Class<T> mClass) throws Exception {
-        return bytes2Object(bytes,mClass,null);
-    }
-
-    public static <T>T bytes2Object(byte[] bytes,Class<T> mClass,FromBytesConverter converter) throws Exception{
-        return bytes2Object(mClass,ByteBuffer.wrap(bytes),converter);
-    }
-
-    private static <T>T bytes2Object(Class<T> mClass,ByteBuffer byteBuffer,FromBytesConverter converter) throws Exception {
+    public static <T>T bytes2Object(Class<T> mClass,ByteBuffer byteBuffer) throws Exception {
         if (mClass == null)  return null;
 
         Constructor<T> constructor = mClass.getDeclaredConstructor();
@@ -172,7 +133,7 @@ public final class ByteUtils {
         T o = constructor.newInstance();
 
         if (!classMap.containsKey(mClass)){
-            classMap.put(mClass,getOrderedFields(getAllDeclaredFields(mClass)));
+            classMap.put(mClass,orderedFields(getAllDeclaredFields(mClass)));
         }
 
         Field[] fields = classMap.get(mClass);
@@ -181,20 +142,25 @@ public final class ByteUtils {
 
             Field field = fields[i];
 
-            //设置强制访问
-            if (!field.isAccessible())
-                field.setAccessible(true);
-
             // 静态字段 等情况不受理
             if (Modifier.isStatic(field.getModifiers())){
                 continue;
             }
 
+            //设置强制访问
+            if (!field.isAccessible()){
+                field.setAccessible(true);
+            }
+
             Object value = null;
 
-            if (converter != null && (value = converter.convertFromBytes(o,fields,i,byteBuffer)) != null || (o instanceof FromBytesConverter && (value = ((FromBytesConverter) o).convertFromBytes(o,fields,i,byteBuffer)) != null))
+            DataPointer pointer = new DataPointer();
+
+            if (o instanceof FromBytesConverter && !((FromBytesConverter) o).interceptFromBytes(fields,i,byteBuffer,pointer))
             {
-                field.set(o,value);
+                if (pointer.get() != null){
+                    field.set(o,pointer.get());
+                }
             }
             else
             {
@@ -202,27 +168,24 @@ public final class ByteUtils {
                 {
                     int length = getArrayFieldLength(o,field,fields,i);
 
-                    if (field.getType().isArray()){
-
+                    if (field.getType().isArray())
+                    {
                         value = Array.newInstance(field.getType().getComponentType(),length);
 
                         for (int j=0;j<length;j++){
-                            if (field.getType().getComponentType().isPrimitive()){
-                                ArrayUtils.set(value, j, getPrimitive(field.getType().getComponentType(),byteBuffer));
-                            } else {
-                                ArrayUtils.set(value, j, bytes2Object(field.getType().getComponentType(),byteBuffer, converter));
-                            }
+                            DataPointer temp = new DataPointer();
+                            toObj(field.getType().getComponentType(),byteBuffer,temp);
+                            ArrayUtils.set(value,j,temp.get());
                         }
-                    } else {
-
+                    }
+                    else  if (List.class.isAssignableFrom(field.getType()))
+                    {
                         value = new LinkedList<>();
 
                         for (int j=0;j<length;j++){
-                            if (field.getType().getComponentType().isPrimitive()){
-                                ((List)value).set(j,getPrimitive(field.getType().getComponentType(),byteBuffer));
-                            } else {
-                                ((List)value).set(j,bytes2Object(field.getType().getComponentType(),byteBuffer,converter));
-                            }
+                            DataPointer temp = new DataPointer();
+                            toObj(field.getType().getComponentType(),byteBuffer,temp);
+                            ((List)value).set(j,temp.get());
                         }
                     }
 
@@ -230,13 +193,9 @@ public final class ByteUtils {
                 }
                 else
                 {
-                    if ((value = getPrimitive(field.getType(),byteBuffer)) == null){
-                        value = bytes2Object(field.getType(),byteBuffer,converter);
-                    }
+                    toObj(field.getType(),byteBuffer,pointer);
 
-                    if (value != null){
-                        field.set(o,value);
-                    }
+                    field.set(o,value);
                 }
             }
         }
@@ -244,14 +203,114 @@ public final class ByteUtils {
         return o;
     }
 
-    private static int getArrayFieldLength(Object o,Field field,Field[] fields,int position) throws Exception{
-        if (field.getAnnotation(ArrayFieldLength.class) != null){
+    private static void toBytes(Class valueClass,Object value,DataPointer<byte[]> pointer) throws Exception{
+
+        if (long.class.isAssignableFrom(valueClass) || Long.class.isAssignableFrom(valueClass)){
+            pointer.set(long2Bytes((Long) value));
+        }
+        else    if (int.class.isAssignableFrom(valueClass) || Integer.class.isAssignableFrom(valueClass)){
+            pointer.set(int2Bytes((Integer) value));
+        }
+        else    if (short.class.isAssignableFrom(valueClass) || Short.class.isAssignableFrom(valueClass)){
+            pointer.set(short2Bytes((Short) value));
+        }
+        else    if (char.class.isAssignableFrom(valueClass) || Character.class.isAssignableFrom(valueClass)){
+            pointer.set(char2Bytes((Character) value));
+        }
+        else    if (byte.class.isAssignableFrom(valueClass) || Byte.class.isAssignableFrom(valueClass)){
+            pointer.set(new byte[]{(Byte) value});
+        }
+        else    if (boolean.class.isAssignableFrom(valueClass) || Boolean.class.isAssignableFrom(valueClass)){
+            pointer.set(boolean2Bytes((Boolean) value));
+        }
+        else    if (double.class.isAssignableFrom(valueClass) || Double.class.isAssignableFrom(valueClass)){
+            pointer.set(double2bytes((Double) value));
+        }
+        else    if (float.class.isAssignableFrom(valueClass) || Float.class.isAssignableFrom(valueClass)){
+            pointer.set(float2bytes((Float) value));
+        }
+        else {
+            pointer.set(object2Bytes(value));
+        }
+    }
+
+    private static void toObj(Class valueClass,ByteBuffer byteBuffer,DataPointer<Object> pointer) throws Exception{
+
+        if (long.class.isAssignableFrom(valueClass) || Long.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.getLong());
+        }
+        else    if (int.class.isAssignableFrom(valueClass) || Integer.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.getInt());
+        }
+        else    if (short.class.isAssignableFrom(valueClass) || Short.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.getShort());
+        }
+        else    if (char.class.isAssignableFrom(valueClass) || Character.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.getChar());
+        }
+        else    if (byte.class.isAssignableFrom(valueClass) || Byte.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.get());
+        }
+        else    if (boolean.class.isAssignableFrom(valueClass) || Boolean.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.get() == (byte)1);
+        }
+        else    if (double.class.isAssignableFrom(valueClass) || Double.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.getDouble());
+        }
+        else    if (float.class.isAssignableFrom(valueClass) || Float.class.isAssignableFrom(valueClass)){
+            pointer.set(byteBuffer.getFloat());
+        }
+        else {
+            pointer.set(bytes2Object(valueClass,byteBuffer));
+        }
+    }
+
+    private static Field getLengthField(Field field,Field[] fields,int position) throws Exception{
+        if (field.getAnnotation(ArrayFieldLength.class) != null)
+        {
             String lengthFieldName = field.getAnnotation(ArrayFieldLength.class).lenthByField();
-            if (TextUtils.isEmpty(lengthFieldName)){
+            if (!TextUtils.isEmpty(lengthFieldName))
+            {
+                for (Field lengthField : fields)
+                {
+                    if (lengthField.getName().equals(lengthFieldName))
+                    {
+                        if (lengthField.getType().isPrimitive()){
+                            return  lengthField;
+                        } else {
+                            throw  new Exception(lengthField.getName() + " must be Number");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+        if (position == 0){
+            throw  new Exception("Are you sure " + field.getName() + "is array???");
+        }
+        if (!(fields[position-1].getType().isPrimitive())){
+            throw  new Exception(fields[position-1].getName() + " must be Number");
+        }
+        return fields[position-1];
+    }
+
+    private static int getArrayFieldLength(Object o,Field field,Field[] fields,int position) throws Exception{
+        if (field.getAnnotation(ArrayFieldLength.class) != null)
+        {
+            String lengthFieldName = field.getAnnotation(ArrayFieldLength.class).lenthByField();
+            if (TextUtils.isEmpty(lengthFieldName))
+            {
                 return field.getAnnotation(ArrayFieldLength.class).length();
-            } else {
-                for (Field lengthField : fields){
-                    if (lengthField.getName().equals(lengthFieldName)){
+            }
+            else
+            {
+                for (Field lengthField : fields)
+                {
+                    if (lengthField.getName().equals(lengthFieldName))
+                    {
                         if (lengthField.getType().isPrimitive()){
                             return  ((Number) lengthField.get(o)).intValue();
                         } else {
@@ -270,34 +329,6 @@ public final class ByteUtils {
         return ((Number) fields[position-1].get(o)).intValue();
     }
 
-    private static Object getPrimitive(Class valueClass,ByteBuffer byteBuffer){
-        if (long.class.isAssignableFrom(valueClass) || Long.class.isAssignableFrom(valueClass)){
-            return byteBuffer.getLong();
-        }
-        else    if (int.class.isAssignableFrom(valueClass) || Integer.class.isAssignableFrom(valueClass)){
-            return byteBuffer.getInt();
-        }
-        else    if (short.class.isAssignableFrom(valueClass) || Short.class.isAssignableFrom(valueClass)){
-            return byteBuffer.getShort();
-        }
-        else    if (char.class.isAssignableFrom(valueClass) || Character.class.isAssignableFrom(valueClass)){
-            return byteBuffer.getChar();
-        }
-        else    if (byte.class.isAssignableFrom(valueClass) || Byte.class.isAssignableFrom(valueClass)){
-            return byteBuffer.get();
-        }
-        else    if (boolean.class.isAssignableFrom(valueClass) || Boolean.class.isAssignableFrom(valueClass)){
-            return byteBuffer.get() == (byte)1;
-        }
-        else    if (double.class.isAssignableFrom(valueClass) || Double.class.isAssignableFrom(valueClass)){
-            return byteBuffer.getDouble();
-        }
-        else    if (float.class.isAssignableFrom(valueClass) || Float.class.isAssignableFrom(valueClass)){
-            return byteBuffer.getFloat();
-        }
-        return null;
-    }
-
     private static Field[] getAllDeclaredFields(Class mClass){
         if (mClass == null || mClass.getName().equals(Object.class.getName())) return null;
 
@@ -312,7 +343,7 @@ public final class ByteUtils {
         return list.toArray(new Field[0]);
     }
 
-    private static Field[] getOrderedFields(Field[]fields){
+    private static Field[] orderedFields(Field[]fields){
         // 用来存放所有的属性域
         List<Field> list = new ArrayList<>();
         // 过滤带有注解的Field
@@ -329,6 +360,51 @@ public final class ByteUtils {
             }
         });
         return list.toArray(new Field[0]);
+    }
+
+    public interface ToBytesConverter {
+
+        public boolean interceptToBytes(Field[] fields,int fieldPosition,ByteBuffer byteBuffer,DataPointer<byte[]> pointer) throws RuntimeException;
+
+        public void finishToBytes(Field[] fields,ByteBuffer byteBuffer) throws RuntimeException;
+    }
+
+    public interface FromBytesConverter{
+
+        public boolean interceptFromBytes(Field[] fields,int fieldPosition,ByteBuffer byteBuffer,DataPointer pointer) throws RuntimeException;
+
+    }
+
+    public static class DataPointer<T>{
+
+        private T t;
+
+        public T get() {
+            return t;
+        }
+
+        public void set(T t) {
+            this.t = t;
+        }
+
+    }
+
+
+
+    private static byte[] subBytes(byte[] bytes, int start, int end) {
+        if (bytes == null) {
+            return null;
+        }
+        if (start < 0) {
+            start = 0;
+        }
+        if (end > bytes.length) {
+            end = bytes.length;
+        }
+        int newSize = end - start;
+        byte[] subArray = new byte[newSize];
+        System.arraycopy(bytes, start, subArray, 0, newSize);
+        return subArray;
     }
 
     public static byte[] concatBytes(byte[]... bytess){
