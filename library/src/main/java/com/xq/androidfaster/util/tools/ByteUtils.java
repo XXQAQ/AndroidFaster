@@ -78,7 +78,16 @@ public final class ByteUtils {
                         } else  if (List.class.isAssignableFrom(field.getType())){
                             length = ((List)value).size();
                         }
-                        lengthField.set(o,length);
+                        //field.set()方法不会自动转换基础数据类型，需要手动处理
+                        if (long.class.isAssignableFrom(lengthField.getType()) || Long.class.isAssignableFrom(lengthField.getType())){
+                            lengthField.set(o,(long)length);
+                        }else   if (int.class.isAssignableFrom(lengthField.getType()) || Integer.class.isAssignableFrom(lengthField.getType())){
+                            lengthField.set(o,length);
+                        }else   if (short.class.isAssignableFrom(lengthField.getType()) || Short.class.isAssignableFrom(lengthField.getType())){
+                            lengthField.set(o,(short)length);
+                        }else   if (byte.class.isAssignableFrom(lengthField.getType()) || Byte.class.isAssignableFrom(lengthField.getType())){
+                            lengthField.set(o,(byte)length);
+                        }
                     }
 
                     if (field.getType().isArray())
