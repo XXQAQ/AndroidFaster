@@ -195,7 +195,9 @@ public final class ByteUtils {
                 {
                     toObj(field.getType(),byteBuffer,pointer);
 
-                    field.set(o,value);
+                    if (pointer.get() != null){
+                        field.set(o,pointer.get());
+                    }
                 }
             }
         }
