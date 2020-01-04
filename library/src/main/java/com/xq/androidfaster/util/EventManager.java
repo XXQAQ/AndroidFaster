@@ -16,6 +16,10 @@ public class EventManager {
         manager.send(message);
     }
 
+    public static void sendSticky(Object message) {
+        manager.sendSticky(message);
+    }
+
     public static void cancel(Object message) {
         manager.cancel(message);
     }
@@ -31,6 +35,8 @@ public class EventManager {
         public abstract void unRegist(Object object);
 
         public abstract void send(Object message);
+
+        public abstract void sendSticky(Object message);
 
         public abstract void cancel(Object message);
 
