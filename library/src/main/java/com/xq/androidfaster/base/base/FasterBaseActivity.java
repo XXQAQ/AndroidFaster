@@ -348,10 +348,8 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
     @Deprecated
     @Override
     public void onBackPressed() {
-        if (!FragmentUtils.dispatchBackPress(getTopFragmentManager())) {
-            if (!onBackClick()){
-                super.onBackPressed();
-            }
+        if (!FragmentUtils.dispatchBackPress(getTopFragmentManager()) || !onBackClick()) {
+            super.onBackPressed();
         }
     }
 
