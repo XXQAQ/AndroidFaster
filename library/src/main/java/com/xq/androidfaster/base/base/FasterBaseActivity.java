@@ -181,7 +181,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
         requestCode &= 0x0000ffff;
         spa_resultCallback.append(requestCode,callback);
 
-        Bundle bundle = new Bundle(intent.getExtras());
+        Bundle bundle = new Bundle(intent.getExtras() != null?intent.getExtras():new Bundle());
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
         intent.putExtras(bundle);
@@ -205,7 +205,7 @@ public abstract class FasterBaseActivity<T extends IFasterBaseBehavior> extends 
 
     public void startActivity(Intent intent,int enterAnim,int exitAnim){
 
-        Bundle bundle = new Bundle(intent.getExtras());
+        Bundle bundle = new Bundle(intent.getExtras() != null?intent.getExtras():new Bundle());
         bundle.putInt("enterAnim",enterAnim);
         bundle.putInt("exitAnim",exitAnim);
         intent.putExtras(bundle);
