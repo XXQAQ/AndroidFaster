@@ -1,7 +1,11 @@
 package com.xq.androidfaster.util.tools;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.KeyguardManager;
+import android.app.admin.DeviceAdminReceiver;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -9,6 +13,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
@@ -18,6 +23,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import java.lang.reflect.Method;
 import static android.Manifest.permission.WRITE_SETTINGS;
 
 public final class ScreenUtils {
@@ -387,5 +393,38 @@ public final class ScreenUtils {
             e.printStackTrace();
             return -123;
         }
+    }
+
+    /**
+     * 息屏
+     */
+    @SuppressWarnings("all")
+    public static void sleepScreen() {
+        ComponentName componentName = new ComponentName(Utils.getApp().getPackageName(), ScreenOffAdminReceiver.class.getName());
+        try {
+            DevicePolicyManager mDPM = (DevicePolicyManager) Utils.getApp().getSystemService(Context.DEVICE_POLICY_SERVICE);
+            Method setActiveAdmin = mDPM.getClass().getDeclaredMethod("setActiveAdmin", ComponentName.class, boolean.class);
+            setActiveAdmin.setAccessible(true);
+            setActiveAdmin.invoke(mDPM, componentName, true);
+            mDPM.lockNow();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 唤醒屏幕
+     */
+    @SuppressWarnings("all")
+    public static void awakenScreen() {
+        PowerManager mPowerManager = (PowerManager) Utils.getApp().getSystemService(Context.POWER_SERVICE);
+        @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock mWakeLock = mPowerManager
+                .newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "tag");
+        mWakeLock.acquire();
+        mWakeLock.release();
+    }
+
+    public static class ScreenOffAdminReceiver extends DeviceAdminReceiver {
+
     }
 }

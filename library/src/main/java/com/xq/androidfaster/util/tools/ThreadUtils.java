@@ -46,7 +46,12 @@ public final class ThreadUtils {
      * @param runnable The Runnable
      */
     public static void runOnChildThread(Runnable runnable) {
-        THREAD_POOL_SIMPLE.execute(runnable);
+        THREAD_POOL_SIMPLE.execute(new Runnable() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        });
     }
 
     /**
@@ -83,7 +88,7 @@ public final class ThreadUtils {
      * @param runnable The Runnable
      * @param delayMillis The delay time
      */
-    static void runOnUiThreadDelayed(final Runnable runnable, long delayMillis) {
+    public static void runOnUiThreadDelayed(final Runnable runnable, long delayMillis) {
         Utils.runOnUiThreadDelayed(runnable,delayMillis);
     }
 
