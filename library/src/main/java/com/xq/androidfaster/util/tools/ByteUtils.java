@@ -165,7 +165,7 @@ public final class ByteUtils {
 
             DataPointer pointer = new DataPointer();
 
-            if (o instanceof FromBytesConverter && !((FromBytesConverter) o).interceptFromBytes(fields,i,byteBuffer,pointer))
+            if (o instanceof FromBytesConverter && ((FromBytesConverter) o).interceptFromBytes(fields,i,byteBuffer,pointer))
             {
                 if (pointer.get() != null){
                     field.set(o,pointer.get());
