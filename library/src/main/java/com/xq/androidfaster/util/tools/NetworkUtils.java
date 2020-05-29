@@ -704,12 +704,14 @@ public final class NetworkUtils {
                         if (mType == networkType) return;
                         LogUtils.e(networkType);
                         mType = networkType;
+
+                        Set<OnNetworkStatusChangedListener> tempListeners = new HashSet<>(mListeners);
                         if (networkType == NetworkType.NETWORK_NO) {
-                            for (OnNetworkStatusChangedListener listener : mListeners) {
+                            for (OnNetworkStatusChangedListener listener : tempListeners) {
                                 listener.onDisconnected();
                             }
                         } else {
-                            for (OnNetworkStatusChangedListener listener : mListeners) {
+                            for (OnNetworkStatusChangedListener listener : tempListeners) {
                                 listener.onConnected(networkType);
                             }
                         }
